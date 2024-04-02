@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:uggiso/app_routes.dart';
+import 'package:uggiso/base/common/ui/colors.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -22,8 +23,10 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: Colors.white,
-        child:Image.asset('assets/uggiso_splash.png',width: 200,height: 200,)
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height,
+          color: AppColors.appPrimaryColor,
+          child:Image.asset('assets/uggiso_splash.png',width: 200,height: 200)
     );
   }
 }
