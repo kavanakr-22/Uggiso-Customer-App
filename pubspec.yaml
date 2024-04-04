@@ -38,6 +38,8 @@ dependencies:
   dots_indicator: ^2.1.1
   flutter_bloc: ^8.1.5
   fade_shimmer: ^2.2.0
+  dio: ^5.4.2+1
+  equatable: ^2.0.5
 
 dev_dependencies:
   flutter_test:
@@ -78,10 +80,10 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-    - family: RobotoSerif
+    - family: 'RobotoSerif'
       fonts:
-         - asset: fonts/RobotoSerif_Regular.ttf
-         - asset: fonts/RobotoSerif_Bold.ttf
+         - asset: assets/fonts/RobotoSerif_Regular.ttf
+         - asset: assets/fonts/RobotoSerif_Bold.ttf
   #         style: italic
   #   - family: Trajan Pro
   #     fonts:

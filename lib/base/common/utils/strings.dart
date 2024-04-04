@@ -10,6 +10,7 @@ class Strings{
   static const experience_the_joy = 'From farm to table, experience the joy of freshness with every bite.';
   static const skip = 'Skip';
   static const hi = 'Hi';
+  static const next = 'Next';
   static const uggiso_welcomes_you = 'Uggiso Welcome’s You';
   static const enter_mobile_number = 'Please Enter Your Mobile Number';
   static const get_otp = 'Get OTP';
