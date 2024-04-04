@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:uggiso/app_routes.dart';
-import 'package:uggiso/base/common/ui/colors.dart';
+import 'package:uggiso/base/common/utils/colors.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});

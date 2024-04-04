@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:uggiso/Widgets/HomeLandingScreen.dart';
+import 'package:uggiso/Widgets/VerifyOtp.dart';
 import 'package:uggiso/widgets/IntroLandingScreen.dart';
 import 'package:uggiso/widgets/SignUpScreen.dart';
 import 'package:uggiso/widgets/splash.dart';
@@ -29,7 +31,9 @@ class AppRoutes {
       case signupScreen:
         return MaterialPageRoute(builder: (_) => const SignUpScreen());
       case verifyOtp:
-        return MaterialPageRoute(builder: (_) => const IntroLandingScreen());
+        return MaterialPageRoute(builder: (_) => const VerifyOtp());
+      case homeScreen:
+        return MaterialPageRoute(builder: (_) => const HomeLandingScreen());
       default:
       // If there is no such named route in the switch statement, e.g. /randomRoute
         return MaterialPageRoute(builder: (_) {
