@@ -128,7 +128,7 @@ class _VerifyOtpState extends State<VerifyOtp> {
                     height: 40.0,
                     text: Strings.verify,
                     onPressed: () {
-                      Navigator.pushNamed(context, AppRoutes.homeScreen);
+                      Navigator.pushNamed(context, AppRoutes.registerUser);
                     },
                     cornerRadius: 6.0,
                     buttonColor: AppColors.appPrimaryColor,

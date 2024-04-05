@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:uggiso/Widgets/HomeLandingScreen.dart';
+import 'package:uggiso/Widgets/RegisterUserScreen.dart';
 import 'package:uggiso/Widgets/VerifyOtp.dart';
 import 'package:uggiso/widgets/IntroLandingScreen.dart';
 import 'package:uggiso/widgets/SignUpScreen.dart';
@@ -16,7 +17,7 @@ class AppRoutes {
 
   static const String homeScreen = '/home_screen';
 
-  static const String personalityScreen = '/personality_screen';
+  static const String registerUser = '/register_user';
 
   static const String workTodayScreen = '/work_today_screen';
 
@@ -32,10 +33,12 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const SignUpScreen());
       case verifyOtp:
         return MaterialPageRoute(builder: (_) => const VerifyOtp());
+      case registerUser:
+        return MaterialPageRoute(builder: (_) => const RegisterUserScreen());
       case homeScreen:
         return MaterialPageRoute(builder: (_) => const HomeLandingScreen());
       default:
-      // If there is no such named route in the switch statement, e.g. /randomRoute
+        // If there is no such named route in the switch statement, e.g. /randomRoute
         return MaterialPageRoute(builder: (_) {
           return Scaffold(
             body: Center(

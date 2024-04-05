@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class AppFonts {
+  static const TextStyle header1 = TextStyle(
+      fontSize: 26.0, fontWeight: FontWeight.w700, fontFamily: 'RobotoSerif');
   static const TextStyle header = TextStyle(
       fontSize: 24.0, fontWeight: FontWeight.w600, fontFamily: 'RobotoSerif');
 
