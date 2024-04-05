@@ -39,6 +39,8 @@ dependencies:
   flutter_bloc: ^8.1.5
   fade_shimmer: ^2.2.0
   dio: ^5.4.2+1
+  http: ^1.1.0
+  meta: ^1.9.1
   equatable: ^2.0.5
 
 dev_dependencies:
