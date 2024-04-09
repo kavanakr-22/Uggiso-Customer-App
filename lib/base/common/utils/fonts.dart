@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uggiso/base/common/utils/colors.dart';
 
 class AppFonts {
   static const TextStyle header1 = TextStyle(
@@ -11,6 +12,10 @@ class AppFonts {
 
   static const TextStyle title =
       TextStyle(fontSize: 16.0, color: Colors.black,fontWeight: FontWeight.w500, fontFamily: 'RobotoSerif');
+
   static const TextStyle smallText =
   TextStyle(fontSize: 12.0, color: Colors.black,fontWeight: FontWeight.w400, fontFamily: 'RobotoSerif');
+
+  static const TextStyle appBarText =
+  TextStyle(fontSize: 20.0, color: AppColors.textColor,fontWeight: FontWeight.w500, fontFamily: 'RobotoSerif');
 }

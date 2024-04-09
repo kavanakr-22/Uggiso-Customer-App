@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:uggiso/Widgets/AboutUsScreen.dart';
+import 'package:uggiso/Widgets/HelpCenter.dart';
 import 'package:uggiso/Widgets/HomeLandingScreen.dart';
 import 'package:uggiso/Widgets/RegisterUserScreen.dart';
+import 'package:uggiso/Widgets/SettingsScreen.dart';
 import 'package:uggiso/Widgets/VerifyOtp.dart';
 import 'package:uggiso/widgets/IntroLandingScreen.dart';
 import 'package:uggiso/widgets/SignUpScreen.dart';
@@ -19,9 +22,13 @@ class AppRoutes {
 
   static const String registerUser = '/register_user';
 
-  static const String workTodayScreen = '/work_today_screen';
+  static const String settingsScreen = '/settings';
 
-  static const String appNavigationScreen = '/app_navigation_screen';
+  static const String yourOrders = '/app_navigation_screen';
+
+  static const String helpCenter = '/help_center';
+
+  static const String aboutUs = '/about_us';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -37,6 +44,12 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const RegisterUserScreen());
       case homeScreen:
         return MaterialPageRoute(builder: (_) => const HomeLandingScreen());
+      case settingsScreen:
+        return MaterialPageRoute(builder: (_) => const SettingsScreen());
+      case helpCenter:
+        return MaterialPageRoute(builder: (_) => const HelpCenter());
+      case aboutUs:
+        return MaterialPageRoute(builder: (_) => const AboutUsScreen());
       default:
         // If there is no such named route in the switch statement, e.g. /randomRoute
         return MaterialPageRoute(builder: (_) {

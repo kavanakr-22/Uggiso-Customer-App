@@ -66,7 +66,7 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
                     height: 40.0,
                     text: Strings.submit,
                     onPressed: () {
-                      Navigator.pushNamed(context, AppRoutes.homeScreen);
+                      Navigator.popAndPushNamed(context, AppRoutes.homeScreen);
                     },
                     cornerRadius: 6.0,
                     buttonColor: AppColors.appPrimaryColor,

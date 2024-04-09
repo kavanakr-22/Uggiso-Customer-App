@@ -1,9 +1,11 @@
+import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:uggiso/Widgets/CategoriesTab.dart';
 import 'package:uggiso/Widgets/FavoriteTab.dart';
 import 'package:uggiso/Widgets/HomeTab.dart';
 import 'package:uggiso/Widgets/NotificationsTab.dart';
 import 'package:uggiso/Widgets/ProfileTab.dart';
+import 'package:uggiso/base/common/utils/colors.dart';
 import 'package:uggiso/base/common/utils/strings.dart';
 
 class HomeLandingScreen extends StatefulWidget {
@@ -16,10 +18,23 @@ class HomeLandingScreen extends StatefulWidget {
 class _HomeLandingScreenState extends State<HomeLandingScreen> {
   int _selectedIndex = 0;
 
+  static const List _imagePaths = [
+    'assets/ic_home.png',
+    'assets/ic_heart.png',
+    'assets/ic_bell.png',
+    'assets/ic_person.png',
+  ];
+
+  final List<String> text = [
+    Strings.home,
+    Strings.favorite,
+    Strings.notifications,
+    Strings.profile,
+  ];
+
   static List<Widget> _widgetOptions = <Widget>[
     HomeTab(),
     FavoriteTab(),
-    CategoriesTab(),
     NotificationsTab(),
     ProfileTab()
   ];
@@ -33,47 +48,68 @@ class _HomeLandingScreenState extends State<HomeLandingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Bottom Navigation Example'),
-      ),
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
-      floatingActionButton: FloatingActionButton(onPressed: () {  },
-        //params
+      floatingActionButton:Container(
+        padding: EdgeInsets.all(18),
+        width: 64,
+        height: 64,
+        decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(
+                'assets/ic_rectangle.png',
+              ),
+            )
+        ),
+        child: Center(
+          child: Image.asset(
+            'assets/ic_categories.png',
+          ),
+        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: BottomAppBar(
+        shape: CircularNotchedRectangle(),
+        child: Container(
+          height: 70,
+          child:  Padding(
+            padding: const EdgeInsets.symmetric(horizontal:8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: List.generate(_imagePaths.length, (index) {
+                return buildNavBarItem(index);
+              }),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: Strings.home,
+  Widget buildNavBarItem(int index) {
+    return InkWell(
+      onTap: () => _onItemTapped(index),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Image.asset(_imagePaths[index],height: 24,width: 24,
+            color: _selectedIndex == index ? AppColors.appPrimaryColor : AppColors.bottomTabInactiveColor,
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Screen 2',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: 'Screen 3',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: 'Screen 3',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: Strings.home
+          SizedBox(height: 4.0,),
+          /*Icon(
+            icons[index],
+            color: _selectedIndex == index ? AppColors.appPrimaryColor : AppColors.bottomTabInactiveColor,
+          ),*/
+          Text(
+            text[index],
+            style: TextStyle(
+              fontSize: 12,
+              color: _selectedIndex == index ? AppColors.appPrimaryColor : AppColors.bottomTabInactiveColor,
+            ),
           ),
         ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.blue,
-        onTap: _onItemTapped,
       ),
     );
   }
 }
-

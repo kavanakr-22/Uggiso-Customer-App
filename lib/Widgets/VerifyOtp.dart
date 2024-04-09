@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:uggiso/Widgets/ui-kit/RoundedContainer.dart';
 import 'package:uggiso/Widgets/ui-kit/RoundedElevatedButton.dart';
 import 'package:uggiso/Widgets/ui-kit/TextFieldCurvedEdges.dart';
 import 'package:uggiso/app_routes.dart';
@@ -21,6 +22,7 @@ class _VerifyOtpState extends State<VerifyOtp> {
   final TextEditingController otpController_3 = TextEditingController();
   final TextEditingController otpController_4 = TextEditingController();
   late Timer _timer;
+  bool isResendButtonEnable = false;
   int _secondsRemaining = 30;
 
   @override
@@ -68,40 +70,40 @@ class _VerifyOtpState extends State<VerifyOtp> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 SizedBox(
-                  height: 40.0,
-                  width: 40.0,
+                  height: 60.0,
+                  width: 60.0,
                   child: TextFieldCurvedEdges(
                     controller: otpController_1,
-                    backgroundColor: AppColors.textFieldBg,
+                    backgroundColor: AppColors.appSecondaryColor,
                     keyboardType: TextInputType.number,
                     borderColor: AppColors.textFieldBorderColor,
                     borderRadius: 6,
                   ),
                 ),
                 SizedBox(
-                  height: 40.0,
-                  width: 40.0,
+                  height: 60.0,
+                  width: 60.0,
                   child: TextFieldCurvedEdges(
                       controller: otpController_2,
-                      backgroundColor: AppColors.textFieldBg,
+                      backgroundColor: AppColors.appSecondaryColor,
                       keyboardType: TextInputType.number,
                       borderColor: AppColors.textFieldBorderColor,borderRadius: 6,),
                 ),
                 SizedBox(
-                  height: 40.0,
-                  width: 40.0,
+                  height: 60.0,
+                  width: 60.0,
                   child: TextFieldCurvedEdges(
                       controller: otpController_3,
-                      backgroundColor: AppColors.textFieldBg,
+                      backgroundColor: AppColors.appSecondaryColor,
                       keyboardType: TextInputType.number,
                       borderColor: AppColors.textFieldBorderColor,borderRadius: 6,),
                 ),
                 SizedBox(
-                  height: 40.0,
-                  width: 40.0,
+                  height: 60.0,
+                  width: 60.0,
                   child: TextFieldCurvedEdges(
                       controller: otpController_4,
-                      backgroundColor: AppColors.textFieldBg,
+                      backgroundColor: AppColors.appSecondaryColor,
                       keyboardType: TextInputType.number,
                       borderColor: AppColors.textFieldBorderColor,borderRadius: 6,),
                 ),
@@ -115,9 +117,29 @@ class _VerifyOtpState extends State<VerifyOtp> {
                         .copyWith(color: AppColors.textColor))),
             Align(
                 alignment: Alignment.centerRight,
-                child: Text(_formatTimer(_secondsRemaining),
-                    style: AppFonts.title
-                        .copyWith(color: AppColors.textColor))),
+                child: isResendButtonEnable?
+                InkWell(
+                  child: RoundedContainer(
+                    width: 100,
+                    height: 40,
+                    cornerRadius: 30,
+                    color: AppColors.appSecondaryColor,
+                    child: Text(Strings.resend,
+                        textAlign: TextAlign.center,
+                        style: AppFonts.title
+                            .copyWith(color: AppColors.textColor)),
+                  ),
+                ):
+                RoundedContainer(
+                  width: 80,
+                  height: 40,
+                  cornerRadius: 30,
+                  color: AppColors.appSecondaryColor,
+                  child: Text(_formatTimer(_secondsRemaining),
+                      textAlign: TextAlign.center,
+                      style: AppFonts.subHeader
+                          .copyWith(color: AppColors.textColor)),
+                )),
 
             Expanded(
               child: Container(
@@ -128,7 +150,7 @@ class _VerifyOtpState extends State<VerifyOtp> {
                     height: 40.0,
                     text: Strings.verify,
                     onPressed: () {
-                      Navigator.pushNamed(context, AppRoutes.registerUser);
+                      Navigator.popAndPushNamed(context, AppRoutes.registerUser);
                     },
                     cornerRadius: 6.0,
                     buttonColor: AppColors.appPrimaryColor,
@@ -157,6 +179,8 @@ class _VerifyOtpState extends State<VerifyOtp> {
       setState(() {
         if (_secondsRemaining < 1) {
           timer.cancel();
+          isResendButtonEnable = true;
+
         } else {
           _secondsRemaining -= 1;
         }

@@ -8,7 +8,7 @@ abstract class SignUpEvent extends Equatable {
 class OnButtonClicked extends SignUpEvent {
   final String number;
 
-  const OnButtonClicked({required this.number}) : super();
+  const OnButtonClicked({required this.number});
 
   @override
   List<Object> get props => [number];
