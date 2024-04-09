@@ -9,9 +9,10 @@ class ApiProvider {
 
   Future<OtpModel> getOtp(String number) async {
     try {
-      Response response = await _dio.post('${_url}${Constants.getOtp}$number');
+      Response response = await _dio.post('${_url}${Constants.getOtp}',data: {
+        "phoneNumber": number
+      });
       print("${response.data}");
-
       return OtpModel.fromJson(response.data);
     } catch (error, stacktrace) {
       print("Exception occured: $error stackTrace: $stacktrace");

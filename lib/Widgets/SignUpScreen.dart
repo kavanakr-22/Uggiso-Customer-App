@@ -23,7 +23,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: AppBar(
@@ -73,9 +72,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       text: Strings.get_otp,
                       onPressed: () {
                         Navigator.pushNamed(context, AppRoutes.verifyOtp);
-                        /*_signUpBloc.add(OnButtonClicked(
-                            number: _mobileController
-                                .text)); */// Dispatch the event with mobile number
+                        // _signUpBloc.add(OnButtonClicked(number: _mobileController.text));
                       },
                       cornerRadius: 6.0,
                       buttonColor: AppColors.appPrimaryColor,
@@ -88,6 +85,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ),
       ),
     );
+  }
+
+  gotoNextPage(){
+    Navigator.pushNamed(context, AppRoutes.verifyOtp);
   }
 
   @override
