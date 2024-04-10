@@ -6,13 +6,21 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}); // Fix the constructor syntax
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       title: 'Flutter Demo',
+      theme: ThemeData(
+        pageTransitionsTheme: const PageTransitionsTheme(
+          builders: {
+            TargetPlatform.android: const CupertinoPageTransitionsBuilder(), // For Android
+            TargetPlatform.iOS: const CupertinoPageTransitionsBuilder(), // For iOS
+          },
+        ),
+      ),
       debugShowCheckedModeBanner: false,
       initialRoute: AppRoutes.initialRoute,
       onGenerateRoute: AppRoutes.generateRoute,
