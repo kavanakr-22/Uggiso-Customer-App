@@ -14,7 +14,7 @@ class NotificationsTab extends StatefulWidget {
 
 class _NotificationsTabState extends State<NotificationsTab> {
 
-  final bool _isLoading = true;
+  final bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +35,7 @@ class _NotificationsTabState extends State<NotificationsTab> {
   }
 
   Widget showNotifications() => ListView.builder(
-        itemCount: 10,
+        itemCount: 5,
         itemBuilder: (BuildContext context, int index) {
           return Padding(
             padding:

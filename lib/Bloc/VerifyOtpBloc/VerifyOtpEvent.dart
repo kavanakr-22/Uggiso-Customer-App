@@ -1,12 +1,19 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
+import 'package:meta/meta.dart';
 
-@immutable
 abstract class VerifyOtpEvent extends Equatable {
   const VerifyOtpEvent();
 }
 
-class LoadVerifyOtpEvent extends VerifyOtpEvent {
+class OnButtonClicked extends VerifyOtpEvent {
+  final String number;
+  final String otp;
+
+  const OnButtonClicked({required this.number,required this.otp});
+
   @override
-  List<Object?> get props => [];
+  List<Object> get props => [number,otp];
+
+  @override
+  String toString() => 'OnButtonClicked { number: $number , otp: $otp}';
 }
