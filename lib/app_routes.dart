@@ -10,7 +10,7 @@ import 'package:uggiso/widgets/SignUpScreen.dart';
 import 'package:uggiso/widgets/splash.dart';
 
 class AppRoutes {
-  static const String initialRoute = '/initialRoute';
+  static const String initialRoute = '/';
 
   static const String introLanding = '/introLanding';
 
@@ -32,7 +32,7 @@ class AppRoutes {
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
-      case initialRoute:
+      case '/':
         return MaterialPageRoute(builder: (_) => const SplashScreen());
       case introLanding:
         return MaterialPageRoute(builder: (_) => const IntroLandingScreen());

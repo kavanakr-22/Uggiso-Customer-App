@@ -4,4 +4,8 @@ class Constants{
   static String getOtp = 'user/otp';
   static String verifyOtp = 'user/otp/verify';
   static String registerUser = 'user/register';
+  static String registerRestaurant = 'restaurant/register';
+  static String restaurantDetails = 'restaurant/details/';
+  static String menuList = 'menu/';
+  static String addFavMenu = 'favmenu/savefavmenu';
 }
