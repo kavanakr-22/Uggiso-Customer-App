@@ -5,7 +5,6 @@ class MenuListModel {
   String? timeStamp;
   String? error;
 
-
   MenuListModel({this.statusCode, this.message, this.payload, this.timeStamp});
 
   MenuListModel.fromJson(Map<String, dynamic> json) {
@@ -43,20 +42,28 @@ class Payload {
   String? photo;
   String? description;
   String? menuType;
+  String? restaurantMenuType;
   bool? veg;
-  int? price;
+  double? price;
   bool? bestSeller;
+  double? ratings;
+  double? parcelCharges;
+  bool? favourite;
 
   Payload(
       {this.menuId,
-        this.restaurantId,
-        this.menuName,
-        this.photo,
-        this.description,
-        this.menuType,
-        this.veg,
-        this.price,
-        this.bestSeller});
+      this.restaurantId,
+      this.menuName,
+      this.photo,
+      this.description,
+      this.menuType,
+      this.restaurantMenuType,
+      this.veg,
+      this.price,
+      this.bestSeller,
+      this.ratings,
+      this.parcelCharges,
+      this.favourite});
 
   Payload.fromJson(Map<String, dynamic> json) {
     menuId = json['menuId'];
@@ -65,9 +72,13 @@ class Payload {
     photo = json['photo'];
     description = json['description'];
     menuType = json['menuType'];
+    restaurantMenuType = json['restaurantMenuType'];
     veg = json['veg'];
     price = json['price'];
     bestSeller = json['bestSeller'];
+    ratings = json['ratings'];
+    parcelCharges = json['parcelCharges'];
+    favourite = json['favourite'];
   }
 
   Map<String, dynamic> toJson() {
@@ -78,9 +89,13 @@ class Payload {
     data['photo'] = this.photo;
     data['description'] = this.description;
     data['menuType'] = this.menuType;
+    data['restaurantMenuType'] = this.restaurantMenuType;
     data['veg'] = this.veg;
     data['price'] = this.price;
     data['bestSeller'] = this.bestSeller;
+    data['ratings'] = this.ratings;
+    data['parcelCharges'] = this.parcelCharges;
+    data['favourite'] = this.favourite;
     return data;
   }
 }

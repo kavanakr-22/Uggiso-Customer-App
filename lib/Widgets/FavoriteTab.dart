@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:uggiso/Widgets/FavMenuTab.dart';
+import 'package:uggiso/Widgets/FavRestaurantTab.dart';
 import 'package:uggiso/base/common/utils/colors.dart';
 import 'package:uggiso/base/common/utils/fonts.dart';
 import 'package:uggiso/base/common/utils/strings.dart';
@@ -17,7 +19,7 @@ class _FavoriteTabState extends State<FavoriteTab> with SingleTickerProviderStat
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 2, vsync: this);
   }
 
   @override
@@ -31,11 +33,11 @@ class _FavoriteTabState extends State<FavoriteTab> with SingleTickerProviderStat
     return DefaultTabController(
       length: 3,
       child: Scaffold(
-          backgroundColor: AppColors.white,
+
           appBar: AppBar(
             elevation: 0.0,
             leading: Container(),
-            backgroundColor: AppColors.white,
+            backgroundColor: AppColors.appPrimaryColor,
             title: const Text(
               Strings.favorite,
               style: AppFonts.appBarText,
@@ -48,19 +50,23 @@ class _FavoriteTabState extends State<FavoriteTab> with SingleTickerProviderStat
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20.0),
-                    color: AppColors.grey,
+                    color: AppColors.appPrimaryColor,
                   ),
                   child: TabBar(
                     controller: _tabController,
                     indicator: BoxDecoration(
                       borderRadius: BorderRadius.circular(20.0),
-                      color: AppColors.appPrimaryColor,
+                      color: AppColors.white,
                     ),
                     labelStyle: AppFonts.appBarText,
                     labelColor: AppColors.textColor,
                     tabs: [
-                      Tab(text: Strings.hotels,),
-                      Tab(text: Strings.dishes),
+                      Container(
+                        width: MediaQuery.of(context).size.width*0.4,
+                          child: Tab(text: Strings.hotels,)),
+                      Container(
+                          width: MediaQuery.of(context).size.width*0.4,
+                          child: Tab(text: Strings.dishes)),
                     ],
                   ),
                 ),
@@ -70,36 +76,12 @@ class _FavoriteTabState extends State<FavoriteTab> with SingleTickerProviderStat
           body: TabBarView(
             controller: _tabController,
             children: [
-              Center(child: Text('No Favorite Hotels Listed')),
-              Center(child: Text('No Favorite Dishes Listed')),
+              FavRestaurantTab(),
+              FavMenuTab()
             ],
           ),
       ),
     );
   }
-/*
-  Widget FavoritesBody() =>TabBar(
-    controller: _tabController,
-    indicator: BoxDecoration(
-      borderRadius: BorderRadius.circular(20.0),
-      color: Colors.white,
-    ),
-    tabs: [
-      Tab(text: 'Tab 1'),
-      Tab(text: 'Tab 2'),
-      Tab(text: 'Tab 3'),
-    ],
-  ),
-  ),
-  ),
-  ),
-  body: TabBarView(
-  controller: _tabController,
-  children: [
-  Center(child: Text('Content of Tab 1')),
-  Center(child: Text('Content of Tab 2')),
-  Center(child: Text('Content of Tab 3')),
-  ],
-  ),
-  );*/
+
 }

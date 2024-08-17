@@ -12,7 +12,14 @@ class InitialState extends RegisterUserState {}
 
 class LoadingState extends RegisterUserState {}
 
-class onLoadedState extends RegisterUserState {}
+class onLoadedState extends RegisterUserState {
+  final String userId;
+  onLoadedState(this.userId);
+}
+
+class onReferalComplete extends RegisterUserState {
+  onReferalComplete();
+}
 
 class ErrorState extends RegisterUserState {
   final String? message;

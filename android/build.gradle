@@ -1,13 +1,17 @@
 buildscript {
-    ext.kotlin_version = '1.7.10'
+    ext.kotlin_version = '1.9.24'
     repositories {
         google()
         mavenCentral()
+        maven { url 'https://jitpack.io'
+            credentials { username 'jp_oshtn4lfqhsnjr688utjov34gq' }
+        }
     }
 
     dependencies {
         classpath 'com.android.tools.build:gradle:7.3.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.google.gms:google-services:4.4.2'
     }
 }
 
@@ -15,6 +19,9 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        maven { url 'https://jitpack.io'
+            credentials { username 'jp_oshtn4lfqhsnjr688utjov34gq' }
+        }
     }
 }
 
@@ -29,3 +36,4 @@ subprojects {
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }
+
