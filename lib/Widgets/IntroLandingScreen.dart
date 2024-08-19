@@ -19,9 +19,12 @@ class _IntroLandingScreenState extends State<IntroLandingScreen> {
 
   void nextPage() {
     setState(() {
-      if (_currentPage < 3) {
+      print('this is current page : $_currentPage');
+      if (_currentPage <= 2) {
         _currentPage++;
         _pageController.jumpToPage(_currentPage);
+        print('this is current page inside: $_currentPage');
+
       }
       if (_currentPage == 3) {
         Navigator.pushReplacementNamed(context, AppRoutes.signupScreen);

@@ -114,6 +114,7 @@ class Strings {
   static const get_rewards = 'Get Rewards!';
   static const rewards = 'Rewards';
   static const enter_referral_number = 'Enter your Referral Mobile Number';
+  static const google_map_api_key = 'AIzaSyB8UoTxemF5no_Va1aJn4x8s10VsFlLQHA';
 
 
   static const List<Map<String, dynamic>> profileItemList = [

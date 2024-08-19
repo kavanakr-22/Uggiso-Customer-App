@@ -3,11 +3,13 @@ import 'package:gap/gap.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_polyline/google_maps_polyline.dart';
 import 'package:google_search_place/google_search_place.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uggiso/Widgets/ui-kit/RoundedContainer.dart';
 import 'package:uggiso/base/common/utils/colors.dart';
 import 'package:uggiso/base/common/utils/fonts.dart';
-import 'package:uggiso/base/common/utils/strings.dart';
 import 'package:google_search_place/model/prediction.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:uggiso/base/common/utils/strings.dart';
 
 
 class GetRouteMap extends StatefulWidget {
@@ -30,7 +32,20 @@ class _GetRouteMapState extends State<GetRouteMap> {
   GoogleMapsPolyline googleMapPolyline =  GoogleMapsPolyline();
   final List<Polyline> polyline = [];
   List<LatLng> routeCoords = [];
+  static LatLng currLocation = LatLng(12.934730, 77.690483);
+  static LatLng destLocation = LatLng(13.072170, 77.792221);
+  double latitude = 0.0;
+  double longitude = 0.0;
+  String userId = '';
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getUserCurrentLocation().then((_)=>{
+      getPolyLinePoints()
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +69,16 @@ class _GetRouteMapState extends State<GetRouteMap> {
               target: LatLng(12.9913243,77.7301459),
               zoom: 10,
             ),
-            markers: _markers,
+            markers: {
+              Marker(markerId: MarkerId('Current Location'),
+                icon: BitmapDescriptor.defaultMarker,
+                position: LatLng(latitude, longitude)
+              ),
+              Marker(markerId: MarkerId('Dest Location'),
+                  icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+                  position: destLocation
+              ),
+            },
             polylines: Set.from(polyline),
           ),
         ),
@@ -216,43 +240,37 @@ class _GetRouteMapState extends State<GetRouteMap> {
         ),
       );
 
-  // Future<Null> displayPrediction(Prediction p) async {
-  //   if (p != null) {
-  //     // get detail (lat/lng)
-  //     PlacesDetailsResponse detail = await _places.getDetailsByPlaceId(
-  //         p.placeId);
-  //     final lat = detail.result.geometry.location.lat;
-  //     final lng = detail.result.geometry.location.lng;
-  //
-  //     setState(() {
-  //       placeController.text = detail.result.name;
-  //       Marker marker = Marker(
-  //           markerId: MarkerId('arrivalMarker'),
-  //           draggable: false,
-  //           infoWindow: InfoWindow(
-  //             title: "This is where you searched",
-  //           ),
-  //           position: LatLng(lat, lng)
-  //       );
-  //       markersList.add(marker);
-  //     });
-  //   }
+  getUserCurrentLocation() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      latitude = prefs.getDouble('user_latitude') ?? 0.0;
+      longitude = prefs.getDouble('user_longitude') ?? 0.0;
+      userId = prefs.getString('userId') ?? '';
+    });
+    print('lat  : $latitude and lng: $longitude');
+    // getNearByRestaurants(userId,latitude, longitude, selectedDistance,selectedMode);
+  }
+  Future<List<LatLng>> getPolyLinePoints() async{
 
-    // computePath()async{
-    //   LatLng origin = new LatLng(departure.geometry.location.lat, departure.geometry.location.lng);
-    //   LatLng end = new LatLng(arrival.geometry.location.lat, arrival.geometry.location.lng);
-    //   routeCoords.addAll(await googleMapPolyline.getCoordinatesWithLocation(origin: origin, destination: end, mode: RouteMode.driving));
-    //
-    //   setState(() {
-    //     polyline.add(Polyline(
-    //         polylineId: PolylineId('iter'),
-    //         visible: true,
-    //         points: routeCoords,
-    //         width: 4,
-    //         color: Colors.blue,
-    //         startCap: Cap.roundCap,
-    //         endCap: Cap.buttCap
-    //     ));
-    //   });
-    // }
+    List<LatLng> polyLineCoOrdinates = [];
+    PolylinePoints polylinePoints = PolylinePoints();
+    PolylineResult polylineResult = await polylinePoints.getRouteBetweenCoordinates(googleApiKey: Strings.google_map_api_key,
+        request: PolylineRequest(
+          origin: PointLatLng(12.934730, 77.690483),
+          destination: PointLatLng(13.072170, 77.792221),
+          mode: TravelMode.driving,
+          // wayPoints: [PolylineWayPoint(location: "Sabo, Yaba Lagos Nigeria")],
+        )
+    );
+    if(polylineResult.points.isNotEmpty){
+      polylineResult.points.forEach((PointLatLng point){
+        polyLineCoOrdinates.add(LatLng(point.latitude, point.longitude));
+      });
+    }
+    else{
+      print('error from Polyline : ${polylineResult.errorMessage}');
+    }
+    print('this is polyline result : ${polyLineCoOrdinates}');
+    return polyLineCoOrdinates;
+  }
 }
