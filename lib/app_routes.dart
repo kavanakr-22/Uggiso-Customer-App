@@ -9,8 +9,10 @@ import 'package:uggiso/Widgets/PaymentSuccessScreen.dart';
 import 'package:uggiso/Widgets/ProfileTab.dart';
 import 'package:uggiso/Widgets/RegisterUserScreen.dart';
 import 'package:uggiso/Widgets/RewardsScreen.dart';
+import 'package:uggiso/Widgets/RouteMapScreen.dart';
 import 'package:uggiso/Widgets/SettingsScreen.dart';
 import 'package:uggiso/Widgets/VerifyOtp.dart';
+import 'package:uggiso/Widgets/polylineScreeen.dart';
 import 'package:uggiso/base/common/utils/CreateOrderArgs.dart';
 import 'package:uggiso/base/common/utils/get_route_map.dart';
 import 'package:uggiso/widgets/IntroLandingScreen.dart';
@@ -72,7 +74,7 @@ class AppRoutes {
       case '/':
         return MaterialPageRoute(builder: (_) => const SplashScreen());
       case introLanding:
-        return MaterialPageRoute(builder: (_) => const IntroLandingScreen());
+        return MaterialPageRoute(builder: (_) => const Polylinescreeen());
       case signupScreen:
         return MaterialPageRoute(builder: (_) => const SignUpScreen());
       case verifyOtp:

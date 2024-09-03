@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:uggiso/Model/AddFavoriteMenuModel.dart';
 import 'package:uggiso/Model/GetNearByResaturantModel.dart';
@@ -18,6 +20,7 @@ import '../Model/OrderCheckoutModel.dart';
 import '../Model/RemoveFavRestaurantModel.dart';
 import '../Model/SaveIntroducerModel.dart';
 import '../Model/WalletDetailsModel.dart';
+import 'package:http/http.dart' as http;
 
 class ApiProvider {
   final Dio _dio = Dio();
@@ -429,6 +432,20 @@ class ApiProvider {
       print("Exception occured: $error stackTrace: $stacktrace");
       return PaymentDetailsModel.withError(
           "Data not found / Connection issue");
+    }
+  }
+
+  Future<Map<String, dynamic>> getDirections(String origin, String destination) async {
+    final String url = 'https://maps.googleapis.com/maps/api/directions/json?origin=$origin&destination=$destination&key=AIzaSyB8UoTxemF5no_Va1aJn4x8s10VsFlLQHA&'
+        'avoid=tolls|highways|ferries';
+    print(' this is url: $url');
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      print('this is directions response : ${response.body}');
+      return json.decode(response.body);
+    } else {
+      throw Exception('Failed to load directions');
     }
   }
 

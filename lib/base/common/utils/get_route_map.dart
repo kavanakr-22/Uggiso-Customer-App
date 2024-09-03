@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -20,9 +22,10 @@ class GetRouteMap extends StatefulWidget {
 }
 
 class _GetRouteMapState extends State<GetRouteMap> {
-  late GoogleMapController mapController;
   TextEditingController departureController = new TextEditingController();
   TextEditingController arrivalController = new TextEditingController();
+  Completer<GoogleMapController> mapController = Completer();
+
   TextEditingController _placeSearchEditingController = TextEditingController();
   bool _showPlaceSearchWidget = false;
   String currentLocation = 'Current Location';
@@ -42,9 +45,24 @@ class _GetRouteMapState extends State<GetRouteMap> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getUserCurrentLocation().then((_)=>{
-      getPolyLinePoints()
-    });
+    getUserCurrentLocation();
+    drawPolylines();
+    // getPolyLinePoints();
+  }
+  drawPolylines()async{
+    PolylinePoints polylinePoints = PolylinePoints();
+    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+      googleApiKey: 'AIzaSyB8UoTxemF5no_Va1aJn4x8s10VsFlLQHA',
+      request: PolylineRequest(
+        origin: PointLatLng(12.9913243,77.7301459),
+        destination: PointLatLng(13.072170, 77.792221),
+        mode: TravelMode.driving,
+        // wayPoints: [PolylineWayPoint(location: "Sabo, Yaba Lagos Nigeria")],
+      ),
+    );
+    print('this is polyline points : ${result.points}');
+    List<PointLatLng> decodeResult = polylinePoints.decodePolyline("_p~iF~ps|U_ulLnnqC_mqNvxq`@");
+    print('this is decoded polyline result : ${decodeResult}');
   }
 
   @override
@@ -248,16 +266,17 @@ class _GetRouteMapState extends State<GetRouteMap> {
       userId = prefs.getString('userId') ?? '';
     });
     print('lat  : $latitude and lng: $longitude');
+    // await getPolyLinePoints();
     // getNearByRestaurants(userId,latitude, longitude, selectedDistance,selectedMode);
   }
   Future<List<LatLng>> getPolyLinePoints() async{
 
     List<LatLng> polyLineCoOrdinates = [];
     PolylinePoints polylinePoints = PolylinePoints();
-    PolylineResult polylineResult = await polylinePoints.getRouteBetweenCoordinates(googleApiKey: Strings.google_map_api_key,
+    PolylineResult polylineResult = await polylinePoints.getRouteBetweenCoordinates(googleApiKey: 'AIzaSyB8UoTxemF5no_Va1aJn4x8s10VsFlLQHA',
         request: PolylineRequest(
-          origin: PointLatLng(12.934730, 77.690483),
-          destination: PointLatLng(13.072170, 77.792221),
+          origin: PointLatLng(latitude, longitude),
+          destination: PointLatLng(destLocation.latitude, destLocation.longitude),
           mode: TravelMode.driving,
           // wayPoints: [PolylineWayPoint(location: "Sabo, Yaba Lagos Nigeria")],
         )
@@ -265,6 +284,14 @@ class _GetRouteMapState extends State<GetRouteMap> {
     if(polylineResult.points.isNotEmpty){
       polylineResult.points.forEach((PointLatLng point){
         polyLineCoOrdinates.add(LatLng(point.latitude, point.longitude));
+      });
+      setState(() {
+        polyline.add(Polyline(
+          polylineId: PolylineId('polyline'),
+          color: Colors.blue,
+          width: 5,
+          points: polyLineCoOrdinates,
+        ));
       });
     }
     else{

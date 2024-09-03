@@ -91,5 +91,28 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         print('this is network error');
       }
     });
+
+    on<OnGetRestaurantByRoute>((event, emit) async {
+      try {
+        emit(LoadingHotelState());
+        print('this is userId : ${event.userId}');
+        if (event.userId == null) {
+          // Handle the case where userId or restaurantId is null
+          print('this is userId : ${event.userId}');
+          emit(ErrorState("userId or restaurantId is null"));
+          return;
+        }
+        delResult = await _apiRepository.removeFavRestaurant(event.userId!,event.restaurantId!);
+        if (delResult?.statusCode!=200) {
+          emit(ErrorState(data!.message.toString()));
+        } else {
+          print('deleted success');
+          emit(onFavHotelDeleteState(delResult!));
+
+        }
+      } on NetworkError {
+        print('this is network error');
+      }
+    });
   }
 }

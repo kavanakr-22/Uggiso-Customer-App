@@ -48,7 +48,7 @@ dependencies:
   firebase_core: ^2.32.0
   firebase_auth: ^4.20.0
   gap: ^3.0.1
-  google_maps_flutter: ^2.5.3
+  google_maps_flutter: ^2.9.0
   google_places_flutter: ^2.0.8
   google_search_place: ^0.0.4
   device_uuid: ^0.0.4
