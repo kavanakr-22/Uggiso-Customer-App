@@ -29,3 +29,17 @@ class OnResendOtpButtonClicked extends VerifyOtpEvent {
   @override
   String toString() => 'OnButtonClicked { number: $number }';
 }
+
+class OnUserAlreadyRegistered extends VerifyOtpEvent {
+  final String? userId;
+  final String? deviceData;
+  final String? fcmToken;
+
+  const OnUserAlreadyRegistered({required this.userId,required this.deviceData, required this.fcmToken});
+
+  @override
+  List<Object> get props => [userId!,deviceData!];
+
+  @override
+  String toString() => 'OnButtonClicked { number: $userId , otp: $deviceData}';
+}

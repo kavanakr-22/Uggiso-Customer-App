@@ -112,5 +112,8 @@ class ApiRepository {
     return _provider.addPayDetails( orderId,receiverId,senderId,status,transactionId);
   }
 
+  Future<VerifyOtpModel> updateDeviceData(String userId, String deviceData,String fcmToken) {
+    return _provider.updateDeviceData(userId,deviceData,fcmToken);
+  }
 
 }

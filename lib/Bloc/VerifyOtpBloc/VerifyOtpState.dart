@@ -20,11 +20,18 @@ class userAlreadyRegistered extends VerifyOtpState {
   final VerifyOtpModel? data;
   const userAlreadyRegistered(this.data);
 }
-
+class deviceDataUpdated extends VerifyOtpState {}
 
 class onResendOTPSuccessState extends VerifyOtpState {}
 
 class ErrorState extends VerifyOtpState {
   final String? message;
   const ErrorState(this.message);
+}
+
+class onUserRegisteredState extends VerifyOtpState {
+  final String? id;
+  final String? name;
+  final String? restId;
+  const onUserRegisteredState(this.id,this.name,this.restId);
 }

@@ -435,6 +435,26 @@ class ApiProvider {
     }
   }
 
+  Future<VerifyOtpModel> updateDeviceData(String userId, String deviceData,String fcmToken) async {
+    print("this is userId  $userId");
+    print("this is deviceData  ${deviceData}");
+    print("this is fcmToken  ${fcmToken}");
+
+    try {
+      Response response = await _dio.put('${_url}${Constants.updateDevice}',data: {
+        "userId":userId,
+        "deviceData":deviceData,
+        "fcmToken":fcmToken,
+        "deviceUserType":"CUSTOMER"
+      });
+      print("this is response in api provider ${response.data}");
+      return VerifyOtpModel.fromJson(response.data);
+
+    } catch (error, stacktrace) {
+      return VerifyOtpModel.withError("Data not found / Connection issue");
+    }
+  }
+
   Future<Map<String, dynamic>> getDirections(String origin, String destination) async {
     final String url = 'https://maps.googleapis.com/maps/api/directions/json?origin=$origin&destination=$destination&key=AIzaSyB8UoTxemF5no_Va1aJn4x8s10VsFlLQHA&'
         'avoid=tolls|highways|ferries';
@@ -448,5 +468,54 @@ class ApiProvider {
       throw Exception('Failed to load directions');
     }
   }
+
+  Future<void> computeRoutes() async {
+    final String url = 'https://routes.googleapis.com/directions/v2:computeRoutes?key=AIzaSyB8UoTxemF5no_Va1aJn4x8s10VsFlLQHA';
+
+    Map<String, dynamic> requestBody = {
+      "origin": {
+        "location": {
+          "latLng": {
+            "latitude": 12.9913243,
+            "longitude": 77.7301459
+          }
+        }
+      },
+      "destination": {
+        "location": {
+          "latLng": {
+            "latitude": 13.072170,
+            "longitude": 77.792221
+          }
+        }
+      },
+      "travelMode": "DRIVE"
+    };
+
+    String jsonBody = json.encode(requestBody);
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Goog-FieldMask': 'routes.distanceMeters,routes.duration,routes.polyline.encodedPolyline',
+        },
+        body: jsonBody,
+      );
+
+      if (response.statusCode == 200) {
+        print('Response data: ${response.body}');
+      } else {
+        print('Error: ${response.statusCode} - ${response.reasonPhrase}');
+        print('Error details: ${response.body}');
+      }
+    } catch (e) {
+      print('Exception: $e');
+    }
+  }
+
+
+
 
 }

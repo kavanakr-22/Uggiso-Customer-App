@@ -51,5 +51,20 @@ class VerifyOtpBloc extends Bloc<VerifyOtpEvent, VerifyOtpState> {
         print('this is network error');
       }
     });
+
+    on<OnUserAlreadyRegistered>((event, emit) async {
+      try {
+        // emit(LoadingState());
+        data = await _apiRepository.updateDeviceData(
+            event.userId!, event.deviceData!, event.fcmToken!);
+        if (data?.statusCode == 200) {
+          // emit(deviceDataUpdated());
+        } else {
+          emit(ErrorState('unable to resend'));
+        }
+      } on NetworkError {
+        print('this is network error');
+      }
+    });
   }
 }

@@ -35,6 +35,7 @@ class _VerifyOtpState extends State<VerifyOtp> {
   int _secondsRemaining = 30;
   String userContactNumber = '';
   String fcmToken = '';
+  String device_id = '';
   late FocusNode focusNode_1;
   late FocusNode focusNode_2;
   late FocusNode focusNode_3;
@@ -110,9 +111,31 @@ class _VerifyOtpState extends State<VerifyOtp> {
                   textColor: Colors.white,
                   fontSize: 16.0);
               saveUserDetails(state.data!.payload!.name!,state.data!.payload!.userId!);
-              Navigator.pushReplacementNamed(context, AppRoutes.homeScreen);
+              _verifyOtpBloc.add(OnUserAlreadyRegistered(
+                  userId: state.data!.payload?.userId,deviceData: device_id,fcmToken: fcmToken
+              ));
+              // Navigator.pushReplacementNamed(context, AppRoutes.homeScreen);
 
               // Navigator.popUntil(context, ModalRoute.withName('/home_screen'));
+
+            }
+            else if(state is deviceDataUpdated){
+              Navigator.popAndPushNamed(context, AppRoutes.homeScreen);
+            }
+            else if(state is onUserRegisteredState){
+              _verifyOtpBloc.add(OnUserAlreadyRegistered(
+                  userId: state.id,deviceData: device_id,fcmToken: fcmToken
+              ));
+              if(state.id==''){
+
+                saveUserDetails(state.name!,state.id!);
+                Navigator.popAndPushNamed(context, AppRoutes.registerUser);
+              }
+              else{
+                saveUserDetails(state.name!,state.id!);
+                Navigator.popAndPushNamed(context, AppRoutes.homeScreen);
+
+              }
 
             }
           },
@@ -309,9 +332,10 @@ class _VerifyOtpState extends State<VerifyOtp> {
     setState(() {
       userContactNumber = prefs.getString('mobile_number') ?? '';
       fcmToken = prefs.getString('fcm_token')??'';
-
+      device_id = prefs.getString('device_id') ?? '';
     });
   }
+
   void saveUserDetails(String name,String userId ) async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setString('user_name', name);
