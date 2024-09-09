@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:uggiso/Bloc/HomeBloc/HomeEvent.dart';
 import 'package:uggiso/Bloc/HomeBloc/HomeState.dart';
 import 'package:uggiso/Model/RemoveFavRestaurantModel.dart';
+import 'package:uggiso/Model/SaveIntroducerModel.dart';
 import 'package:uggiso/Network/NetworkError.dart';
 import 'package:uggiso/Network/apiRepository.dart';
 
@@ -10,6 +11,7 @@ import '../../Model/GetNearByResaturantModel.dart';
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
    GetNearByRestaurantModel? data;
    RemoveFavRestaurantModel? delResult;
+   SaveIntroducerModel? getRoutes;
   String? res;
 
   HomeBloc() : super(InitialState()) {
@@ -102,12 +104,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           emit(ErrorState("userId or restaurantId is null"));
           return;
         }
-        delResult = await _apiRepository.removeFavRestaurant(event.userId!,event.restaurantId!);
-        if (delResult?.statusCode!=200) {
+        getRoutes = await _apiRepository.getRestaurantOnway(event.userId!,event.polylinePoints!);
+        if (getRoutes?.statusCode!=200) {
           emit(ErrorState(data!.message.toString()));
         } else {
           print('deleted success');
-          emit(onFavHotelDeleteState(delResult!));
+          // emit(onFavHotelDeleteState(getRoutes!));
 
         }
       } on NetworkError {

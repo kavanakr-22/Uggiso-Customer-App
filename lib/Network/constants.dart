@@ -23,4 +23,5 @@ class Constants{
   static String update_device = 'user/updatedevice';
   static String remove_fav_restaurant = 'favrestaurant/removefavresto';
   static String remove_fav_menu = 'favmenu/removefavmenu';
+  static String updateDevice = 'user/updatedevice';
 }

@@ -317,16 +317,13 @@ class ApiProvider {
     }
   }
   Future<SaveIntroducerModel> getRestaurantOnway(
-      String userId, String originLat,String originLang,String destinationLat, String destinationLang,String mode) async {
+      String userId, String polylinePoints) async {
     try {
       Response response = await _dio.post('${_url}${Constants.restaurantOnway}',
           data: {
             "userId": userId,
-            "originLat":originLat,
-            "originLang":originLang,
-            "destinationLat":destinationLat,
-            "destinationLang":destinationLang,
-            "mode":mode
+            "roadPolyline":polylinePoints,
+            "mode":"DRIVE"
           });
       print("${response.data}");
 

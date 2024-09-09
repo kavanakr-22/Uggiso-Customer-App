@@ -74,7 +74,7 @@ class AppRoutes {
       case '/':
         return MaterialPageRoute(builder: (_) => const SplashScreen());
       case introLanding:
-        return MaterialPageRoute(builder: (_) => const Polylinescreeen());
+        return MaterialPageRoute(builder: (_) => const IntroLandingScreen());
       case signupScreen:
         return MaterialPageRoute(builder: (_) => const SignUpScreen());
       case verifyOtp:

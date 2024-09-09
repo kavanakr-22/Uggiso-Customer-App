@@ -55,10 +55,10 @@ class OnDeleteFavRestaurant extends HomeEvent{
 
 class OnGetRestaurantByRoute extends HomeEvent{
   final String? userId;
-  final String? restaurantId;
+  final String? polylinePoints;
 
 
-  const OnGetRestaurantByRoute({required this.userId, required this.restaurantId});
+  const OnGetRestaurantByRoute({required this.userId, required this.polylinePoints});
 
   @override
   List<Object> get props => [userId!];

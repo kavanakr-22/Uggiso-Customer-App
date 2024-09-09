@@ -1,5 +1,4 @@
-import 'dart:async';
-
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -12,6 +11,10 @@ import 'package:uggiso/base/common/utils/fonts.dart';
 import 'package:google_search_place/model/prediction.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:uggiso/base/common/utils/strings.dart';
+import 'dart:math' as math;
+import 'package:http/http.dart' as http;
+
+
 
 
 class GetRouteMap extends StatefulWidget {
@@ -24,7 +27,7 @@ class GetRouteMap extends StatefulWidget {
 class _GetRouteMapState extends State<GetRouteMap> {
   TextEditingController departureController = new TextEditingController();
   TextEditingController arrivalController = new TextEditingController();
-  Completer<GoogleMapController> mapController = Completer();
+  // Completer<GoogleMapController> mapController = Completer();
 
   TextEditingController _placeSearchEditingController = TextEditingController();
   bool _showPlaceSearchWidget = false;
@@ -35,35 +38,39 @@ class _GetRouteMapState extends State<GetRouteMap> {
   GoogleMapsPolyline googleMapPolyline =  GoogleMapsPolyline();
   final List<Polyline> polyline = [];
   List<LatLng> routeCoords = [];
-  static LatLng currLocation = LatLng(12.934730, 77.690483);
-  static LatLng destLocation = LatLng(13.072170, 77.792221);
   double latitude = 0.0;
   double longitude = 0.0;
   String userId = '';
+  PolylineId? selectedPolylineId;  // Tracks the currently blue polyline
+
+  late GoogleMapController mapController;
+  double _destLatitude = 13.072170, _destLongitude = 77.792221;
+  Map<MarkerId, Marker> markers = {};
+  Map<PolylineId, Polyline> polylines = {};
+  String googleApiKey = "AIzaSyB8UoTxemF5no_Va1aJn4x8s10VsFlLQHA";
+  PolylineId? shortestPolylineId;
 
   @override
-  void initState() {
-    // TODO: implement initState
+  void initState(){
     super.initState();
-    getUserCurrentLocation();
-    drawPolylines();
-    // getPolyLinePoints();
+     getUserCurrentLocation();
+
   }
-  drawPolylines()async{
-    PolylinePoints polylinePoints = PolylinePoints();
-    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-      googleApiKey: 'AIzaSyB8UoTxemF5no_Va1aJn4x8s10VsFlLQHA',
-      request: PolylineRequest(
-        origin: PointLatLng(12.9913243,77.7301459),
-        destination: PointLatLng(13.072170, 77.792221),
-        mode: TravelMode.driving,
-        // wayPoints: [PolylineWayPoint(location: "Sabo, Yaba Lagos Nigeria")],
-      ),
-    );
-    print('this is polyline points : ${result.points}');
-    List<PointLatLng> decodeResult = polylinePoints.decodePolyline("_p~iF~ps|U_ulLnnqC_mqNvxq`@");
-    print('this is decoded polyline result : ${decodeResult}');
-  }
+  // drawPolylines()async{
+  //   PolylinePoints polylinePoints = PolylinePoints();
+  //   PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+  //     googleApiKey: 'AIzaSyB8UoTxemF5no_Va1aJn4x8s10VsFlLQHA',
+  //     request: PolylineRequest(
+  //       origin: PointLatLng(latitude,longitude),
+  //       destination: PointLatLng(13.072170, 77.792221),
+  //       mode: TravelMode.driving,
+  //       // wayPoints: [PolylineWayPoint(location: "Sabo, Yaba Lagos Nigeria")],
+  //     ),
+  //   );
+  //   print('this is polyline points : ${result.points}');
+  //   List<PointLatLng> decodeResult = polylinePoints.decodePolyline("_p~iF~ps|U_ulLnnqC_mqNvxq`@");
+  //   print('this is decoded polyline result : ${decodeResult}');
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -79,25 +86,16 @@ class _GetRouteMapState extends State<GetRouteMap> {
       Expanded(
         child: Container(height:MediaQuery.of(context).size.height*0.62,
           child: GoogleMap(
-            onMapCreated: (controller) {
-              _controller = controller;
-            },
-
-            initialCameraPosition:  CameraPosition(
-              target: LatLng(12.9913243,77.7301459),
-              zoom: 10,
-            ),
-            markers: {
-              Marker(markerId: MarkerId('Current Location'),
-                icon: BitmapDescriptor.defaultMarker,
-                position: LatLng(latitude, longitude)
-              ),
-              Marker(markerId: MarkerId('Dest Location'),
-                  icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
-                  position: destLocation
-              ),
-            },
-            polylines: Set.from(polyline),
+            initialCameraPosition:
+            CameraPosition(target: LatLng(12.9913243,77.7301459), zoom: 12),
+            myLocationEnabled: true,
+            tiltGesturesEnabled: true,
+            compassEnabled: true,
+            scrollGesturesEnabled: true,
+            zoomGesturesEnabled: true,
+            onMapCreated: _onMapCreated,
+            markers: Set<Marker>.of(markers.values),
+            polylines: Set<Polyline>.of(polylines.values),
           ),
         ),
       )
@@ -106,6 +104,165 @@ class _GetRouteMapState extends State<GetRouteMap> {
 
     );
   }
+
+  void _onMapCreated(GoogleMapController controller) async {
+    mapController = controller;
+  }
+
+  _addMarker(LatLng position, String id, BitmapDescriptor descriptor) {
+    print('this is add marker lat lng : ${position.latitude} and ${position.longitude}');
+    MarkerId markerId = MarkerId(id);
+    Marker marker =
+    Marker(markerId: markerId, icon: descriptor, position: position);
+    markers[markerId] = marker;
+  }
+
+  _getPolylines(double lat, double lng) async {
+    print('this is getPolylines lat lng : $lat and $lng');
+
+    final String url =
+        'https://maps.googleapis.com/maps/api/directions/json?origin=$lat,$lng&destination=$_destLatitude,$_destLongitude&alternatives=true&key=$googleApiKey&polylineQuality=highQuality&polylineEncoding=encoded';
+
+    print('this is direction api url : $url');
+
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+
+      if (data['status'] == 'OK') {
+        double shortestDistance = double.infinity;
+        int shortestIndex = 0;
+
+        int index = 0;
+        for (var route in data['routes']) {
+          List<LatLng> polylineCoordinates = [];
+          var points = PolylinePoints().decodePolyline(route['overview_polyline']['points']);
+          points.forEach((point) {
+            polylineCoordinates.add(LatLng(point.latitude, point.longitude));
+          });
+
+          // Calculate distance
+          double distance = _calculateDistance(polylineCoordinates);
+
+          // Determine if this route is the shortest
+          if (distance < shortestDistance) {
+            shortestDistance = distance;
+            shortestIndex = index;
+          }
+
+          if(data['routes'].length>0){
+            bool isShortest = index == data['routes'].length-1;
+            _addPolyLine(polylineCoordinates, index, isShortest);
+          }
+          // Add polyline with appropriate color
+          print('this is encoded route: ${data['routes'][0]['overview_polyline']['points']}');
+          print('this is data :${data}');
+          index++;
+        }
+      } else {
+        print('Error: ${data['status']} - ${data['error_message']}');
+      }
+    } else {
+      print('Request failed with status: ${response.statusCode}');
+    }
+  }
+
+  List<LatLng> _offsetCoordinates(List<LatLng> coordinates) {
+    const double offsetDistance = 0.00005;  // Small offset value (~5 meters)
+
+    List<LatLng> offsetCoordinates = List.from(coordinates);
+
+    if (coordinates.isNotEmpty) {
+      // Apply offset to the first (origin) and last (destination) coordinates
+      LatLng origin = coordinates.first;
+      LatLng destination = coordinates.last;
+
+      // Offset origin by increasing both latitude and longitude
+      offsetCoordinates[0] = LatLng(origin.latitude + offsetDistance, origin.longitude + offsetDistance);
+
+      // Offset destination by decreasing both latitude and longitude
+      offsetCoordinates[coordinates.length - 1] = LatLng(destination.latitude - offsetDistance, destination.longitude - offsetDistance);
+    }
+
+    return offsetCoordinates;
+  }
+  _addPolyLine(List<LatLng> polylineCoordinates, int index, bool isShortest) {
+    // Ensure polyline starts and ends at origin and destination
+    if (!isShortest) {
+      polylineCoordinates = _offsetCoordinates(polylineCoordinates);
+    }
+    // polylineCoordinates.insert(0, LatLng(latitude, longitude));
+    polylineCoordinates.add(LatLng(_destLatitude, _destLongitude));
+
+    PolylineId id = PolylineId("polyline_$index");
+    print('this is polyline id : $id');
+    Polyline polyline = Polyline(
+      polylineId: id,
+      color:isShortest ? Colors.blue : Colors.grey ,
+      points: polylineCoordinates,
+      width: 5,
+      onTap: () {
+        print('Polyline tapped: $id'); // Debug log
+        print('Polyline tapped co ordinates: ${polylineCoordinates}'); // Debug log
+        _onPolylineTapped(id);
+
+      },
+      consumeTapEvents: true
+    );
+    polylines[id] = polyline;
+    setState(() {});
+  }
+
+  double _calculateDistance(List<LatLng> coordinates) {
+    double distance = 0.0;
+    for (int i = 0; i < coordinates.length - 1; i++) {
+      distance += _distanceBetween(
+        coordinates[i].latitude,
+        coordinates[i].longitude,
+        coordinates[i + 1].latitude,
+        coordinates[i + 1].longitude,
+      );
+    }
+    return distance;
+  }
+
+  double _distanceBetween(double lat1, double lon1, double lat2, double lon2) {
+    const double pi = 3.1415926535897932;
+    const double R = 6371000; // Radius of Earth in meters
+    double dLat = (lat2 - lat1) * pi / 180;
+    double dLon = (lon2 - lon1) * pi / 180;
+    double a = (math.sin(dLat / 2) * math.sin(dLat / 2)) +
+        (math.cos(lat1 * pi / 180) * math.cos(lat2 * pi / 180) *
+            math.sin(dLon / 2) * math.sin(dLon / 2));
+    double c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a));
+    return R * c;
+  }
+
+  void _onPolylineTapped(PolylineId polylineId) {
+    print('Polyline tapped: $polylineId');
+
+    // If the tapped polyline is already the selected one, return
+    if (selectedPolylineId == polylineId) return;
+
+    // Change the previous selected polyline (blue) to grey
+    if (selectedPolylineId != null) {
+      setState(() {
+        polylines[selectedPolylineId!] = polylines[selectedPolylineId!]!.copyWith(
+          colorParam: Colors.grey,
+        );
+      });
+    }
+
+    // Set the tapped polyline to blue
+    setState(() {
+      polylines[polylineId] = polylines[polylineId]!.copyWith(
+        colorParam: Colors.blue,
+      );
+      selectedPolylineId = polylineId;  // Update the selected polyline
+    });
+  }
+
 
   Widget HomeHeaderContainer() =>
       Container(
@@ -266,38 +423,13 @@ class _GetRouteMapState extends State<GetRouteMap> {
       userId = prefs.getString('userId') ?? '';
     });
     print('lat  : $latitude and lng: $longitude');
-    // await getPolyLinePoints();
+    _addMarker(LatLng(latitude, longitude), "origin",
+        BitmapDescriptor.defaultMarker);
+    _addMarker(LatLng(_destLatitude, _destLongitude), "destination",
+        BitmapDescriptor.defaultMarkerWithHue(90));
+
+    _getPolylines(latitude,longitude);
     // getNearByRestaurants(userId,latitude, longitude, selectedDistance,selectedMode);
   }
-  Future<List<LatLng>> getPolyLinePoints() async{
 
-    List<LatLng> polyLineCoOrdinates = [];
-    PolylinePoints polylinePoints = PolylinePoints();
-    PolylineResult polylineResult = await polylinePoints.getRouteBetweenCoordinates(googleApiKey: 'AIzaSyB8UoTxemF5no_Va1aJn4x8s10VsFlLQHA',
-        request: PolylineRequest(
-          origin: PointLatLng(latitude, longitude),
-          destination: PointLatLng(destLocation.latitude, destLocation.longitude),
-          mode: TravelMode.driving,
-          // wayPoints: [PolylineWayPoint(location: "Sabo, Yaba Lagos Nigeria")],
-        )
-    );
-    if(polylineResult.points.isNotEmpty){
-      polylineResult.points.forEach((PointLatLng point){
-        polyLineCoOrdinates.add(LatLng(point.latitude, point.longitude));
-      });
-      setState(() {
-        polyline.add(Polyline(
-          polylineId: PolylineId('polyline'),
-          color: Colors.blue,
-          width: 5,
-          points: polyLineCoOrdinates,
-        ));
-      });
-    }
-    else{
-      print('error from Polyline : ${polylineResult.errorMessage}');
-    }
-    print('this is polyline result : ${polyLineCoOrdinates}');
-    return polyLineCoOrdinates;
-  }
 }

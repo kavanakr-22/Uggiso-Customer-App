@@ -57,8 +57,8 @@ class VerifyOtpBloc extends Bloc<VerifyOtpEvent, VerifyOtpState> {
         // emit(LoadingState());
         data = await _apiRepository.updateDeviceData(
             event.userId!, event.deviceData!, event.fcmToken!);
-        if (data?.statusCode == 200) {
-          // emit(deviceDataUpdated());
+        if (data.statusCode == 200) {
+          emit(deviceDataUpdated());
         } else {
           emit(ErrorState('unable to resend'));
         }

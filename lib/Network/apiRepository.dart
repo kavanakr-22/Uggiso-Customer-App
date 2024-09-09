@@ -92,8 +92,8 @@ class ApiRepository {
     return _provider.getMyOrders(userId);
   }
 
-  Future<SaveIntroducerModel> getRestaurantOnway(String userId, String originLat,String originLang,String destinationLat, String destinationLang,String mode) {
-    return _provider.getRestaurantOnway( userId,originLat, originLang, destinationLat,destinationLang,mode);
+  Future<SaveIntroducerModel> getRestaurantOnway(String userId, String polylinePoints) {
+    return _provider.getRestaurantOnway( userId,polylinePoints);
   }
 
   Future<UpdateOrderModel> updateOrderStatus(String orderId,String orderStatus) {
