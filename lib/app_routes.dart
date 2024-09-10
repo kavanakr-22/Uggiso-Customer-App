@@ -7,6 +7,7 @@ import 'package:uggiso/Widgets/HomeTab.dart';
 import 'package:uggiso/Widgets/MenuListScreen.dart';
 import 'package:uggiso/Widgets/PaymentSuccessScreen.dart';
 import 'package:uggiso/Widgets/ProfileTab.dart';
+import 'package:uggiso/Widgets/ReferralHistory.dart';
 import 'package:uggiso/Widgets/RegisterUserScreen.dart';
 import 'package:uggiso/Widgets/RewardsScreen.dart';
 import 'package:uggiso/Widgets/RouteMapScreen.dart';
@@ -68,6 +69,8 @@ class AppRoutes {
   static const String myOrders = '/myOrders';
 
   static const String getRouteMap = '/getRouteMap';
+
+  static const String getReferralHistory = '/get_referral_history';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -135,6 +138,9 @@ class AppRoutes {
 
       case getRouteMap:
         return MaterialPageRoute(builder: (_) => const GetRouteMap());
+
+      case getReferralHistory:
+        return MaterialPageRoute(builder: (_) => const ReferralHistory());
 
       default:
         // If there is no such named route in the switch statement, e.g. /randomRoute

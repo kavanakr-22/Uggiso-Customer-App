@@ -115,10 +115,12 @@ class Strings {
   static const rewards = 'Rewards';
   static const enter_referral_number = 'Enter your Referral Mobile Number';
   static const google_map_api_key = 'AIzaSyB8UoTxemF5no_Va1aJn4x8s10VsFlLQHA';
+  static const my_referrals = 'My Referrals';
 
 
   static const List<Map<String, dynamic>> profileItemList = [
     {'image': 'assets/ic_orders.png', 'title': your_orders},
+    {'image': 'assets/ic_history.png', 'title': my_referrals},
     {'image': 'assets/ic_settings.png', 'title': settings},
     {'image': 'assets/ic_log-out.png', 'title': sign_out},
     {'image': 'assets/ic_help_center.png', 'title': help_center},

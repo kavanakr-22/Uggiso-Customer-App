@@ -15,8 +15,14 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     try{
     emit(LoadingState()) ;
     if(event.number.isNotEmpty && event.number.length == 10) {
-      await _apiRepository.getOtp(event.number);
-      emit(onLoadedState());
+      var res = await _apiRepository.getOtp(event.number);
+      if(res.statusCode==200){
+        emit(onLoadedState());
+
+      }
+      else{
+        emit(ErrorState());
+      }
     }
     else{
       print('this is error');

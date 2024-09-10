@@ -1,0 +1,17 @@
+import 'package:equatable/equatable.dart';
+
+abstract class ProfileEvent extends Equatable {
+  const ProfileEvent();
+}
+
+class OnGetReferralHistory extends ProfileEvent {
+  final String userId;
+
+  const OnGetReferralHistory({required this.userId});
+
+  @override
+  List<Object> get props => [userId];
+
+  @override
+  String toString() => 'OnButtonClicked { number: $userId }';
+}
