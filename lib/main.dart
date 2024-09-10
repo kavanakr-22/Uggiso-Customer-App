@@ -7,18 +7,32 @@ import 'package:uggiso/Bloc/SignUpBloc/signup_bloc.dart';
 import 'package:uggiso/Bloc/VerifyOtpBloc/VerifyOtpBloc.dart';
 import 'package:uggiso/app_routes.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'dart:io' show Platform;
 
 void main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-      options: const FirebaseOptions(
+  if(Platform.isAndroid){
+    await Firebase.initializeApp(
+        options: const FirebaseOptions(
           apiKey: 'AIzaSyCXfSKnMi_jvtwDIDT4AD9JxoKwJuzWkfQ',
           appId: '1:741537959124:android:b00dd25ac1fe00fdd2bf41',
           messagingSenderId: '741537959124',
           projectId: 'uggiso-469cc',
-        storageBucket: 'uggiso-469cc.appspot.com',
-      ));
+          storageBucket: 'uggiso-469cc.appspot.com',
+        ));
+  }
+  else if(Platform.isIOS){
+    await Firebase.initializeApp(
+        options: const FirebaseOptions(
+          apiKey: 'AIzaSyBhcdW0lc2uYT1Q14TVXtrTaUp8z8uVZNc',
+          appId: '1:741537959124:ios:55e5e8bdc9372ebbd2bf41',
+          messagingSenderId: '741537959124',
+          projectId: 'uggiso-469cc',
+          storageBucket: 'uggiso-469cc.appspot.com',
+        ));
+  }
+
   /*try {
     await Firebase.initializeApp();
   } catch (e) {
