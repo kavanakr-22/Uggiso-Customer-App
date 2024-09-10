@@ -139,11 +139,15 @@ class _ProfileTabState extends State<ProfileTab> {
         return Navigator.pushNamed(context, AppRoutes.myOrders);
 
       case 1:
-        return Navigator.pushNamed(context, AppRoutes.settingsScreen);
+        return Navigator.pushNamed(context, AppRoutes.getReferralHistory);
+
       case 2:
-        return Navigator.popAndPushNamed(context, AppRoutes.signupScreen);
+        return Navigator.popAndPushNamed(context, AppRoutes.settingsScreen);
 
       case 3:
+        return Navigator.popAndPushNamed(context, AppRoutes.signupScreen);
+
+      case 4:
         return 'Unknown';
 
       default:

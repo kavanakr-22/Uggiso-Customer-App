@@ -14,9 +14,6 @@ import 'package:uggiso/base/common/utils/strings.dart';
 import 'dart:math' as math;
 import 'package:http/http.dart' as http;
 
-
-
-
 class GetRouteMap extends StatefulWidget {
   const GetRouteMap({super.key});
 
@@ -27,7 +24,6 @@ class GetRouteMap extends StatefulWidget {
 class _GetRouteMapState extends State<GetRouteMap> {
   TextEditingController departureController = new TextEditingController();
   TextEditingController arrivalController = new TextEditingController();
-  // Completer<GoogleMapController> mapController = Completer();
 
   TextEditingController _placeSearchEditingController = TextEditingController();
   bool _showPlaceSearchWidget = false;
@@ -42,9 +38,7 @@ class _GetRouteMapState extends State<GetRouteMap> {
   double longitude = 0.0;
   String userId = '';
   PolylineId? selectedPolylineId;  // Tracks the currently blue polyline
-
   late GoogleMapController mapController;
-  double _destLatitude = 13.072170, _destLongitude = 77.792221;
   Map<MarkerId, Marker> markers = {};
   Map<PolylineId, Polyline> polylines = {};
   String googleApiKey = "AIzaSyB8UoTxemF5no_Va1aJn4x8s10VsFlLQHA";
@@ -56,38 +50,23 @@ class _GetRouteMapState extends State<GetRouteMap> {
      getUserCurrentLocation();
 
   }
-  // drawPolylines()async{
-  //   PolylinePoints polylinePoints = PolylinePoints();
-  //   PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-  //     googleApiKey: 'AIzaSyB8UoTxemF5no_Va1aJn4x8s10VsFlLQHA',
-  //     request: PolylineRequest(
-  //       origin: PointLatLng(latitude,longitude),
-  //       destination: PointLatLng(13.072170, 77.792221),
-  //       mode: TravelMode.driving,
-  //       // wayPoints: [PolylineWayPoint(location: "Sabo, Yaba Lagos Nigeria")],
-  //     ),
-  //   );
-  //   print('this is polyline points : ${result.points}');
-  //   List<PointLatLng> decodeResult = polylinePoints.decodePolyline("_p~iF~ps|U_ulLnnqC_mqNvxq`@");
-  //   print('this is decoded polyline result : ${decodeResult}');
-  // }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.appPrimaryColor,
-        title: Text('By Route',style: TextStyle(color: AppColors.white),),
-        centerTitle: true,
+        title: Text('By Route',style: TextStyle(color: AppColors.black),),
+        centerTitle: false,
       ),
-      body: Column(
+      body: Stack(
         children: [
-          HomeHeaderContainer(),
+
       Expanded(
-        child: Container(height:MediaQuery.of(context).size.height*0.62,
+        child: Container(height:MediaQuery.of(context).size.height,
           child: GoogleMap(
             initialCameraPosition:
-            CameraPosition(target: LatLng(12.9913243,77.7301459), zoom: 12),
+            CameraPosition(target: LatLng(12.9913243,77.7301459), zoom: 14),
             myLocationEnabled: true,
             tiltGesturesEnabled: true,
             compassEnabled: true,
@@ -97,8 +76,10 @@ class _GetRouteMapState extends State<GetRouteMap> {
             markers: Set<Marker>.of(markers.values),
             polylines: Set<Polyline>.of(polylines.values),
           ),
+
         ),
-      )
+      ),
+          HomeHeaderContainer(),
         ],
       ),
 
@@ -117,11 +98,11 @@ class _GetRouteMapState extends State<GetRouteMap> {
     markers[markerId] = marker;
   }
 
-  _getPolylines(double lat, double lng) async {
+  _getPolylines(double lat, double lng,double destLat,double destLng) async {
     print('this is getPolylines lat lng : $lat and $lng');
 
     final String url =
-        'https://maps.googleapis.com/maps/api/directions/json?origin=$lat,$lng&destination=$_destLatitude,$_destLongitude&alternatives=true&key=$googleApiKey&polylineQuality=highQuality&polylineEncoding=encoded';
+        'https://maps.googleapis.com/maps/api/directions/json?origin=$lat,$lng&destination=$destLat,$destLng&alternatives=true&key=$googleApiKey&polylineQuality=highQuality&polylineEncoding=encoded';
 
     print('this is direction api url : $url');
 
@@ -153,11 +134,8 @@ class _GetRouteMapState extends State<GetRouteMap> {
 
           if(data['routes'].length>0){
             bool isShortest = index == data['routes'].length-1;
-            _addPolyLine(polylineCoordinates, index, isShortest);
+            _addPolyLine(polylineCoordinates, index, isShortest,destLat,destLng);
           }
-          // Add polyline with appropriate color
-          print('this is encoded route: ${data['routes'][0]['overview_polyline']['points']}');
-          print('this is data :${data}');
           index++;
         }
       } else {
@@ -187,24 +165,21 @@ class _GetRouteMapState extends State<GetRouteMap> {
 
     return offsetCoordinates;
   }
-  _addPolyLine(List<LatLng> polylineCoordinates, int index, bool isShortest) {
+  _addPolyLine(List<LatLng> polylineCoordinates, int index, bool isShortest,double destLat,double destLng ) {
     // Ensure polyline starts and ends at origin and destination
     if (!isShortest) {
       polylineCoordinates = _offsetCoordinates(polylineCoordinates);
     }
     // polylineCoordinates.insert(0, LatLng(latitude, longitude));
-    polylineCoordinates.add(LatLng(_destLatitude, _destLongitude));
+    polylineCoordinates.add(LatLng(destLat, destLng));
 
     PolylineId id = PolylineId("polyline_$index");
-    print('this is polyline id : $id');
     Polyline polyline = Polyline(
       polylineId: id,
       color:isShortest ? Colors.blue : Colors.grey ,
       points: polylineCoordinates,
       width: 5,
       onTap: () {
-        print('Polyline tapped: $id'); // Debug log
-        print('Polyline tapped co ordinates: ${polylineCoordinates}'); // Debug log
         _onPolylineTapped(id);
 
       },
@@ -286,9 +261,7 @@ class _GetRouteMapState extends State<GetRouteMap> {
           child: Column(
               children: [
               const Gap(12),
-          _showPlaceSearchWidget
-              ? PlaceSearchWidget()
-              : RoundedContainer(
+           RoundedContainer(
               color: AppColors.white,
               borderColor: AppColors.white,
               width: MediaQuery
@@ -312,23 +285,11 @@ class _GetRouteMapState extends State<GetRouteMap> {
 
                     ),
                   ),
-                  InkWell(
-                    onTap: () {
-                      setState(() {
-                        _showPlaceSearchWidget = true;
-                      });
-                    },
-                    child: Text(
-                      'Change',
-                      style: AppFonts.smallText
-                          .copyWith(color: AppColors.appPrimaryColor),
-                    ),
-                  ),
+
                 ],
               )),
           Gap(8),
           PlaceSearchWidget()
-
           ],
         ),
       )
@@ -372,7 +333,8 @@ class _GetRouteMapState extends State<GetRouteMap> {
                     setState(() {
                       _placeSearchEditingController.text =
                       prediction.description!;
-                      currentLocation = _placeSearchEditingController.text;
+
+                      // currentLocation = _placeSearchEditingController.text;
                       _showPlaceSearchWidget = false;
                     });
 
@@ -387,13 +349,8 @@ class _GetRouteMapState extends State<GetRouteMap> {
                     _placeSearchEditingController.selection =
                         TextSelection.fromPosition(TextPosition(
                             offset: prediction.description?.length ?? 0));
-
-                    // Get search place latitude and longitude
-                    debugPrint("====>${prediction.lat} ${prediction.lng}");
-
-                    // getNearByRestaurants(userId,double.parse(prediction.lat.toString()), double.parse(prediction.lng.toString()), selectedDistance,selectedMode);
-                    // Get place Detail
-                    debugPrint("Place Detail : ${prediction.placeDetails}");
+                    addDestinationMarker(double.parse(prediction.lat!),double.parse(prediction.lng!));
+                    _getPolylines(latitude,longitude,double.parse(prediction.lat!),double.parse(prediction.lng!));
                   }),
             ),
             Flexible(
@@ -425,11 +382,14 @@ class _GetRouteMapState extends State<GetRouteMap> {
     print('lat  : $latitude and lng: $longitude');
     _addMarker(LatLng(latitude, longitude), "origin",
         BitmapDescriptor.defaultMarker);
-    _addMarker(LatLng(_destLatitude, _destLongitude), "destination",
-        BitmapDescriptor.defaultMarkerWithHue(90));
+    addDestinationMarker(latitude, longitude);
 
-    _getPolylines(latitude,longitude);
+    _getPolylines(latitude,longitude,latitude,longitude);
     // getNearByRestaurants(userId,latitude, longitude, selectedDistance,selectedMode);
+  }
+  addDestinationMarker(double lat, double lng){
+    _addMarker(LatLng(lat, lng), "destination",
+        BitmapDescriptor.defaultMarkerWithHue(90));
   }
 
 }
