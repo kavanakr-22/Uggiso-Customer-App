@@ -1,10 +1,13 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_polyline/google_maps_polyline.dart';
 import 'package:google_search_place/google_search_place.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uggiso/Bloc/HomeBloc/HomeBloc.dart';
+import 'package:uggiso/Bloc/HomeBloc/HomeState.dart';
 import 'package:uggiso/Widgets/ui-kit/RoundedContainer.dart';
 import 'package:uggiso/base/common/utils/colors.dart';
 import 'package:uggiso/base/common/utils/fonts.dart';
@@ -13,6 +16,8 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:uggiso/base/common/utils/strings.dart';
 import 'dart:math' as math;
 import 'package:http/http.dart' as http;
+
+import '../../../Bloc/HomeBloc/HomeEvent.dart';
 
 class GetRouteMap extends StatefulWidget {
   const GetRouteMap({super.key});
@@ -43,51 +48,69 @@ class _GetRouteMapState extends State<GetRouteMap> {
   Map<PolylineId, Polyline> polylines = {};
   String googleApiKey = "AIzaSyB8UoTxemF5no_Va1aJn4x8s10VsFlLQHA";
   PolylineId? shortestPolylineId;
+  HomeBloc _homeBloc = HomeBloc();
 
   @override
   void initState(){
     super.initState();
-     getUserCurrentLocation();
+    getUserCurrentLocation();
 
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: AppColors.appPrimaryColor,
-        title: Text('By Route',style: TextStyle(color: AppColors.black),),
-        centerTitle: false,
-      ),
-      body: Stack(
-        children: [
-
-      Expanded(
-        child: Container(height:MediaQuery.of(context).size.height,
-          child: GoogleMap(
-            initialCameraPosition:
-            CameraPosition(target: LatLng(12.9913243,77.7301459), zoom: 14),
-            myLocationEnabled: true,
-            tiltGesturesEnabled: true,
-            compassEnabled: true,
-            scrollGesturesEnabled: true,
-            zoomGesturesEnabled: true,
-            onMapCreated: _onMapCreated,
-            markers: Set<Marker>.of(markers.values),
-            polylines: Set<Polyline>.of(polylines.values),
-          ),
-
+    return BlocProvider(
+      create: (context) => _homeBloc,
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: AppColors.appPrimaryColor,
+          title: Text('By Route',style: AppFonts.title,),
+          centerTitle: false,
         ),
-      ),
-          HomeHeaderContainer(),
-        ],
-      ),
+        body: BlocBuilder<HomeBloc,HomeState>(
+          builder: (context,HomeState state) {
+            return Stack(
+              children: [
+            Expanded(
+              child: Container(height:MediaQuery.of(context).size.height,
+                child: GoogleMap(
+                  initialCameraPosition:
+                  CameraPosition(target: LatLng(latitude,longitude), zoom: 13),
+                  myLocationEnabled: true,
+                  myLocationButtonEnabled: true,
+                  tiltGesturesEnabled: true,
+                  compassEnabled: true,
+                  scrollGesturesEnabled: true,
+                  zoomGesturesEnabled: true,
+                  onMapCreated: _onMapCreated,
+                  markers: Set<Marker>.of(markers.values),
+                  polylines: Set<Polyline>.of(polylines.values),
+                ),
 
+              ),
+            ),
+                HomeHeaderContainer(),
+              ],
+            );
+          }
+        ),
+
+      ),
     );
   }
 
   void _onMapCreated(GoogleMapController controller) async {
     mapController = controller;
+    if (latitude != 0.0 && longitude != 0.0) {
+      _moveCameraToCurrentLocation();
+    }
+  }
+  void _moveCameraToCurrentLocation() {
+    if (mapController != null) {
+      mapController.animateCamera(
+        CameraUpdate.newLatLngZoom(LatLng(latitude, longitude), 13),
+      );
+    }
   }
 
   _addMarker(LatLng position, String id, BitmapDescriptor descriptor) {
@@ -138,6 +161,8 @@ class _GetRouteMapState extends State<GetRouteMap> {
           }
           index++;
         }
+        print('calling api');
+        // _homeBloc.add(OnGetRestaurantByRoute(userId: userId,polylinePoints:data['routes']['overview_polyline']['points']));
       } else {
         print('Error: ${data['status']} - ${data['error_message']}');
       }
@@ -309,19 +334,33 @@ class _GetRouteMapState extends State<GetRouteMap> {
         height: MediaQuery
             .of(context)
             .size
-            .height * 0.05,
+            .height * 0.06,
         cornerRadius: 8,
         padding: 0,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: Flexible(
+                  flex: 1,
+                  child: Icon(
+                      Icons.search,
+                      size: 18,
+                      color: AppColors.textGrey,
+                    ),
+
+                  ),
+            ),
             Flexible(
-              flex: 3,
+              flex: 7,
               child: SearchPlaceAutoCompletedTextField(
                   googleAPIKey: 'AIzaSyB8UoTxemF5no_Va1aJn4x8s10VsFlLQHA',
                   textStyle: AppFonts.title,
                   countries: ['in'],
                   isLatLngRequired: true,
+
                   inputDecoration: InputDecoration(
                     border: OutlineInputBorder(
                       borderSide: BorderSide.none, // No border
@@ -351,14 +390,16 @@ class _GetRouteMapState extends State<GetRouteMap> {
                             offset: prediction.description?.length ?? 0));
                     addDestinationMarker(double.parse(prediction.lat!),double.parse(prediction.lng!));
                     _getPolylines(latitude,longitude,double.parse(prediction.lat!),double.parse(prediction.lng!));
+
                   }),
             ),
             Flexible(
                 flex: 1,
                 child: IconButton(
+                  padding: EdgeInsets.zero,
                   icon: const Icon(
-                    Icons.search,
-                    size: 22,
+                    Icons.close,
+                    size: 18,
                     color: AppColors.textGrey,
                   ),
                   onPressed: () {
@@ -380,16 +421,21 @@ class _GetRouteMapState extends State<GetRouteMap> {
       userId = prefs.getString('userId') ?? '';
     });
     print('lat  : $latitude and lng: $longitude');
-    _addMarker(LatLng(latitude, longitude), "origin",
-        BitmapDescriptor.defaultMarker);
-    addDestinationMarker(latitude, longitude);
+    // _addMarker(LatLng(latitude, longitude), "origin",
+    //     AssetMapBitmap('assets/ic_history.png',width: 18,height: 18,imagePixelRatio: 1));
 
-    _getPolylines(latitude,longitude,latitude,longitude);
+    // addDestinationMarker(latitude, longitude);
+
+    // _getPolylines(latitude,longitude,latitude,longitude);
     // getNearByRestaurants(userId,latitude, longitude, selectedDistance,selectedMode);
   }
   addDestinationMarker(double lat, double lng){
     _addMarker(LatLng(lat, lng), "destination",
-        BitmapDescriptor.defaultMarkerWithHue(90));
+        BitmapDescriptor.defaultMarker);
+  }
+  addRestaurantMarker(double lat, double lng){
+    _addMarker(LatLng(lat, lng), "destination",
+        BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue));
   }
 
 }
