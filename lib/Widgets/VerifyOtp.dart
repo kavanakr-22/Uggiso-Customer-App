@@ -252,31 +252,26 @@ class _VerifyOtpState extends State<VerifyOtp> {
                             style: AppFonts.subHeader
                                 .copyWith(color: AppColors.textColor)),
                       )),
-            Expanded(
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: Container(
-                  height: MediaQuery.of(context).size.height * 0.35,
-                  alignment: Alignment.bottomCenter,
-                  padding: const EdgeInsets.only(bottom: 30),
-                  child: RoundedElevatedButton(
-                      width: MediaQuery.of(context).size.width,
-                      height: 40.0,
-                      text: Strings.verify,
-                      onPressed: () {
-                        String otp = otpController_1.text +
-                            otpController_2.text +
-                            otpController_3.text +
-                            otpController_4.text;
-                        _verifyOtpBloc.add(OnButtonClicked(
-                            number: userContactNumber, otp: otp));
-                      },
-                      cornerRadius: 6.0,
-                      buttonColor: AppColors.appPrimaryColor,
-                      textStyle:
-                          AppFonts.header.copyWith(color: AppColors.black)),
-                ),
-              ),
+            Container(
+              height: MediaQuery.of(context).size.height * 0.35,
+              alignment: Alignment.bottomCenter,
+              padding: const EdgeInsets.only(bottom: 30),
+              child: RoundedElevatedButton(
+                  width: MediaQuery.of(context).size.width,
+                  height: 40.0,
+                  text: Strings.verify,
+                  onPressed: () {
+                    String otp = otpController_1.text +
+                        otpController_2.text +
+                        otpController_3.text +
+                        otpController_4.text;
+                    _verifyOtpBloc.add(OnButtonClicked(
+                        number: userContactNumber, otp: otp));
+                  },
+                  cornerRadius: 6.0,
+                  buttonColor: AppColors.appPrimaryColor,
+                  textStyle:
+                  AppFonts.header.copyWith(color: AppColors.black)),
             ),
           ],
         ),

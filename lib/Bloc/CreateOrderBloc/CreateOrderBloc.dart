@@ -36,7 +36,7 @@ class CreateOrderBloc extends Bloc<CreateOrderEvent, CreateOrderState> {
       try {
         emit(LoadPaymentState());
         paymentData = await _apiRepository.addPayDetails(event.orderId,event.receiverId, event.senderId,
-            event.status,event.transactionId);
+            event.status,event.transactionId,event.orderNumber);
         if(paymentData.payload == null){
 
           emit(ErrorState(paymentData.message.toString()));

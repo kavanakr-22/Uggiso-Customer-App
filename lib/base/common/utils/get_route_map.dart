@@ -123,6 +123,7 @@ class _GetRouteMapState extends State<GetRouteMap> {
 
   _getPolylines(double lat, double lng,double destLat,double destLng) async {
     print('this is getPolylines lat lng : $lat and $lng');
+    print('this is getPolylines destinationlat lng : $destLat and $destLng');
 
     final String url =
         'https://maps.googleapis.com/maps/api/directions/json?origin=$lat,$lng&destination=$destLat,$destLng&alternatives=true&key=$googleApiKey&polylineQuality=highQuality&polylineEncoding=encoded';
@@ -161,8 +162,11 @@ class _GetRouteMapState extends State<GetRouteMap> {
           }
           index++;
         }
-        print('calling api');
-        // _homeBloc.add(OnGetRestaurantByRoute(userId: userId,polylinePoints:data['routes']['overview_polyline']['points']));
+        print('calling api resp :');
+        _homeBloc.add(OnGetRestaurantByRoute(userId: userId,
+            polylinePoints:data['routes'][0]['overview_polyline']['points'].toString().replaceAll(r'\', r'\\'),
+            originLat: lat,originLng: lng));
+        print('this is polyline sending : ${data['routes'][0]['overview_polyline']['points'].toString().toString().replaceAll(r'\', r'\\')}');
       } else {
         print('Error: ${data['status']} - ${data['error_message']}');
       }
@@ -356,7 +360,7 @@ class _GetRouteMapState extends State<GetRouteMap> {
             Flexible(
               flex: 7,
               child: SearchPlaceAutoCompletedTextField(
-                  googleAPIKey: 'AIzaSyB8UoTxemF5no_Va1aJn4x8s10VsFlLQHA',
+                  googleAPIKey: googleApiKey,
                   textStyle: AppFonts.title,
                   countries: ['in'],
                   isLatLngRequired: true,

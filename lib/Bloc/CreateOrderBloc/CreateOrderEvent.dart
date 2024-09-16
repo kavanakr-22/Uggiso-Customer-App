@@ -33,9 +33,10 @@ class OnAddTransactionData extends CreateOrderEvent {
   final String senderId;
   final String status;
   final String transactionId;
+  final String orderNumber;
 
   const OnAddTransactionData({required this.orderId,required this.receiverId, required this.senderId,
-    required this.status,required this.transactionId});
+    required this.status,required this.transactionId,required this.orderNumber });
 
   @override
   List<Object> get props => [orderId, receiverId];

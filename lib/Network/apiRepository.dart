@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:uggiso/Model/AddFavoriteMenuModel.dart';
+import 'package:uggiso/Model/GetRouteModel.dart';
 import 'package:uggiso/Model/MenuListModel.dart';
 import 'package:uggiso/Model/MyOrdersModel.dart';
 import 'package:uggiso/Model/PaymentDetailsModel.dart';
@@ -92,8 +93,8 @@ class ApiRepository {
     return _provider.getMyOrders(userId);
   }
 
-  Future<SaveIntroducerModel> getRestaurantOnway(String userId, String polylinePoints) {
-    return _provider.getRestaurantOnway( userId,polylinePoints);
+  Future<GetRouteModel> getRestaurantOnway(String userId, String polylinePoints, double lat, double lng) {
+    return _provider.getRestaurantOnway( userId,polylinePoints,lat,lng);
   }
 
   Future<UpdateOrderModel> updateOrderStatus(String orderId,String orderStatus) {
@@ -108,8 +109,8 @@ class ApiRepository {
     return _provider.removeFavMenu( userId,menuId);
   }
 
-  Future<PaymentDetailsModel> addPayDetails(String orderId, String receiverId,String senderId,String status,String transactionId) {
-    return _provider.addPayDetails( orderId,receiverId,senderId,status,transactionId);
+  Future<PaymentDetailsModel> addPayDetails(String orderId, String receiverId,String senderId,String status,String transactionId, String orderNumber) {
+    return _provider.addPayDetails( orderId,receiverId,senderId,status,transactionId, orderNumber);
   }
 
   Future<VerifyOtpModel> updateDeviceData(String userId, String deviceData,String fcmToken) {

@@ -109,7 +109,7 @@ class _CreateOrderState extends State<CreateOrder> {
               _createOrderBloc.add(OnAddTransactionData(orderId:state.data.payload!.orderId!,
                 receiverId: state.data.payload!.restaurantId!,
                 senderId:state.data.payload!.customerId!,
-              status: "SUCCESS",transactionId: txnId));
+              status: "SUCCESS",transactionId: txnId,orderNumber: ''));
               initializeService(widget.restLat!,widget.restLng!,state.data.payload!.orderId!);
               Navigator.pushNamedAndRemoveUntil(
                   context,
@@ -506,61 +506,61 @@ class _CreateOrderState extends State<CreateOrder> {
     print('this is user name : $userName');
     print('this is user number : $userNumber');
     print('this is total amount : ${item_sub_total}');
-    final List<Object?> result = await platform.invokeMethod('callSabPaisaSdk',
-        [userName, "", "", userNumber, item_sub_total.toString()]);
-    print('this is the transaction result : $result');
-    print('this is the transaction result status: ${result[0].toString()}');
-    print('this is the transaction result txnId: ${result[1].toString()}');
+    // final List<Object?> result = await platform.invokeMethod('callSabPaisaSdk',
+    //     [userName, "", "", userNumber, item_sub_total.toString()]);
+    // print('this is the transaction result : $result');
+    // print('this is the transaction result status: ${result[0].toString()}');
+    // print('this is the transaction result txnId: ${result[1].toString()}');
 
-    String txnStatus = result[0].toString();
-    setState(() {
-      txnId = result[1].toString();
-    });
-    // _createOrderBloc.add(OnPaymentClicked(
-    //     restaurantId: widget.restaurantId!,
-    //     restaurantName: widget.restaurantName!,
-    //     customerId: userId,
-    //     menuData: menuList,
-    //     orderType: "PARCEL",
-    //     paymentType: 'UPI',
-    //     orderStatus: 'CREATED',
-    //     totalAmount: item_sub_total.toInt(),
-    //     comments: 'Please do little more spicy',
-    //     timeSlot: 'null',
-    //     transMode: 'BIKE'));
+    // String txnStatus = result[0].toString();
+    // setState(() {
+    //   txnId = result[1].toString();
+    // });
+    _createOrderBloc.add(OnPaymentClicked(
+        restaurantId: widget.restaurantId!,
+        restaurantName: widget.restaurantName!,
+        customerId: userId,
+        menuData: menuList,
+        orderType: "PARCEL",
+        paymentType: 'UPI',
+        orderStatus: 'CREATED',
+        totalAmount: item_sub_total.toInt(),
+        comments: 'Please do little more spicy',
+        timeSlot: 'null',
+        transMode: 'BIKE'));
 
-    if(txnStatus == 'SUCCESS') {
-
-      _createOrderBloc.add(OnPaymentClicked(
-          restaurantId: widget.restaurantId!,
-          restaurantName: widget.restaurantName!,
-          customerId: userId,
-          menuData: menuList,
-          orderType: "PARCEL",
-          paymentType: 'UPI',
-          orderStatus: 'CREATED',
-          totalAmount: item_sub_total.toInt(),
-          comments: 'Please do little more spicy',
-          timeSlot: 'null',
-          transMode: 'BIKE'));
-
-    }
-    else{
-      _createOrderBloc.add(OnAddTransactionData(orderId:'',
-          receiverId: widget.restaurantId!,
-          senderId:userId,
-          status: result[0].toString(),transactionId: result[1].toString()));
-
-      Fluttertoast.showToast(
-          msg: txnStatus,
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0
-      );
-    }
+    // if(txnStatus == 'SUCCESS') {
+    //
+    //   _createOrderBloc.add(OnPaymentClicked(
+    //       restaurantId: widget.restaurantId!,
+    //       restaurantName: widget.restaurantName!,
+    //       customerId: userId,
+    //       menuData: menuList,
+    //       orderType: "PARCEL",
+    //       paymentType: 'UPI',
+    //       orderStatus: 'CREATED',
+    //       totalAmount: item_sub_total.toInt(),
+    //       comments: 'Please do little more spicy',
+    //       timeSlot: 'null',
+    //       transMode: 'BIKE'));
+    //
+    // }
+    // else{
+    //   _createOrderBloc.add(OnAddTransactionData(orderId:'',
+    //       receiverId: widget.restaurantId!,
+    //       senderId:userId,
+    //       status: result[0].toString(),transactionId: result[1].toString()));
+    //
+    //   Fluttertoast.showToast(
+    //       msg: txnStatus,
+    //       toastLength: Toast.LENGTH_SHORT,
+    //       gravity: ToastGravity.CENTER,
+    //       timeInSecForIosWeb: 1,
+    //       backgroundColor: Colors.red,
+    //       textColor: Colors.white,
+    //       fontSize: 16.0
+    //   );
+    // }
     // sendPushNotification('', 'order created', 'check for details');
   }
 

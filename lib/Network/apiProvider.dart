@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:uggiso/Model/AddFavoriteMenuModel.dart';
 import 'package:uggiso/Model/GetNearByResaturantModel.dart';
+import 'package:uggiso/Model/GetRouteModel.dart';
 import 'package:uggiso/Model/MenuListModel.dart';
 import 'package:uggiso/Model/MyOrdersModel.dart';
 import 'package:uggiso/Model/PaymentDetailsModel.dart';
@@ -316,21 +317,23 @@ class ApiProvider {
           "Data not found / Connection issue");
     }
   }
-  Future<SaveIntroducerModel> getRestaurantOnway(
-      String userId, String polylinePoints) async {
+  Future<GetRouteModel> getRestaurantOnway(
+      String userId, String polylinePoints, double lat, double lng) async {
     try {
       Response response = await _dio.post('${_url}${Constants.restaurantOnway}',
           data: {
             "userId": userId,
             "roadPolyline":polylinePoints,
+            "originLat": lat,
+            "originLang": lng,
             "mode":"DRIVE"
           });
-      print("${response.data}");
+      print("route response : ${response.data}");
 
-      return SaveIntroducerModel.fromJson(response.data);
+      return GetRouteModel.fromJson(response.data);
     } catch (error, stacktrace) {
       print("Exception occured: $error stackTrace: $stacktrace");
-      return SaveIntroducerModel.withError(
+      return GetRouteModel.withError(
           "Data not found / Connection issue");
     }
   }
@@ -411,7 +414,7 @@ class ApiProvider {
   }
 
   Future<PaymentDetailsModel> addPayDetails(
-      String orderId, String receiverId,String senderId,String status,String transactionId) async {
+      String orderId, String receiverId,String senderId,String status,String transactionId,String orderNumber) async {
     try {
       Response response = await _dio.post('${_url}${Constants.paymentDetails}',
           data: {
@@ -420,7 +423,8 @@ class ApiProvider {
             "senderId": senderId,
             "status": status,
             "statusCode": "200",
-            "transactionId": transactionId
+            "transactionId": transactionId,
+            "orderNumber":orderNumber
           });
       print("${response.data}");
 
