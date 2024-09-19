@@ -482,7 +482,9 @@ class _CreateOrderState extends State<CreateOrder> {
   calculateTotalAmount(double price, int quantity) {
     setState(() {
       item_total = item_total + (price * quantity);
-      item_sub_total = item_total + gst_charges;
+      item_sub_total = item_total - (uggiso_coin_count);
+      item_sub_total = item_sub_total + (item_sub_total*(gst_charges/100));
+      gst_charges = item_sub_total*(gst_charges/100);
     });
   }
 
