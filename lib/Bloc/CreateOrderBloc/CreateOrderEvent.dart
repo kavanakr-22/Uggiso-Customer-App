@@ -41,3 +41,15 @@ class OnAddTransactionData extends CreateOrderEvent {
   @override
   List<Object> get props => [orderId, receiverId];
 }
+
+class OnGetRewardsDetails extends CreateOrderEvent {
+  final String userId;
+
+  const OnGetRewardsDetails({required this.userId});
+
+  @override
+  List<Object> get props => [userId];
+
+  @override
+  String toString() => 'OnButtonClicked { number: $userId }';
+}

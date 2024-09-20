@@ -105,6 +105,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           return;
         }
         getRoutes = await _apiRepository.getRestaurantOnway(event.userId!,event.polylinePoints!,event.originLat,event.originLng);
+        if(getRoutes?.statusCode ==200){
+          emit(RestaurantsLocationFound(getRoutes!));
+        }
         if (getRoutes?.statusCode!=200) {
           emit(ErrorState(getRoutes!.message.toString()));
         } else {

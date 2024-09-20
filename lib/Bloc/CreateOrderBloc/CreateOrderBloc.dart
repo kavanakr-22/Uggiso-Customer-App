@@ -3,10 +3,12 @@ import 'package:uggiso/Bloc/CreateOrderBloc/CreateOrderEvent.dart';
 import 'package:uggiso/Bloc/CreateOrderBloc/CreateOrderState.dart';
 import 'package:uggiso/Model/OrderCheckoutModel.dart';
 import 'package:uggiso/Model/PaymentDetailsModel.dart';
+import 'package:uggiso/Model/WalletDetailsModel.dart';
 import 'package:uggiso/Network/NetworkError.dart';
 import 'package:uggiso/Network/apiRepository.dart';
 class CreateOrderBloc extends Bloc<CreateOrderEvent, CreateOrderState> {
   late OrderCheckoutModel data;
+  late WalletDetailsModel walletData;
   late PaymentDetailsModel paymentData;
   CreateOrderBloc() : super(InitialState()) {
     final ApiRepository _apiRepository = ApiRepository();
@@ -50,6 +52,26 @@ class CreateOrderBloc extends Bloc<CreateOrderEvent, CreateOrderState> {
       }
     }
     );
+
+    on<OnGetRewardsDetails>((event,emit) async{
+
+      try{
+        emit(FetchingCoinsDetails()) ;
+        if(event.userId.isNotEmpty) {
+          //String name,String number,String userType,String deviceId,String token
+          walletData =  await _apiRepository.getWalletDetails(event.userId);
+          print('wallet details api response: ${data.payload}');
+          emit(onCoinDetailsFetched(walletData));
+
+        }
+        else{
+          emit(ErrorState('Enter Valid Credentials'));
+        }
+
+      } on NetworkError {
+        print('this is network error');
+      }
+    });
   }
 
 }

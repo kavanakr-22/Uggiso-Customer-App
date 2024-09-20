@@ -28,8 +28,12 @@ class CreateOrder extends StatefulWidget {
   final double? restLng;
 
   const CreateOrder(
-      {Key? key, required this.orderlist, required this.restaurantId,
-        required this.restaurantName,required this.restLat,required this.restLng})
+      {Key? key,
+      required this.orderlist,
+      required this.restaurantId,
+      required this.restaurantName,
+      required this.restLat,
+      required this.restLng})
       : super(key: key);
 
   @override
@@ -47,7 +51,7 @@ class _CreateOrderState extends State<CreateOrder> {
   List menuList = [];
   bool showLoader = false;
   bool _isUggiso_coins_selected = false;
-  double uggiso_coin_count = 0.0;
+  double? uggiso_coin_count = 0.0;
   String txnId = '';
   final CreateOrderBloc _createOrderBloc = CreateOrderBloc();
   static const platform = MethodChannel('com.sabpaisa.integration/native');
@@ -100,22 +104,28 @@ class _CreateOrderState extends State<CreateOrder> {
         child: SingleChildScrollView(
             child: BlocListener<CreateOrderBloc, CreateOrderState>(
           listener: (BuildContext context, CreateOrderState state) {
-            if (state is LoadingHotelState) {
+            if (state is LoadingHotelState || state is FetchingCoinsDetails) {
               showLoader = true;
               CircularProgressIndicator();
             }
             if (state is onLoadedHotelState) {
               print('this is orderId  : ${state.data.payload?.orderId}');
-              _createOrderBloc.add(OnAddTransactionData(orderId:state.data.payload!.orderId!,
-                receiverId: state.data.payload!.restaurantId!,
-                senderId:state.data.payload!.customerId!,
-              status: "SUCCESS",transactionId: txnId,orderNumber: ''));
-              initializeService(widget.restLat!,widget.restLng!,state.data.payload!.orderId!);
+              _createOrderBloc.add(OnAddTransactionData(
+                  orderId: state.data.payload!.orderId!,
+                  receiverId: state.data.payload!.restaurantId!,
+                  senderId: state.data.payload!.customerId!,
+                  status: "SUCCESS",
+                  transactionId: txnId,
+                  orderNumber: ''));
+              initializeService(widget.restLat!, widget.restLng!,
+                  state.data.payload!.orderId!);
               Navigator.pushNamedAndRemoveUntil(
                   context,
                   AppRoutes.orderSuccessScreen,
-                      (Route<dynamic> route) => false);
-
+                  (Route<dynamic> route) => false);
+            }
+            if(state is onCoinDetailsFetched){
+              uggiso_coin_count = state.data.payload?.balance!;
             }
           },
           child: showLoader
@@ -386,20 +396,23 @@ class _CreateOrderState extends State<CreateOrder> {
                                 )
                               ],
                             ),
-                            _isUggiso_coins_selected?Gap(18):Container(),
-                            _isUggiso_coins_selected?Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  Strings.uggiso_coins,
-                                  style: AppFonts.title,
-                                ),
-                                Text(
-                                  '- $uggiso_coin_count',
-                                  style: AppFonts.title,
-                                )
-                              ],
-                            ):Container(),
+                            _isUggiso_coins_selected ? Gap(18) : Container(),
+                            _isUggiso_coins_selected
+                                ? Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        Strings.uggiso_coins,
+                                        style: AppFonts.title,
+                                      ),
+                                      Text(
+                                        '- $uggiso_coin_count',
+                                        style: AppFonts.title,
+                                      )
+                                    ],
+                                  )
+                                : Container(),
                             Gap(18),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -482,9 +495,11 @@ class _CreateOrderState extends State<CreateOrder> {
   calculateTotalAmount(double price, int quantity) {
     setState(() {
       item_total = item_total + (price * quantity);
-      item_sub_total = item_total - (uggiso_coin_count);
-      item_sub_total = item_sub_total + (item_sub_total*(gst_charges/100));
-      gst_charges = item_sub_total*(gst_charges/100);
+      item_sub_total = item_total - (uggiso_coin_count!);
+      gst_charges = item_sub_total *
+          (double.parse((gst_charges / 100).toStringAsFixed(2)));
+      item_sub_total =
+          item_sub_total + (double.parse(gst_charges.toStringAsFixed(2)));
     });
   }
 
@@ -494,11 +509,18 @@ class _CreateOrderState extends State<CreateOrder> {
       userId = prefs.getString('userId') ?? '';
       userNumber = prefs.getString('mobile_number') ?? '';
       userName = prefs.getString('user_name') ?? '';
-      _isUggiso_coins_selected = prefs.getBool('use_coins_status')??false;
-      uggiso_coin_count = prefs.getDouble('use_coins_count')??0.0;
+      _isUggiso_coins_selected = prefs.getBool('use_coins_status') ?? false;
+      // uggiso_coin_count = prefs.getDouble('use_coins_count') ?? 0.0;
     });
     print('uggiso coin status : ${_isUggiso_coins_selected}');
     print('uggiso coin count : ${uggiso_coin_count}');
+    if(_isUggiso_coins_selected){
+      getCoinsDetails();
+    }
+  }
+
+  getCoinsDetails() async {
+    _createOrderBloc.add(OnGetRewardsDetails(userId: userId));
   }
 
   createOrder() async {
@@ -566,15 +588,15 @@ class _CreateOrderState extends State<CreateOrder> {
     // sendPushNotification('', 'order created', 'check for details');
   }
 
-  /*notifyRestaurant(OrderCheckoutModel data){
+/*notifyRestaurant(OrderCheckoutModel data){
     sendPushNotification(data.payload!.fcmToken.toString(), 'order created', 'check for details');
-   *//* Navigator.pushNamedAndRemoveUntil(
+   */ /* Navigator.pushNamedAndRemoveUntil(
         context,
         AppRoutes.orderSuccessScreen,
-            (Route<dynamic> route) => false);*//*
+            (Route<dynamic> route) => false);*/ /*
   }*/
 
- /* Future<void> sendPushNotification(String token, String title, String body) async {
+/* Future<void> sendPushNotification(String token, String title, String body) async {
     try {
       final String serverKey = await PushNotificationService.getAccessToken();
       print('this is fcm token : $serverKey');
@@ -619,5 +641,4 @@ class _CreateOrderState extends State<CreateOrder> {
 
     }
   }*/
-
 }

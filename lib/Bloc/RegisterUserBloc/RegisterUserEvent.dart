@@ -24,8 +24,9 @@ class OnRegisterButtonClicked extends RegisterUserEvent {
 class OnSubmitReference extends RegisterUserEvent {
   final String acceptorUuid;
   final String introducerPhone;
+  final String acceptorDeviceId;
 
-  const OnSubmitReference({required this.acceptorUuid,required this.introducerPhone});
+  const OnSubmitReference({required this.acceptorUuid,required this.introducerPhone,required this.acceptorDeviceId});
 
   @override
   List<Object> get props => [acceptorUuid,introducerPhone];

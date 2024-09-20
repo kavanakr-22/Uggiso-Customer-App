@@ -23,6 +23,7 @@ class _ReferralScreenState extends State<ReferralScreen> {
   final TextEditingController _numberController = TextEditingController();
   final RegisterUserBloc _registerUserBloc = RegisterUserBloc();
   String userId ='';
+  String deviceId ='';
 
 
   @override
@@ -133,8 +134,9 @@ class _ReferralScreenState extends State<ReferralScreen> {
                                               .text}');
                                       _registerUserBloc.add(OnSubmitReference(
                                           acceptorUuid: userId,
-                                          introducerPhone: _numberController
-                                              .text));
+                                          introducerPhone: _numberController.text,
+                                        acceptorDeviceId: deviceId
+                                      ));
                                     },
                                     cornerRadius: 6.0,
                                     buttonColor: AppColors.appPrimaryColor,
@@ -158,6 +160,7 @@ class _ReferralScreenState extends State<ReferralScreen> {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       userId = prefs.getString('userId')??'';
+      deviceId = prefs.getString('device_id')??'';
 
 
     });

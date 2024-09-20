@@ -44,7 +44,7 @@ class RegisterUserBloc extends Bloc<RegisterUserEvent, RegisterUserState> {
         emit(LoadingState()) ;
         if(event.acceptorUuid.isNotEmpty && event.introducerPhone.isNotEmpty) {
           //String name,String number,String userType,String deviceId,String token
-          userIntroducerData =  await _apiRepository.saveIntroducers(event.acceptorUuid,event.introducerPhone);
+          userIntroducerData =  await _apiRepository.saveIntroducers(event.acceptorUuid,event.introducerPhone,event.acceptorDeviceId);
           if(userIntroducerData.statusCode==200){
             emit(onReferalComplete());
           }

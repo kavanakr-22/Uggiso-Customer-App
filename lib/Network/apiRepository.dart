@@ -85,8 +85,8 @@ class ApiRepository {
     return _provider.getWalletDetails(userId);
   }
 
-  Future<SaveIntroducerModel> saveIntroducers(String acceptorUuid, String introducerPhone) {
-    return _provider.saveIntroducers(acceptorUuid,introducerPhone);
+  Future<SaveIntroducerModel> saveIntroducers(String acceptorUuid, String introducerPhone,String acceptorDeviceId) {
+    return _provider.saveIntroducers(acceptorUuid,introducerPhone,acceptorDeviceId);
   }
 
   Future<MyOrdersModel> getMyOrders(String userId) {

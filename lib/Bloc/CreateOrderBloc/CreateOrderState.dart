@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:uggiso/Model/OrderCheckoutModel.dart';
+import 'package:uggiso/Model/WalletDetailsModel.dart';
 
 abstract class CreateOrderState extends Equatable {
   const CreateOrderState();
@@ -16,10 +17,17 @@ class LoadPaymentState extends CreateOrderState {}
 
 class PaymentStateLoaded extends CreateOrderState {}
 
+class FetchingCoinsDetails extends CreateOrderState {}
+
 
 class onLoadedHotelState extends CreateOrderState {
   final OrderCheckoutModel data;
   onLoadedHotelState(this.data);
+}
+
+class onCoinDetailsFetched extends CreateOrderState {
+  final WalletDetailsModel data;
+  onCoinDetailsFetched(this.data);
 }
 
 class ErrorState extends CreateOrderState {

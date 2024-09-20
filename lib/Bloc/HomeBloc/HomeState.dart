@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:uggiso/Model/GetNearByResaturantModel.dart';
+import 'package:uggiso/Model/GetRouteModel.dart';
 import 'package:uggiso/Model/RemoveFavRestaurantModel.dart';
 import 'package:uggiso/Model/otpModel.dart';
 
@@ -27,6 +28,11 @@ class onFavHotelAddedState extends HomeState {
 class onFavHotelDeleteState extends HomeState {
   final RemoveFavRestaurantModel result;
   onFavHotelDeleteState(this.result);
+}
+
+class RestaurantsLocationFound extends HomeState {
+  final GetRouteModel result;
+  RestaurantsLocationFound(this.result);
 }
 
 class ErrorState extends HomeState {
