@@ -76,9 +76,11 @@ class ApiRepository {
   Future<OrderCheckoutModel> createOrder(String restaurantId,String restaurantName,String customerId,
       List menuData,String orderType,String paymentType,
       String orderStatus,int totalAmount,String comments,
-      String timeSlot,String transMode) {
+      String timeSlot,String transMode,
+      double paidAmount,
+      int usedCoins) {
     return _provider.createOrder(restaurantId,restaurantName,customerId,menuData,orderType,paymentType,orderStatus,
-    totalAmount,comments,timeSlot,transMode);
+    totalAmount,comments,timeSlot,transMode,paidAmount,usedCoins);
   }
 
   Future<WalletDetailsModel> getWalletDetails(String userId) {
@@ -115,6 +117,10 @@ class ApiRepository {
 
   Future<VerifyOtpModel> updateDeviceData(String userId, String deviceData,String fcmToken) {
     return _provider.updateDeviceData(userId,deviceData,fcmToken);
+  }
+
+  Future<RestaurantDetailsModel> getAcceptors(String id) {
+    return _provider.getAcceptors(id);
   }
 
 }

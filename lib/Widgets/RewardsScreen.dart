@@ -190,12 +190,12 @@ class _RewardsScreenState extends State<RewardsScreen> {
                             children: [
                               Gap(18),
                               Text(
-                                Strings.use_uggiso_coins,
+                                Strings.use_uggiso_points,
                                 style: AppFonts.header1
                                     .copyWith(color: AppColors.appPrimaryColor),
                               ),
                               Text(
-                                Strings.use_uggiso_coins_2,
+                                Strings.use_uggiso_points_2,
                                 style:
                                 AppFonts.header1.copyWith(
                                     color: AppColors.rewardsText),
@@ -248,14 +248,14 @@ class _RewardsScreenState extends State<RewardsScreen> {
                                             .spaceBetween,
                                         children: [
                                           Text(
-                                            Strings.uggiso_coin_balance,
-                                            style: AppFonts.header1
+                                            Strings.uggiso_point_balance,
+                                            style: AppFonts.subHeader
                                                 .copyWith(color: AppColors
                                                 .appPrimaryColor),
                                           ),
                                           state.data.payload!=null && state.data.payload!.balance!.toInt()>0?Text(
                                             '${state.data.payload!.balance!}',
-                                            style: AppFonts.header1
+                                            style: AppFonts.subHeader
                                                 .copyWith(
                                                 color: AppColors.rewardsText),
                                           ):Text(
@@ -285,7 +285,7 @@ class _RewardsScreenState extends State<RewardsScreen> {
                                                 children: [
                                                   Text(
                                                     Strings
-                                                        .always_use_uggiso_coins,
+                                                        .always_use_uggiso_points,
                                                     style: AppFonts.title
                                                         .copyWith(
                                                         color: AppColors
@@ -350,7 +350,7 @@ class _RewardsScreenState extends State<RewardsScreen> {
                                                           FontWeight.w600),
                                                     )
                                                         : Text(
-                                                      'Use Uggiso coins for your future orders',
+                                                      'Use Uggiso points for your future orders',
                                                       maxLines: 2,
                                                       style: AppFonts.title
                                                           .copyWith(
@@ -441,7 +441,7 @@ class _RewardsScreenState extends State<RewardsScreen> {
 
   void saveRewardsDetails(bool status,double coin) async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setBool('use_coins_status', status);
-    prefs.setDouble('use_coins_count', coin);
+    prefs.setBool('use_points_status', status);
+    prefs.setDouble('use_points_count', coin);
   }
 }

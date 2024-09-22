@@ -10,7 +10,7 @@ class Constants{
   static String addFavMenu = 'favmenu/savefavmenu';
   static String addFavRestaurant = 'favrestaurant/savefavrestaurant';
   static String restaurantNearBy = 'restaurant/nearfoods';
-  static String getFavMenu = 'menu/restofavs';
+  static String getFavMenu = 'favmenu/myfavmenus';
   static String getFavRestaurant = 'favrestaurant/';
   static String createOrder = 'order/create';
   static String myOrders = 'order/myorders/';
@@ -24,4 +24,5 @@ class Constants{
   static String remove_fav_restaurant = 'favrestaurant/removefavresto';
   static String remove_fav_menu = 'favmenu/removefavmenu';
   static String updateDevice = 'user/updatedevice';
+  static String getAcceptors = 'referer/acceptors/';
 }

@@ -131,7 +131,7 @@ class _ReferralScreenState extends State<ReferralScreen> {
                                     onPressed: () {
                                       print(
                                           'clicked $userId and number : ${_numberController
-                                              .text}');
+                                              .text} and device id : ${deviceId}');
                                       _registerUserBloc.add(OnSubmitReference(
                                           acceptorUuid: userId,
                                           introducerPhone: _numberController.text,

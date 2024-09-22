@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:uggiso/Model/RestaurantDetailsModel.dart';
 
 abstract class ProfileState extends Equatable {
   const ProfileState();
@@ -16,7 +17,10 @@ class onLoadedState extends ProfileState {
   // onLoadedState(this.data);
 }
 
-
+class onAcceptorsDataFetched extends ProfileState {
+   final RestaurantDetailsModel data;
+  onAcceptorsDataFetched(this.data);
+}
 class ErrorState extends ProfileState {
   final String? message;
   const ErrorState(this.message);

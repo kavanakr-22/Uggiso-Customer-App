@@ -71,10 +71,8 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar", "*.aar"])
     implementation files("libs/gatewayAndroid.aar")
     annotationProcessor 'androidx.lifecycle:lifecycle-compiler:2.2.0'
-
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.legacy:legacy-support-core-utils:1.0.0'
-
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.google.android.material:material:1.7.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'

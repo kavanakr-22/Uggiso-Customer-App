@@ -19,7 +19,7 @@ Future<bool> onStart(ServiceInstance service) async{
     stop = await _getUserLocation(destLat!,destLng!);
     // getEstimatedTravelTime('','','','');
     print('this is status : $stop');
-    if(true){
+    if(stop!){
       repository.updateOrderStatus(orderId!, 'REACHING');
       timer.cancel();
       service.stopSelf();

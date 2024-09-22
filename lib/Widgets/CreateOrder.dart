@@ -7,15 +7,11 @@ import 'package:gap/gap.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uggiso/Bloc/CreateOrderBloc/CreateOrderEvent.dart';
 import 'package:uggiso/Bloc/CreateOrderBloc/CreateOrderState.dart';
-import 'package:uggiso/Model/OrderCheckoutModel.dart';
 import 'package:uggiso/Widgets/ui-kit/RoundedElevatedButton.dart';
 import 'package:uggiso/base/common/utils/background_service.dart';
 import 'package:uggiso/base/common/utils/fonts.dart';
 import 'package:uggiso/base/common/utils/strings.dart';
-import 'package:http/http.dart' as http;
 import '../Bloc/CreateOrderBloc/CreateOrderBloc.dart';
-import '../Network/PushNotificationService.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import '../app_routes.dart';
 import '../base/common/utils/colors.dart';
 import 'ui-kit/RoundedContainer.dart';
@@ -50,8 +46,8 @@ class _CreateOrderState extends State<CreateOrder> {
   String userName = '';
   List menuList = [];
   bool showLoader = false;
-  bool _isUggiso_coins_selected = false;
-  double? uggiso_coin_count = 0.0;
+  bool _isUggiso_points_selected = false;
+  double? uggiso_point_count = 0.0;
   String txnId = '';
   final CreateOrderBloc _createOrderBloc = CreateOrderBloc();
   static const platform = MethodChannel('com.sabpaisa.integration/native');
@@ -124,8 +120,8 @@ class _CreateOrderState extends State<CreateOrder> {
                   AppRoutes.orderSuccessScreen,
                   (Route<dynamic> route) => false);
             }
-            if(state is onCoinDetailsFetched){
-              uggiso_coin_count = state.data.payload?.balance!;
+            if (state is onCoinDetailsFetched) {
+              uggiso_point_count = state.data.payload?.balance!;
             }
           },
           child: showLoader
@@ -396,18 +392,18 @@ class _CreateOrderState extends State<CreateOrder> {
                                 )
                               ],
                             ),
-                            _isUggiso_coins_selected ? Gap(18) : Container(),
-                            _isUggiso_coins_selected
+                            _isUggiso_points_selected ? Gap(18) : Container(),
+                            _isUggiso_points_selected
                                 ? Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        Strings.uggiso_coins,
+                                        Strings.uggiso_points,
                                         style: AppFonts.title,
                                       ),
                                       Text(
-                                        '- $uggiso_coin_count',
+                                        '- $uggiso_point_count',
                                         style: AppFonts.title,
                                       )
                                     ],
@@ -495,7 +491,7 @@ class _CreateOrderState extends State<CreateOrder> {
   calculateTotalAmount(double price, int quantity) {
     setState(() {
       item_total = item_total + (price * quantity);
-      item_sub_total = item_total - (uggiso_coin_count!);
+      item_sub_total = item_total - (uggiso_point_count!);
       gst_charges = item_sub_total *
           (double.parse((gst_charges / 100).toStringAsFixed(2)));
       item_sub_total =
@@ -509,17 +505,17 @@ class _CreateOrderState extends State<CreateOrder> {
       userId = prefs.getString('userId') ?? '';
       userNumber = prefs.getString('mobile_number') ?? '';
       userName = prefs.getString('user_name') ?? '';
-      _isUggiso_coins_selected = prefs.getBool('use_coins_status') ?? false;
+      _isUggiso_points_selected = prefs.getBool('use_points_status') ?? false;
       // uggiso_coin_count = prefs.getDouble('use_coins_count') ?? 0.0;
     });
-    print('uggiso coin status : ${_isUggiso_coins_selected}');
-    print('uggiso coin count : ${uggiso_coin_count}');
-    if(_isUggiso_coins_selected){
-      getCoinsDetails();
+    print('uggiso point status : ${_isUggiso_points_selected}');
+    print('uggiso point count : ${uggiso_point_count}');
+    if (_isUggiso_points_selected) {
+      getPointsDetails();
     }
   }
 
-  getCoinsDetails() async {
+  getPointsDetails() async {
     _createOrderBloc.add(OnGetRewardsDetails(userId: userId));
   }
 
@@ -551,7 +547,9 @@ class _CreateOrderState extends State<CreateOrder> {
         totalAmount: item_sub_total.toInt(),
         comments: 'Please do little more spicy',
         timeSlot: 'null',
-        transMode: 'BIKE'));
+        transMode: 'BIKE',
+        paidAmount: item_sub_total,
+        usedCoins: 0));
 
     // if(txnStatus == 'SUCCESS') {
     //

@@ -15,3 +15,15 @@ class OnGetReferralHistory extends ProfileEvent {
   @override
   String toString() => 'OnButtonClicked { number: $userId }';
 }
+
+class OnGetAcceptors extends ProfileEvent {
+  final String userId;
+
+  const OnGetAcceptors({required this.userId});
+
+  @override
+  List<Object> get props => [userId];
+
+  @override
+  String toString() => 'OnButtonClicked { number: $userId }';
+}

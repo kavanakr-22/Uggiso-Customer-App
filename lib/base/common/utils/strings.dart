@@ -97,19 +97,19 @@ class Strings {
       'If you cancel the order within 60 Sec of placing your oreder, a 100% refund will be issued. No refund for cancellations made after 60 seconds.';
   static const payment_successful = 'Payment successful';
   static const order_successful = 'Order Created Successfully';
-  static const uggiso_coins = 'Uggiso Coins';
-  static const use_uggiso_coins = 'Use Uggiso Coins';
-  static const use_uggiso_coins_2 = '& get Discounts on orders';
-  static const coin_equals = '1 coin equals ₹1';
-  static const uggiso_coin_balance = 'Uggiso Coin Balance';
-  static const always_use_uggiso_coins = 'Always use Uggiso Coins';
-  static const your_uggiso_coins =
-      'Yay! Your Uggiso coins will be used for future orders';
+  static const uggiso_points = 'Uggiso Points';
+  static const use_uggiso_points = 'Use Uggiso Points';
+  static const use_uggiso_points_2 = '& get Discounts on orders';
+  static const coin_equals = '1 point equals ₹1';
+  static const uggiso_point_balance = 'Uggiso Point Balance';
+  static const always_use_uggiso_points = 'Always use Uggiso Points';
+  static const your_uggiso_points =
+      'Yay! Your Uggiso points will be used for future orders';
   static const coin_transactions = 'COIN TRANSACTIONS';
   static const view_all_transactions = 'View all transactions';
   static const use_with_coupons = 'Use with coupons';
   static const learn_more = 'LEARN MORE';
-  static const uggiso_future_orders = 'Yay! Your Uggiso coins will be used for future orders';
+  static const uggiso_future_orders = 'Yay! Your Uggiso points will be used for future orders';
   static const share_your_referral = 'Share your referral with';
   static const get_rewards = 'Get Rewards!';
   static const rewards = 'Rewards';

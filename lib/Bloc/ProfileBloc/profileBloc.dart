@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uggiso/Bloc/ProfileBloc/profileEvent.dart';
 import 'package:uggiso/Bloc/ProfileBloc/profileState.dart';
+import 'package:uggiso/Model/RestaurantDetailsModel.dart';
 import 'package:uggiso/Model/WalletDetailsModel.dart';
 import 'package:uggiso/Network/apiRepository.dart';
 
@@ -11,6 +12,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
     final ApiRepository _apiRepository = ApiRepository();
     late WalletDetailsModel data;
+    RestaurantDetailsModel acceptorsData = RestaurantDetailsModel();
 
 
     on<OnGetReferralHistory>((event,emit) async{
@@ -23,6 +25,29 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
           print('wallet details api response: ${data.payload}');
           emit(onLoadedState());
 
+        }
+        else{
+          emit(ErrorState('Enter Valid Credentials'));
+        }
+
+      } on NetworkError {
+        print('this is network error');
+      }
+    });
+
+    on<OnGetAcceptors>((event,emit) async{
+
+      try{
+        emit(LoadingState()) ;
+        if(event.userId.isNotEmpty) {
+          //String name,String number,String userType,String deviceId,String token
+          acceptorsData =  await _apiRepository.getAcceptors(event.userId);
+          if(acceptorsData.statusCode ==200){
+            emit(onAcceptorsDataFetched(acceptorsData));
+          }
+          else{
+            emit(ErrorState(acceptorsData.message));
+          }
         }
         else{
           emit(ErrorState('Enter Valid Credentials'));
