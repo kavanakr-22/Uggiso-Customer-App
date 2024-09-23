@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:uggiso/Model/AcceptorsListModel.dart';
 import 'package:uggiso/Model/AddFavoriteMenuModel.dart';
 import 'package:uggiso/Model/GetNearByResaturantModel.dart';
 import 'package:uggiso/Model/GetRouteModel.dart';
@@ -512,16 +513,16 @@ class ApiProvider {
     }
   }
 
-  Future<RestaurantDetailsModel> getAcceptors(String id) async {
+  Future<AcceptorsListModel> getAcceptors(String id) async {
     try {
       Response response =
       await _dio.get('${_url}${Constants.getAcceptors}$id'); //here id is user / customer / owner id
       print("${response.data}");
 
-      return RestaurantDetailsModel.fromJson(response.data);
+      return AcceptorsListModel.fromJson(response.data);
     } catch (error, stacktrace) {
       print("Exception occured: $error stackTrace: $stacktrace");
-      return RestaurantDetailsModel.withError(
+      return AcceptorsListModel.withError(
           "Data not found / Connection issue");
     }
   }

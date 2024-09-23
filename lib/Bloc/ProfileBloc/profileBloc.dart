@@ -5,6 +5,7 @@ import 'package:uggiso/Model/RestaurantDetailsModel.dart';
 import 'package:uggiso/Model/WalletDetailsModel.dart';
 import 'package:uggiso/Network/apiRepository.dart';
 
+import '../../Model/AcceptorsListModel.dart';
 import '../../Network/NetworkError.dart';
 
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
@@ -12,7 +13,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
     final ApiRepository _apiRepository = ApiRepository();
     late WalletDetailsModel data;
-    RestaurantDetailsModel acceptorsData = RestaurantDetailsModel();
+    AcceptorsListModel acceptorsData = AcceptorsListModel();
 
 
     on<OnGetReferralHistory>((event,emit) async{

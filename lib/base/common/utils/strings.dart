@@ -116,6 +116,7 @@ class Strings {
   static const enter_referral_number = 'Enter your Referral Mobile Number';
   static const google_map_api_key = 'AIzaSyB8UoTxemF5no_Va1aJn4x8s10VsFlLQHA';
   static const my_referrals = 'My Referrals';
+  static const something_went_wrong = 'Something went wrong. Please try again later';
 
 
   static const List<Map<String, dynamic>> profileItemList = [

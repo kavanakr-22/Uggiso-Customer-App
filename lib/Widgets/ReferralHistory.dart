@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/gap.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uggiso/Bloc/ProfileBloc/profileBloc.dart';
 import 'package:uggiso/Bloc/ProfileBloc/profileEvent.dart';
 import 'package:uggiso/Bloc/ProfileBloc/profileState.dart';
+import 'package:uggiso/Widgets/ui-kit/RoundedContainer.dart';
 import 'package:uggiso/base/common/utils/colors.dart';
 import 'package:uggiso/base/common/utils/fonts.dart';
 import 'package:uggiso/base/common/utils/strings.dart';
@@ -29,7 +32,7 @@ class _ReferralHistoryState extends State<ReferralHistory> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: AppColors.textFieldBorderColor,
       appBar: AppBar(
         backgroundColor: AppColors.appPrimaryColor,
         title: Text(
@@ -60,7 +63,7 @@ class _ReferralHistoryState extends State<ReferralHistory> {
                 builder: (context,state) {
                   if(state is ErrorState){
                     return Center(
-                      child: Text('${state.message}'),
+                      child: Text('${state.message}',style: AppFonts.smallText,),
                     );
                   }
                   else if(state is LoadingState){
@@ -68,18 +71,76 @@ class _ReferralHistoryState extends State<ReferralHistory> {
                       child: CircularProgressIndicator(color: AppColors.appPrimaryColor,),
                     );
                   }
+                  else if(state is onAcceptorsDataFetched){
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: RoundedContainer(
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height,
+                        color: AppColors.white,
+                        borderColor: AppColors.white,
+                        cornerRadius: 10,
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text('Name',style: AppFonts.smallText.copyWith(fontWeight: FontWeight.w600),),
+                                Text('Coins Received',style: AppFonts.smallText.copyWith(fontWeight: FontWeight.w600),),
+                                Text('Date',style: AppFonts.smallText.copyWith(fontWeight: FontWeight.w600),)
+
+                              ],
+                            ),
+                            Divider(color: AppColors.grey,),
+                            Expanded(
+                              child: ListView.builder(
+                                itemCount: state.data.payload?.length,
+                                  itemBuilder: (BuildContext context, int count){
+                                  return Padding(
+                                    padding: const EdgeInsets.symmetric(vertical:8.0),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text('${state.data.payload?[count].acceptorName}',style: AppFonts.smallText,),
+                                            Text('${state.data.payload?[count].availedCoins}',style: AppFonts.smallText,),
+                                            Text(dateConvert('${state.data.payload?[count].referedDate}'),style: AppFonts.smallText,)
+
+                                          ],
+                                        ),
+                                        Divider(color: AppColors.grey,),
+                                      ],
+                                    ),
+                                  );
+
+                              }),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }
                   return Center(
-                    child: Text('No referals Found'),
+                    child: Text('${Strings.something_went_wrong}',style: AppFonts.smallText,),
                   );
                 }
               ))),
     );
   }
 
+  String dateConvert(String date){
+
+    DateTime parsedDate = DateTime.parse(date);
+    String formattedDate = DateFormat('dd/MM/yyyy').format(parsedDate);
+    return formattedDate.toString();
+  }
+
   void getAcceptors() async {
     final prefs = await SharedPreferences.getInstance();
     userId = prefs.getString('userId');
-    print('this is userId : 65ec7660-e8a9-4253-bbcd-ed8154b602b8');
-    _profileBloc.add(OnGetAcceptors(userId:"65ec7660-e8a9-4253-bbcd-ed8154b602b8"));
+    _profileBloc.add(OnGetAcceptors(userId:userId!));
   }
+
 }

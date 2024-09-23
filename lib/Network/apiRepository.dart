@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart';
+import 'package:uggiso/Model/AcceptorsListModel.dart';
 import 'package:uggiso/Model/AddFavoriteMenuModel.dart';
 import 'package:uggiso/Model/GetRouteModel.dart';
 import 'package:uggiso/Model/MenuListModel.dart';
@@ -119,7 +120,7 @@ class ApiRepository {
     return _provider.updateDeviceData(userId,deviceData,fcmToken);
   }
 
-  Future<RestaurantDetailsModel> getAcceptors(String id) {
+  Future<AcceptorsListModel> getAcceptors(String id) {
     return _provider.getAcceptors(id);
   }
 
