@@ -48,7 +48,6 @@ class _ProfileTabState extends State<ProfileTab> {
           Strings.myProfile,
           style: AppFonts.appBarText,
         ),
-        centerTitle: true,
       ),
       body: Column(
         children: [
@@ -95,8 +94,9 @@ class _ProfileTabState extends State<ProfileTab> {
                 return InkWell(
                   onTap: () => goToNextPage(index),
                   child: ListContainerItem(
-                    Strings.profileItemList[index]['image'],
+                      Strings.profileItemList[index]['image'],
                     Strings.profileItemList[index]['title'],
+                    index
                   ),
                 );
               },
@@ -107,14 +107,14 @@ class _ProfileTabState extends State<ProfileTab> {
     );
   }
 
-  Widget ListContainerItem(String icon, String text) => Padding(
+  Widget ListContainerItem(String icon, String text,int index) => Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
         child: RoundedContainer(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height * 0.08,
             child: Row(
               children: [
-                Image.asset(
+                index==2?Icon(Icons.rule):index==3?Icon(Icons.privacy_tip):Image.asset(
                   icon,
                   height: 24,
                   width: 24,
@@ -142,13 +142,16 @@ class _ProfileTabState extends State<ProfileTab> {
         return Navigator.pushNamed(context, AppRoutes.getReferralHistory);
 
       case 2:
-        return Navigator.popAndPushNamed(context, AppRoutes.settingsScreen);
+        return Navigator.pushNamed(context, AppRoutes.terms_and_conditions);
 
       case 3:
-        return Navigator.popAndPushNamed(context, AppRoutes.signupScreen);
+        return Navigator.pushNamed(context, AppRoutes.privacy_policy);
 
       case 4:
-        return 'Unknown';
+        return Navigator.popAndPushNamed(context, AppRoutes.signupScreen);
+
+      case 5:
+        return Navigator.pushNamed(context, AppRoutes.helpCenter);
 
       default:
         return 'Unknown';

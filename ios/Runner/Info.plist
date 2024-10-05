@@ -3,6 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
+	<key>NSAppTransportSecurity</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
 	<string>Uggiso</string>
@@ -51,5 +52,7 @@
     <string>We need your location to provide better services.</string>
     <key>NSLocationAlwaysUsageDescription</key>
     <string>We need your location to show your current position.</string>
+    <key>NSAllowsArbitraryLoads</key>
+    <true/>
 </dict>
 </plist>

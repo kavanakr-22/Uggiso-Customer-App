@@ -4,14 +4,12 @@ import 'package:uggiso/base/common/utils/fonts.dart';
 import 'package:uggiso/base/common/utils/strings.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-class AboutUsScreen extends StatefulWidget {
-  const AboutUsScreen({super.key});
-
+class TermsAndConditions extends StatefulWidget {
   @override
-  State<AboutUsScreen> createState() => _AboutUsScreenState();
+  _TermsAndConditionsState createState() => _TermsAndConditionsState();
 }
 
-class _AboutUsScreenState extends State<AboutUsScreen> {
+class _TermsAndConditionsState extends State<TermsAndConditions> {
   late WebViewController _controller;
   bool isLoading = true;
 
@@ -34,19 +32,15 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
         ),
       )
       ..loadRequest(
-        Uri.parse(Strings.about_us_url),
+        Uri.parse(Strings.terms_and_conditions_url),
       );
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.appPrimaryColor,
-        title: Text(
-          Strings.about_us,
-          style: AppFonts.title,
-        ),
+        title: Text(Strings.terms_and_conditions,style: AppFonts.title,),
         leading: Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: IconButton(

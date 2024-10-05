@@ -66,7 +66,8 @@ dependencies:
   fluttertoast: ^8.2.6
   google_maps_polyline: ^1.0.3
   flutter_polyline_points: ^2.1.0
-
+  webview_flutter: ^4.9.0
+  url_launcher: ^6.3.0
 
 dev_dependencies:
   flutter_test:
@@ -93,7 +94,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/
-   # - assets/Logo/
+    # - assets/Logo/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
@@ -109,8 +110,8 @@ flutter:
   fonts:
     - family: 'RobotoSerif'
       fonts:
-         - asset: assets/fonts/RobotoSerif_Regular.ttf
-         - asset: assets/fonts/RobotoSerif_Bold.ttf
+        - asset: assets/fonts/RobotoSerif_Regular.ttf
+        - asset: assets/fonts/RobotoSerif_Bold.ttf
   #         style: italic
   #   - family: Trajan Pro
   #     fonts:

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:google_search_place/google_search_place.dart';
@@ -38,6 +39,9 @@ class _HomeTabState extends State<HomeTab> {
   TextEditingController userlocationController = TextEditingController();
   TextEditingController userDistanceController = TextEditingController();
   TextEditingController _placeSearchEditingController = TextEditingController();
+  static const platform = MethodChannel('com.sabpaisa.integration/native');
+  String txnId = '';
+
 
 
   @override
@@ -390,6 +394,16 @@ class _HomeTabState extends State<HomeTab> {
 
   getUserCurrentLocation() async {
     final prefs = await SharedPreferences.getInstance();
+    // final List<Object?> result = await platform.invokeMethod('callSabPaisaSdk',
+    //     ['TIlak', "", "", '9964367047', '100']);
+    // print('this is the transaction result : $result');
+    // print('this is the transaction result status: ${result[0].toString()}');
+    // print('this is the transaction result txnId: ${result[1].toString()}');
+    //
+    // String txnStatus = result[0].toString();
+    // setState(() {
+    //   txnId = result[1].toString();
+    // });
     setState(() {
       latitude = prefs.getDouble('user_latitude') ?? 0.0;
       longitude = prefs.getDouble('user_longitude') ?? 0.0;

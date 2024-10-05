@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:uggiso/Widgets/AboutUsScreen.dart';
 import 'package:uggiso/Widgets/AddCard.dart';
-import 'package:uggiso/Widgets/HelpCenter.dart';
 import 'package:uggiso/Widgets/HomeLandingScreen.dart';
 import 'package:uggiso/Widgets/HomeTab.dart';
 import 'package:uggiso/Widgets/MenuListScreen.dart';
@@ -13,7 +12,10 @@ import 'package:uggiso/Widgets/RewardsScreen.dart';
 import 'package:uggiso/Widgets/RouteMapScreen.dart';
 import 'package:uggiso/Widgets/SettingsScreen.dart';
 import 'package:uggiso/Widgets/VerifyOtp.dart';
+import 'package:uggiso/Widgets/help_center.dart';
 import 'package:uggiso/Widgets/polylineScreeen.dart';
+import 'package:uggiso/Widgets/privacy_policy.dart';
+import 'package:uggiso/Widgets/trems_and_conditions.dart';
 import 'package:uggiso/base/common/utils/CreateOrderArgs.dart';
 import 'package:uggiso/base/common/utils/get_route_map.dart';
 import 'package:uggiso/widgets/IntroLandingScreen.dart';
@@ -71,6 +73,10 @@ class AppRoutes {
   static const String getRouteMap = '/getRouteMap';
 
   static const String getReferralHistory = '/get_referral_history';
+
+  static const String privacy_policy = '/privacy_policy';
+
+  static const String terms_and_conditions = '/terms_and_conditions';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -141,6 +147,12 @@ class AppRoutes {
 
       case getReferralHistory:
         return MaterialPageRoute(builder: (_) => const ReferralHistory());
+
+      case privacy_policy:
+        return MaterialPageRoute(builder: (_) => PrivacyPolicy());
+
+      case terms_and_conditions:
+        return MaterialPageRoute(builder: (_) => TermsAndConditions());
 
       default:
         // If there is no such named route in the switch statement, e.g. /randomRoute

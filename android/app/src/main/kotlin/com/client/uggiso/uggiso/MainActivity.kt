@@ -44,7 +44,7 @@ class MainActivity : FlutterActivity(), IPaymentSuccessCallBack<TransactionRespo
                         .setIntermediateLoading(false)
                         .build()
                 SabPaisaGateway.setInitUrl("https://stage-securepay.sabpaisa.in/SabPaisa/sabPaisaInit?v=1")
-                SabPaisaGateway.setEndPointBaseUrl("https://sdkstaging.sabpaisa.in")
+                SabPaisaGateway.setEndPointBaseUrl("https://stage-securepay.sabpaisa.in")
                 SabPaisaGateway.setTxnEnquiryEndpoint("https://stage-txnenquiry.sabpaisa.in")
 
                 //Live url

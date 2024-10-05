@@ -4,17 +4,14 @@ import 'package:uggiso/base/common/utils/fonts.dart';
 import 'package:uggiso/base/common/utils/strings.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-class AboutUsScreen extends StatefulWidget {
-  const AboutUsScreen({super.key});
-
+class PrivacyPolicy extends StatefulWidget {
   @override
-  State<AboutUsScreen> createState() => _AboutUsScreenState();
+  _PrivacyPolicyState createState() => _PrivacyPolicyState();
 }
 
-class _AboutUsScreenState extends State<AboutUsScreen> {
+class _PrivacyPolicyState extends State<PrivacyPolicy> {
   late WebViewController _controller;
   bool isLoading = true;
-
   @override
   void initState() {
     super.initState();
@@ -34,19 +31,15 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
         ),
       )
       ..loadRequest(
-        Uri.parse(Strings.about_us_url),
+        Uri.parse(Strings.privacy_policy_url),
       );
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.appPrimaryColor,
-        title: Text(
-          Strings.about_us,
-          style: AppFonts.title,
-        ),
+        title: Text(Strings.privacy_policy,style: AppFonts.title,),
         leading: Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: IconButton(
@@ -59,6 +52,7 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
       ),
       body: isLoading?Center(child: CircularProgressIndicator(color: AppColors.appPrimaryColor,)):WebViewWidget(
         controller: _controller,
+
       ),
     );
   }

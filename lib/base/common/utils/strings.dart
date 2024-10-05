@@ -47,6 +47,10 @@ class Strings {
   static const edit_profile = 'Edit Profile';
   static const terms_conditions = 'Terms And Conditions';
   static const about_us = 'About Us';
+  static const call_us = 'Call Us';
+  static const contact_number = '9900006508';
+  static const email_us = 'Email Us';
+  static const contact_mail = 'ugissointernational@gmail.com';
   static const notification_settings = 'Notification Settings';
   static const delete = 'Delete';
   static const terms_service = 'Terms of service';
@@ -117,12 +121,19 @@ class Strings {
   static const google_map_api_key = 'AIzaSyB8UoTxemF5no_Va1aJn4x8s10VsFlLQHA';
   static const my_referrals = 'My Referrals';
   static const something_went_wrong = 'Something went wrong. Please try again later';
+  static const apply = 'Apply';
+  static const privacy_policy = 'Privacy Policy';
+  static const privacy_policy_url = 'https://uggiso.com/privacy-policy/';
+  static const terms_and_conditions_url = 'https://uggiso.com/terms-and-conditions/';
+  static const terms_and_conditions = 'Terms And Conditions';
+  static const about_us_url = 'https://uggiso.com/about/';
 
 
   static const List<Map<String, dynamic>> profileItemList = [
     {'image': 'assets/ic_orders.png', 'title': your_orders},
     {'image': 'assets/ic_history.png', 'title': my_referrals},
-    {'image': 'assets/ic_settings.png', 'title': settings},
+    {'image': 'assets/ic_settings.png', 'title': terms_and_conditions},
+    {'image': 'assets/ic_settings.png', 'title': privacy_policy},
     {'image': 'assets/ic_log-out.png', 'title': sign_out},
     {'image': 'assets/ic_help_center.png', 'title': help_center},
   ];

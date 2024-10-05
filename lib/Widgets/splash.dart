@@ -54,11 +54,11 @@ class _SplashScreenState extends State<SplashScreen> {
     LocationInfo _location = await LocationManager.getCurrentPosition();
     initFirebaseMessaging();
 
-    /* print('this is location permission ${_location.permissionState}');
+     print('this is location permission ${_location.permissionState}');
     if(_location.permissionState == PermissionState.locationServiceDisabled){
       LocationManager().openLocationSettings();
       _location = await LocationManager.getCurrentPosition();
-    }*/
+    }
 
     prefs.setString('device_id', deviceId!);
     prefs.setDouble('user_longitude', _location.longitude);

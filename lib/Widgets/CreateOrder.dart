@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uggiso/Bloc/CreateOrderBloc/CreateOrderEvent.dart';
 import 'package:uggiso/Bloc/CreateOrderBloc/CreateOrderState.dart';
 import 'package:uggiso/Widgets/ui-kit/RoundedElevatedButton.dart';
+import 'package:uggiso/Widgets/ui-kit/TextFieldCurvedEdges.dart';
 import 'package:uggiso/base/common/utils/background_service.dart';
 import 'package:uggiso/base/common/utils/fonts.dart';
 import 'package:uggiso/base/common/utils/strings.dart';
@@ -48,8 +49,10 @@ class _CreateOrderState extends State<CreateOrder> {
   bool showLoader = false;
   bool _isUggiso_points_selected = false;
   double? uggiso_point_count = 0.0;
+  double? uggiso_point_limit = 0.0;
   String txnId = '';
   final CreateOrderBloc _createOrderBloc = CreateOrderBloc();
+  TextEditingController points_controller = TextEditingController();
   static const platform = MethodChannel('com.sabpaisa.integration/native');
 
   @override
@@ -345,6 +348,33 @@ class _CreateOrderState extends State<CreateOrder> {
                       ),
                     ),
                     Gap(18),
+                    Row(
+                      children: [
+                        TextFieldCurvedEdges(
+                            controller: points_controller,
+                            backgroundColor: AppColors.white,
+                            keyboardType: TextInputType.number,
+                            borderColor: AppColors.appPrimaryColor),
+                        Gap(4),
+                        RoundedElevatedButton(
+                            width: 80,
+                            height: 40,
+                            text: Strings.apply,
+                            onPressed: (){
+                              calculatePoints(double.parse(points_controller.text));
+                            },
+                            cornerRadius: 10,
+                            buttonColor: AppColors.appSecondaryColor,
+                            textStyle:AppFonts.smallText
+                                .copyWith(color: AppColors.white) )
+                      ],
+                    ),
+                    Gap(8),
+                    Text(
+                      'you have $uggiso_point_count in your wallet and you can redeem upto $uggiso_point_limit',
+                      style: AppFonts.subHeader,
+                    ),
+                    Gap(18),
                     Text(
                       Strings.bill_details,
                       style: AppFonts.subHeader,
@@ -518,6 +548,9 @@ class _CreateOrderState extends State<CreateOrder> {
   getPointsDetails() async {
     _createOrderBloc.add(OnGetRewardsDetails(userId: userId));
   }
+  calculatePoints(double points){
+    uggiso_point_count = (uggiso_point_count!)-points;
+  }
 
   createOrder() async {
     print('this is menu list : $menuList');
@@ -526,30 +559,30 @@ class _CreateOrderState extends State<CreateOrder> {
     print('this is user name : $userName');
     print('this is user number : $userNumber');
     print('this is total amount : ${item_sub_total}');
-    // final List<Object?> result = await platform.invokeMethod('callSabPaisaSdk',
-    //     [userName, "", "", userNumber, item_sub_total.toString()]);
-    // print('this is the transaction result : $result');
-    // print('this is the transaction result status: ${result[0].toString()}');
-    // print('this is the transaction result txnId: ${result[1].toString()}');
+    final List<Object?> result = await platform.invokeMethod('callSabPaisaSdk',
+        [userName, "", "", userNumber, item_sub_total.toString()]);
+    print('this is the transaction result : $result');
+    print('this is the transaction result status: ${result[0].toString()}');
+    print('this is the transaction result txnId: ${result[1].toString()}');
 
-    // String txnStatus = result[0].toString();
-    // setState(() {
-    //   txnId = result[1].toString();
-    // });
-    _createOrderBloc.add(OnPaymentClicked(
-        restaurantId: widget.restaurantId!,
-        restaurantName: widget.restaurantName!,
-        customerId: userId,
-        menuData: menuList,
-        orderType: "PARCEL",
-        paymentType: 'UPI',
-        orderStatus: 'CREATED',
-        totalAmount: item_sub_total.toInt(),
-        comments: 'Please do little more spicy',
-        timeSlot: 'null',
-        transMode: 'BIKE',
-        paidAmount: item_sub_total,
-        usedCoins: 0));
+    String txnStatus = result[0].toString();
+    setState(() {
+      txnId = result[1].toString();
+    });
+    // _createOrderBloc.add(OnPaymentClicked(
+    //     restaurantId: widget.restaurantId!,
+    //     restaurantName: widget.restaurantName!,
+    //     customerId: userId,
+    //     menuData: menuList,
+    //     orderType: "PARCEL",
+    //     paymentType: 'UPI',
+    //     orderStatus: 'CREATED',
+    //     totalAmount: item_sub_total.toInt(),
+    //     comments: 'Please do little more spicy',
+    //     timeSlot: 'null',
+    //     transMode: 'BIKE',
+    //     paidAmount: item_sub_total,
+    //     usedCoins: 0));
 
     // if(txnStatus == 'SUCCESS') {
     //
