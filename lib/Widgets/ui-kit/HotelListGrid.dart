@@ -128,9 +128,7 @@ class HotelListGrid extends StatelessWidget {
                       width: MediaQuery.of(context).size.width * 0.2,
                       height: MediaQuery.of(context).size.height * 0.08,
                       child: Center(
-                        child: Image.asset(
-                          'assets/ic_no_hotel.png',fit: BoxFit.fitWidth,
-                        ),
+                        child: Icon(Icons.broken_image,size: 60,color: AppColors.grey,)
                       ),
                     );
                   },

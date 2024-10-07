@@ -5,7 +5,6 @@ class OrderCheckoutModel {
   String? timeStamp;
   String? error;
 
-
   OrderCheckoutModel(
       {this.statusCode, this.message, this.payload, this.timeStamp});
 
@@ -27,6 +26,7 @@ class OrderCheckoutModel {
     data['timeStamp'] = this.timeStamp;
     return data;
   }
+
   OrderCheckoutModel.withError(String errorMessage) {
     error = errorMessage;
   }
@@ -37,14 +37,18 @@ class Payload {
   String? restaurantId;
   String? restaurantName;
   String? customerId;
+  String? orderNumber;
+  String? verifyCode;
   String? paymentType;
   String? orderStatus;
   String? orderType;
   String? travelMode;
   List<Menus>? menus;
-  String? timeSlot;
-  double? totalAmount;
-  double? discount;
+  Null? timeSlot;
+  int? totalAmount;
+  int? paidAmount;
+  int? usedCoins;
+  int? discount;
   String? comments;
   String? orderDate;
   String? orderTime;
@@ -55,6 +59,8 @@ class Payload {
         this.restaurantId,
         this.restaurantName,
         this.customerId,
+        this.orderNumber,
+        this.verifyCode,
         this.paymentType,
         this.orderStatus,
         this.orderType,
@@ -62,6 +68,8 @@ class Payload {
         this.menus,
         this.timeSlot,
         this.totalAmount,
+        this.paidAmount,
+        this.usedCoins,
         this.discount,
         this.comments,
         this.orderDate,
@@ -73,6 +81,8 @@ class Payload {
     restaurantId = json['restaurantId'];
     restaurantName = json['restaurantName'];
     customerId = json['customerId'];
+    orderNumber = json['orderNumber'];
+    verifyCode = json['verifyCode'];
     paymentType = json['paymentType'];
     orderStatus = json['orderStatus'];
     orderType = json['orderType'];
@@ -85,6 +95,8 @@ class Payload {
     }
     timeSlot = json['timeSlot'];
     totalAmount = json['totalAmount'];
+    paidAmount = json['paidAmount'];
+    usedCoins = json['usedCoins'];
     discount = json['discount'];
     comments = json['comments'];
     orderDate = json['orderDate'];
@@ -98,6 +110,8 @@ class Payload {
     data['restaurantId'] = this.restaurantId;
     data['restaurantName'] = this.restaurantName;
     data['customerId'] = this.customerId;
+    data['orderNumber'] = this.orderNumber;
+    data['verifyCode'] = this.verifyCode;
     data['paymentType'] = this.paymentType;
     data['orderStatus'] = this.orderStatus;
     data['orderType'] = this.orderType;
@@ -107,6 +121,8 @@ class Payload {
     }
     data['timeSlot'] = this.timeSlot;
     data['totalAmount'] = this.totalAmount;
+    data['paidAmount'] = this.paidAmount;
+    data['usedCoins'] = this.usedCoins;
     data['discount'] = this.discount;
     data['comments'] = this.comments;
     data['orderDate'] = this.orderDate;
@@ -121,11 +137,11 @@ class Menus {
   String? orderId;
   String? menuId;
   String? menuName;
-  String? photo;
+  Null? photo;
   String? restaurantMenuType;
-  double? quantityAmount;
+  int? quantityAmount;
   int? quantity;
-  double? parcelAmount;
+  int? parcelAmount;
 
   Menus(
       {this.orderedMenuId,

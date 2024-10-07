@@ -73,7 +73,7 @@ class _HomeTabState extends State<HomeTab> {
         child: WillPopScope(
           onWillPop: ()=>exit(0),
           child: Scaffold(
-            backgroundColor: AppColors.textFieldBorderColor,
+            backgroundColor: AppColors.textFieldBg,
             appBar: AppBar(
               backgroundColor: AppColors.appPrimaryColor,
               leading: IconButton(
@@ -89,51 +89,33 @@ class _HomeTabState extends State<HomeTab> {
                 ),
               ),
               elevation: 0,
-              actions: [
-               /* IconButton(
-                  onPressed: ()=>Navigator.pushNamed(context, AppRoutes.rewards),
-                  icon: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Image.asset(
-                      'assets/ic_bell.png',
-                      color: AppColors.white,
-                    ),
-                  ),
-                ),*/
-                /*IconButton(
-                  onPressed: ()=>Navigator.pushNamed(context, AppRoutes.rewards),
-                  icon: Image.asset(
-                    'assets/ic_wallet.png',
-                    width: 28,
-                    height: 28,
-                    color: AppColors.white,
-                  ),
-                )*/
-              ],
             ),
-            floatingActionButton: FloatingActionButton(
-              backgroundColor: AppColors.appPrimaryColor,
-              onPressed: () {
-                setState(() {
-                  if (_isShowMaps) {
-                    _isShowMaps = false;
-                  } else {
-                    _isShowMaps = true;
-                  }
-                });
-              },
-              tooltip: 'Increment',
-              elevation: 8.0,
-              child: _isShowMaps
-                  ? const Icon(
-                Icons.location_on,
-                color: AppColors.white,
-                size: 32,
-              )
-                  : const Icon(
-                Icons.list_alt_rounded,
-                color: AppColors.white,
-                size: 32,
+            floatingActionButton: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20.0,horizontal: 8.0),
+              child: FloatingActionButton(
+                backgroundColor: AppColors.appPrimaryColor,
+                onPressed: () {
+                  setState(() {
+                    if (_isShowMaps) {
+                      _isShowMaps = false;
+                    } else {
+                      _isShowMaps = true;
+                    }
+                  });
+                },
+                tooltip: 'Increment',
+                elevation: 8.0,
+                child: _isShowMaps
+                    ? const Icon(
+                  Icons.location_on,
+                  color: AppColors.white,
+                  size: 32,
+                )
+                    : const Icon(
+                  Icons.list_alt_rounded,
+                  color: AppColors.white,
+                  size: 32,
+                ),
               ),
             ),
             body: Column(
@@ -173,12 +155,7 @@ class _HomeTabState extends State<HomeTab> {
                                 .of(context)
                                 .size
                                 .height * 0.2),
-                            Image.asset(
-                              'assets/ic_no_hotel.png',
-                              width: 100,
-                              height: 100,
-                              fit: BoxFit.fitWidth,
-                            ),
+                            Icon(Icons.no_food,color: AppColors.rewardsText,size: 86),
                             const Gap(20),
                             Container(
                               child: Center(
@@ -211,7 +188,7 @@ class _HomeTabState extends State<HomeTab> {
         height: MediaQuery
             .of(context)
             .size
-            .height * 0.16,
+            .height * 0.14,
         width: MediaQuery
             .of(context)
             .size
@@ -219,8 +196,8 @@ class _HomeTabState extends State<HomeTab> {
         decoration: const BoxDecoration(
           color: AppColors.appPrimaryColor,
           borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(30),
-            bottomRight: Radius.circular(30),
+            bottomLeft: Radius.circular(20),
+            bottomRight: Radius.circular(20),
           ),
         ),
         child: Padding(
@@ -290,17 +267,14 @@ class _HomeTabState extends State<HomeTab> {
                             contentPadding: EdgeInsets.symmetric(horizontal: 0),
                             border: InputBorder.none,
                           ),
-                          padding: const EdgeInsets.symmetric(horizontal: 18),
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
                           value: selectedDistance,
+
                           menuMaxHeight: MediaQuery
                               .of(context)
                               .size
                               .height * 0.4,
-                          icon: Image.asset(
-                            'assets/ic_dropdown_arrow.png',
-                            width: 12.0,
-                            height: 12.0,
-                          ),
+                          icon:Icon(Icons.keyboard_arrow_down,size: 20,),
                           items: Strings.distance_type.map((double value) {
                             return DropdownMenuItem(
                               value: value,
@@ -337,17 +311,13 @@ class _HomeTabState extends State<HomeTab> {
                             contentPadding: EdgeInsets.symmetric(horizontal: 0),
                             border: InputBorder.none,
                           ),
-                          padding: const EdgeInsets.symmetric(horizontal: 18),
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
                           value: selectedMode,
                           menuMaxHeight: MediaQuery
                               .of(context)
                               .size
                               .height * 0.4,
-                          icon: Image.asset(
-                            'assets/ic_dropdown_arrow.png',
-                            width: 12.0,
-                            height: 12.0,
-                          ),
+                          icon:Icon(Icons.keyboard_arrow_down,size: 20,),
                           items: Strings.travel_mode.map((String value) {
                             return DropdownMenuItem(
                               value: value,

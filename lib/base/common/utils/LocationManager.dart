@@ -12,11 +12,7 @@ class LocationManager {
 
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      return LocationInfo(
-        latitude: 0,
-        longitude: 0,
-        permissionState: PermissionState.locationServiceDisabled,
-      );
+      LocationManager().openLocationSettings();
     }
 
     permission = await Geolocator.checkPermission();

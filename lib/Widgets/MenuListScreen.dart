@@ -47,6 +47,9 @@ class _MenuListScreenState extends State<MenuListScreen> {
   int _totalItemCount = 0;
   final MenuListBloc _menuListBloc = MenuListBloc();
   final List cartItems = [];
+  List vegMenuItems = [];
+  List nonvegMenuItems = [];
+  List bestSellerMenuItems = [];
   Map<String, Map<String, dynamic>> uniqueMenuMap = {};
   String userId='';
 
@@ -65,9 +68,10 @@ class _MenuListScreenState extends State<MenuListScreen> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       appBar: AppBar(
         elevation: 0.0,
+
         title: Text(
           widget.restaurantName!,
-          style: AppFonts.appBarText,
+          style: AppFonts.title,
         ),
         leading: Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -78,8 +82,7 @@ class _MenuListScreenState extends State<MenuListScreen> {
                 Navigator.pop(context);
               },
             )),
-        backgroundColor: AppColors.white,
-        centerTitle: true,
+        backgroundColor: AppColors.appPrimaryColor,
       ),
       floatingActionButton: _showButton
           ? FloatingActionButton.extended(
@@ -396,7 +399,7 @@ class _MenuListScreenState extends State<MenuListScreen> {
                               )));
                         } else if (state is FetchedListsState) {
                           return state.data?.length == 0
-                              ? Center(child: Text('No Items Found'))
+                              ? Expanded(child: Center(child: Text('No Items Found')))
                               : Padding(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 12.0),

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gap/gap.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uggiso/Bloc/CreateOrderBloc/CreateOrderEvent.dart';
@@ -96,7 +97,6 @@ class _CreateOrderState extends State<CreateOrder> {
               },
             )),
         backgroundColor: AppColors.white,
-        centerTitle: true,
       ),
       body: BlocProvider(
         create: (context) => _createOrderBloc,
@@ -115,7 +115,7 @@ class _CreateOrderState extends State<CreateOrder> {
                   senderId: state.data.payload!.customerId!,
                   status: "SUCCESS",
                   transactionId: txnId,
-                  orderNumber: ''));
+                  orderNumber: state.data.payload!.orderNumber!));
               initializeService(widget.restLat!, widget.restLng!,
                   state.data.payload!.orderId!);
               Navigator.pushNamedAndRemoveUntil(
@@ -348,32 +348,46 @@ class _CreateOrderState extends State<CreateOrder> {
                       ),
                     ),
                     Gap(18),
-                    Row(
-                      children: [
-                        TextFieldCurvedEdges(
-                            controller: points_controller,
-                            backgroundColor: AppColors.white,
-                            keyboardType: TextInputType.number,
-                            borderColor: AppColors.appPrimaryColor),
-                        Gap(4),
-                        RoundedElevatedButton(
-                            width: 80,
-                            height: 40,
-                            text: Strings.apply,
-                            onPressed: (){
-                              calculatePoints(double.parse(points_controller.text));
-                            },
-                            cornerRadius: 10,
-                            buttonColor: AppColors.appSecondaryColor,
-                            textStyle:AppFonts.smallText
-                                .copyWith(color: AppColors.white) )
-                      ],
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Align(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          'you have $uggiso_point_count in your wallet and you can redeem upto $uggiso_point_limit',
+                          style: AppFonts.smallText,
+                        ),
+                      ),
                     ),
                     Gap(8),
-                    Text(
-                      'you have $uggiso_point_count in your wallet and you can redeem upto $uggiso_point_limit',
-                      style: AppFonts.subHeader,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.6,
+                            child: TextFieldCurvedEdges(
+                                controller: points_controller,
+                                backgroundColor: AppColors.white,
+                                keyboardType: TextInputType.number,
+                                borderRadius: 5,
+                                borderColor: AppColors.appSecondaryColor),
+                          ),
+                          RoundedElevatedButton(
+                              width: 80,
+                              height: 50,
+                              text: Strings.apply,
+                              onPressed: () {
+                                calculatePoints(
+                                    double.parse(points_controller.text));
+                              },
+                              cornerRadius: 10,
+                              buttonColor: AppColors.appSecondaryColor,
+                              textStyle: AppFonts.smallText)
+                        ],
+                      ),
                     ),
+
                     Gap(18),
                     Text(
                       Strings.bill_details,
@@ -417,7 +431,7 @@ class _CreateOrderState extends State<CreateOrder> {
                                   style: AppFonts.title,
                                 ),
                                 Text(
-                                  '$gst_charges',
+                                  '${gst_charges.toStringAsFixed(2)}',
                                   style: AppFonts.title,
                                 )
                               ],
@@ -491,14 +505,15 @@ class _CreateOrderState extends State<CreateOrder> {
                         ),
                       ),
                     ),
-                    Gap(18),
-                    Text(
-                      Strings.payment_methods,
-                      style: AppFonts.subHeader,
-                    ),
-                    Gap(100),
+                    Gap(36),
+                    // Text(
+                    //   Strings.payment_methods,
+                    //   style: AppFonts.subHeader,
+                    // ),
+                    // Gap(100),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0, vertical: 12.0),
                       child: RoundedElevatedButton(
                         width: MediaQuery.of(context).size.width * 0.8,
                         height: 40.0,
@@ -548,8 +563,9 @@ class _CreateOrderState extends State<CreateOrder> {
   getPointsDetails() async {
     _createOrderBloc.add(OnGetRewardsDetails(userId: userId));
   }
-  calculatePoints(double points){
-    uggiso_point_count = (uggiso_point_count!)-points;
+
+  calculatePoints(double points) {
+    uggiso_point_count = (uggiso_point_count!) - points;
   }
 
   createOrder() async {
@@ -584,38 +600,38 @@ class _CreateOrderState extends State<CreateOrder> {
     //     paidAmount: item_sub_total,
     //     usedCoins: 0));
 
-    // if(txnStatus == 'SUCCESS') {
-    //
-    //   _createOrderBloc.add(OnPaymentClicked(
-    //       restaurantId: widget.restaurantId!,
-    //       restaurantName: widget.restaurantName!,
-    //       customerId: userId,
-    //       menuData: menuList,
-    //       orderType: "PARCEL",
-    //       paymentType: 'UPI',
-    //       orderStatus: 'CREATED',
-    //       totalAmount: item_sub_total.toInt(),
-    //       comments: 'Please do little more spicy',
-    //       timeSlot: 'null',
-    //       transMode: 'BIKE'));
-    //
-    // }
-    // else{
-    //   _createOrderBloc.add(OnAddTransactionData(orderId:'',
-    //       receiverId: widget.restaurantId!,
-    //       senderId:userId,
-    //       status: result[0].toString(),transactionId: result[1].toString()));
-    //
-    //   Fluttertoast.showToast(
-    //       msg: txnStatus,
-    //       toastLength: Toast.LENGTH_SHORT,
-    //       gravity: ToastGravity.CENTER,
-    //       timeInSecForIosWeb: 1,
-    //       backgroundColor: Colors.red,
-    //       textColor: Colors.white,
-    //       fontSize: 16.0
-    //   );
-    // }
+    if (txnStatus == 'SUCCESS') {
+      _createOrderBloc.add(OnPaymentClicked(
+          restaurantId: widget.restaurantId!,
+          restaurantName: widget.restaurantName!,
+          customerId: userId,
+          menuData: menuList,
+          orderType: "PARCEL",
+          paymentType: 'UPI',
+          orderStatus: 'CREATED',
+          totalAmount: item_sub_total.toInt(),
+          comments: 'Please do little more spicy',
+          timeSlot: 'null',
+          transMode: 'BIKE',
+          usedCoins: 0,
+          paidAmount: item_sub_total));
+    } else {
+      _createOrderBloc.add(OnAddTransactionData(
+          orderId: '',
+          receiverId: widget.restaurantId!,
+          senderId: userId,
+          status: result[0].toString(),
+          transactionId: result[1].toString(),orderNumber: ''));
+
+      Fluttertoast.showToast(
+          msg: txnStatus,
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+    }
     // sendPushNotification('', 'order created', 'check for details');
   }
 

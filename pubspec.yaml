@@ -68,6 +68,13 @@ dependencies:
   flutter_polyline_points: ^2.1.0
   webview_flutter: ^4.9.0
   url_launcher: ^6.3.0
+  flutter_native_splash: ^2.4.1
+
+flutter_native_splash:
+  color: "#FFFFB508"  # Change this to your desired splash background color
+  image: assets/uggiso_splash.png  # Path to your splash image
+  android: true
+  ios: true
 
 dev_dependencies:
   flutter_test:

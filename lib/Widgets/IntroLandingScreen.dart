@@ -20,13 +20,13 @@ class _IntroLandingScreenState extends State<IntroLandingScreen> {
   void nextPage() {
     setState(() {
       print('this is current page : $_currentPage');
-      if (_currentPage <= 2) {
+      if (_currentPage < 2) {
         _currentPage++;
         _pageController.jumpToPage(_currentPage);
         print('this is current page inside: $_currentPage');
 
       }
-      if (_currentPage == 3) {
+      else if (_currentPage == 2) {
         Navigator.pushReplacementNamed(context, AppRoutes.signupScreen);
       }
     });
@@ -63,6 +63,7 @@ class _IntroLandingScreenState extends State<IntroLandingScreen> {
                 padding: const EdgeInsets.only(top: 130.0),
                 child: PageView(
                   controller: _pageController,
+                  physics: NeverScrollableScrollPhysics(),
                   onPageChanged: (int page) {
                     setState(() {
                       _currentPage = page;
