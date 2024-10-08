@@ -42,7 +42,7 @@ class MenuListScreen extends StatefulWidget {
 class _MenuListScreenState extends State<MenuListScreen> {
   bool _isVeg = false;
   bool _isNonVeg = false;
-  bool _isbestSeller = false;
+  bool _isbestSeller = true;
   bool _showButton = false;
   int _totalItemCount = 0;
   final MenuListBloc _menuListBloc = MenuListBloc();
@@ -375,7 +375,7 @@ class _MenuListScreenState extends State<MenuListScreen> {
                                   children: [
                                     const Gap(4),
                                     Text(
-                                      Strings.bestseller,
+                                      Strings.all,
                                       style: AppFonts.title.copyWith(
                                           fontWeight: FontWeight.w500),
                                     ),
@@ -400,73 +400,7 @@ class _MenuListScreenState extends State<MenuListScreen> {
                         } else if (state is FetchedListsState) {
                           return state.data?.length == 0
                               ? Expanded(child: Center(child: Text('No Items Found')))
-                              : Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 12.0),
-                                  child: ListView.builder(
-                                      itemCount: state.data?.length,
-                                      shrinkWrap: true,
-                                      physics: NeverScrollableScrollPhysics(),
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        return MenuItemCard(
-                                          listData: state.data![index],
-                                          itemLength: state.data!.length,
-                                          onItemAdded: () {
-                                            setState(() {
-                                              _totalItemCount++;
-                                              _showButton = true;
-                                            });
-                                            cartItems.add({
-                                              'menuId': state
-                                                  .data![index].menuId
-                                                  .toString(),
-                                              'menuName': state
-                                                  .data![index].menuName
-                                                  .toString(),
-                                              'menuType': state
-                                                  .data![index].menuType
-                                                  .toString(),
-                                              'price':
-                                                  state.data![index].price!,
-                                              'restaurantMenuType': state
-                                                  .data![index]
-                                                  .restaurantMenuType!,
-                                              'quantity': 1
-                                            });
-                                          },
-                                          onEmptyCart: (value) {
-                                            setState(() {
-                                              _totalItemCount--;
-                                              if (_totalItemCount == 0)
-                                                _showButton = false;
-                                            });
-                                            cartItems.removeWhere((item) =>
-                                                item['menuId'] == value);
-                                          },
-                                          onQuantityChanged: (int value) {
-                                            cartItems.add({
-                                              'menuId': state
-                                                  .data![index].menuId
-                                                  .toString(),
-                                              'menuName': state
-                                                  .data![index].menuName
-                                                  .toString(),
-                                              'menuType': state
-                                                  .data![index].menuType
-                                                  .toString(),
-                                              'price':
-                                                  state.data![index].price!,
-                                              'restaurantMenuType': state
-                                                  .data![index]
-                                                  .restaurantMenuType!,
-                                              'quantity': value
-                                            });
-                                          },
-                                          userId: userId,
-                                        );
-                                      }),
-                                );
+                              : MenuItemCardDisplay(state.data);
                         }
                         return Container();
                       },
@@ -487,5 +421,65 @@ class _MenuListScreenState extends State<MenuListScreen> {
       userId = prefs.getString('userId') ?? '';
     });
     _menuListBloc.add(onInitialised(userId: userId,restaurantId:widget.restaurantId ));
+  }
+
+  Widget MenuItemCardDisplay(List? data){
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+          horizontal: 12.0),
+      child: ListView.builder(
+          itemCount: data?.length,
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          itemBuilder:
+              (BuildContext context, int index) {
+            return MenuItemCard(
+              listData: data![index],
+              itemLength: data!.length,
+              onItemAdded: () {
+                setState(() {
+                  _totalItemCount++;
+                  _showButton = true;
+                });
+                cartItems.add({
+                  'menuId': data[index].menuId
+                      .toString(),
+                  'menuName': data[index].menuName
+                      .toString(),
+                  'menuType': data[index].menuType
+                      .toString(),
+                  'price': data[index].price!,
+                  'restaurantMenuType': data[index]
+                      .restaurantMenuType!,
+                  'quantity': 1
+                });
+              },
+              onEmptyCart: (value) {
+                setState(() {
+                  _totalItemCount--;
+                  if (_totalItemCount == 0)
+                    _showButton = false;
+                });
+                cartItems.removeWhere((item) =>
+                item['menuId'] == value);
+              },
+              onQuantityChanged: (int value) {
+                cartItems.add({
+                  'menuId': data[index].menuId
+                      .toString(),
+                  'menuName':data[index].menuName
+                      .toString(),
+                  'menuType': data[index].menuType
+                      .toString(),
+                  'price':data[index].price!,
+                  'restaurantMenuType': data[index]
+                      .restaurantMenuType!,
+                  'quantity': value
+                });
+              },
+              userId: userId,
+            );
+          }),
+    );
   }
 }

@@ -79,6 +79,7 @@ class Strings {
   static const veg = 'veg';
   static const non_veg = 'Non-veg';
   static const bestseller = 'Best seller';
+  static const all = 'All';
   static const add = 'ADD';
   static const payment_options = 'Payment Options';
   static const credit_debit_cards = 'Credit & Debit Cards';
@@ -123,10 +124,12 @@ class Strings {
   static const something_went_wrong = 'Something went wrong. Please try again later';
   static const apply = 'Apply';
   static const privacy_policy = 'Privacy Policy';
-  static const privacy_policy_url = 'https://uggiso.com/privacy-policy/';
+  static const privacy_policy_url = 'https://swasthtechnologies.blogspot.com/2024/10/privacy-policy-uggiso.html';
   static const terms_and_conditions_url = 'https://uggiso.com/terms-and-conditions/';
   static const terms_and_conditions = 'Terms And Conditions';
   static const about_us_url = 'https://uggiso.com/about/';
+  static const location_alert_title = 'Allow "Uggiso" to access your background location even when order is placed even app closed';
+  static const location_permission_request = 'This information helps us provide location-based features and improve the overall functionality of the app';
 
 
   static const List<Map<String, dynamic>> profileItemList = [
@@ -173,11 +176,9 @@ class Strings {
   static const List<String> travel_mode = ["BIKE", "CAR", "WALK", "BUS"];
 
   static const List<String> time_slot = [
-    '10-15 min',
-    '15-20 min',
-    '20-25 min',
-    '25-30 min',
-    '30-45 min'
+    'After 5min', 'After 10min', 'Immediately'
   ];
+
+  static const List<String> order_type = ['Take Away', 'Dine In'];
 
 }

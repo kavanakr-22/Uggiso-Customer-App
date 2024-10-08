@@ -11,9 +11,9 @@ class LocationManager {
     LocationPermission permission;
 
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      LocationManager().openLocationSettings();
-    }
+    // if (!serviceEnabled) {
+    //   LocationManager().openLocationSettings();
+    // }
 
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
@@ -37,8 +37,7 @@ class LocationManager {
 
     try {
       var position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high
-      );
+          desiredAccuracy: LocationAccuracy.high);
       return LocationInfo(
         latitude: position.latitude,
         longitude: position.longitude,
@@ -69,6 +68,10 @@ class LocationManager {
   }
 }
 
+Future<bool> isLocationEnabled() {
+  return Geolocator.isLocationServiceEnabled();
+}
+
 enum PermissionState {
   granted,
   denied,
@@ -76,7 +79,6 @@ enum PermissionState {
   locationServiceDisabled,
   none,
 }
-
 
 class LocationInfo {
   final double latitude;

@@ -39,7 +39,7 @@ class CreateOrder extends StatefulWidget {
 }
 
 class _CreateOrderState extends State<CreateOrder> {
-  String selectedSlot = '10-15 min';
+  String selectedSlot = 'Immediately';
   double item_total = 0.0;
   double item_sub_total = 0.0;
   double gst_charges = 18.0;
@@ -569,12 +569,6 @@ class _CreateOrderState extends State<CreateOrder> {
   }
 
   createOrder() async {
-    print('this is menu list : $menuList');
-    print('this is rest id : ${widget.restaurantId!}');
-    print('this is user id : $userId');
-    print('this is user name : $userName');
-    print('this is user number : $userNumber');
-    print('this is total amount : ${item_sub_total}');
     final List<Object?> result = await platform.invokeMethod('callSabPaisaSdk',
         [userName, "", "", userNumber, item_sub_total.toString()]);
     print('this is the transaction result : $result');
@@ -611,7 +605,7 @@ class _CreateOrderState extends State<CreateOrder> {
           orderStatus: 'CREATED',
           totalAmount: item_sub_total.toInt(),
           comments: 'Please do little more spicy',
-          timeSlot: 'null',
+          timeSlot: selectedSlot,
           transMode: 'BIKE',
           usedCoins: 0,
           paidAmount: item_sub_total));

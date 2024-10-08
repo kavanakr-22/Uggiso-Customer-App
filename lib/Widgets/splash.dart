@@ -1,10 +1,13 @@
 import 'package:device_uuid/device_uuid.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uggiso/app_routes.dart';
 import 'package:uggiso/base/common/utils/LocationManager.dart';
 import 'package:uggiso/base/common/utils/colors.dart';
+import 'package:uggiso/base/common/utils/fonts.dart';
+import 'package:uggiso/base/common/utils/strings.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -18,7 +21,6 @@ class _SplashScreenState extends State<SplashScreen> {
   String? fcmToken = '';
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
-
   @override
   void initState() {
     super.initState();
@@ -28,55 +30,37 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        width: MediaQuery
-            .of(context)
-            .size
-            .width,
-        height: MediaQuery
-            .of(context)
-            .size
-            .height,
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
         color: AppColors.appPrimaryColor,
-        child: Image.asset('assets/uggiso_splash.png', width: 200, height: 200)
-    );
+        child:
+            Image.asset('assets/uggiso_splash.png', width: 200, height: 200));
   }
 
-  void checkUserLoggedStatus(){
-
+  void checkUserLoggedStatus() {
     getDeviceId();
-
   }
-  void getDeviceId()async{
+
+  void getDeviceId() async {
     final prefs = await SharedPreferences.getInstance();
     deviceId = await DeviceUuid().getUUID();
-    bool? _isUserLoggedIn = false;
+    prefs.setString('device_id', deviceId!);
     print('this is device id : $deviceId');
     initFirebaseMessaging();
-    LocationInfo _location = await LocationManager.getCurrentPosition();
 
-
-     // print('this is location permission ${_location.permissionState}');
-    // if(_location.permissionState == PermissionState.locationServiceDisabled){
-    //   LocationManager().openLocationSettings();
-    //   _location = await LocationManager.getCurrentPosition();
-    // }
-
-    prefs.setString('device_id', deviceId!);
-    prefs.setDouble('user_longitude', _location.longitude);
-    prefs.setDouble('user_latitude', _location.latitude);
-
-    _isUserLoggedIn = prefs.getBool('is_user_logged_in');
-    if(_isUserLoggedIn==null || _isUserLoggedIn ==false){
-      Navigator.popAndPushNamed(context, AppRoutes.introLanding);
-
+    if (await isLocationEnabled()) {
+      print('this is islocation enable true');
+      await getUserCurrentLocation(true);
+    } else {
+      print('this is islocation enable false');
+      await _showLocationFetchingDialog();
     }
-    else{
-      Navigator.popAndPushNamed(context, AppRoutes.homeScreen);
 
-    }
+
 
   }
-  void initFirebaseMessaging() async{
+
+  void initFirebaseMessaging() async {
     final prefs = await SharedPreferences.getInstance();
 
     _firebaseMessaging.getToken().then((token) {
@@ -89,4 +73,81 @@ class _SplashScreenState extends State<SplashScreen> {
     });
   }
 
+   _showLocationFetchingDialog() {
+    // WidgetsBinding.instance.addPostFrameCallback((_) {});
+    showDialog(
+        context: context,
+        builder: (ctx) {
+          return AlertDialog(
+            title: Column(
+              children: [
+                Icon(Icons.location_on,
+                    color: AppColors.appSecondaryColor, size: 40),
+                Gap(4),
+                Text(Strings.location_alert_title,
+                    style: AppFonts.subHeader,textAlign: TextAlign.center,),
+              ],
+            ),
+            content: Text(
+              Strings.location_permission_request,
+              style: AppFonts.smallText,
+              textAlign: TextAlign.center,
+            ),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  // Get.back(); // Close the dialog
+                  // getLatLong(); // Retry fetching location
+                  getUserCurrentLocation(false);
+                  Navigator.of(ctx).pop();
+                },
+                child: Text(
+                  'Deny',
+                  style:
+                      AppFonts.title.copyWith(color: AppColors.appPrimaryColor),
+                ),
+              ),
+
+              TextButton(
+                onPressed: () {
+                  // Get.back(); // Close the dialog
+                  // getLatLong(); // Retry fetching location
+                  getUserCurrentLocation(true);
+                  Navigator.of(ctx).pop();
+                },
+                child: Text(
+                  'Allow',
+                  style:
+                  AppFonts.title.copyWith(color: AppColors.appPrimaryColor),
+                ),
+              ),
+            ],
+          );
+        });
+  }
+
+  getUserCurrentLocation(bool isGetLocation) async {
+
+    bool? _isUserLoggedIn = false;
+    final prefs = await SharedPreferences.getInstance();
+
+    if(isGetLocation){
+      LocationInfo _location = await LocationManager.getCurrentPosition();
+      print('this is user lat lng : ${_location.longitude} and ${_location.latitude}');
+      prefs.setDouble('user_longitude', _location.longitude);
+      prefs.setDouble('user_latitude', _location.latitude);
+    }
+    _isUserLoggedIn = prefs.getBool('is_user_logged_in');
+
+    if(_isUserLoggedIn==null || _isUserLoggedIn ==false){
+
+      Navigator.popAndPushNamed(context, AppRoutes.introLanding);
+
+    }
+    else{
+      Navigator.popAndPushNamed(context, AppRoutes.homeScreen);
+
+    }
+
+  }
 }
