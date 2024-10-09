@@ -120,6 +120,7 @@ class _VerifyOtpState extends State<VerifyOtp> {
 
             }
             else if(state is deviceDataUpdated){
+              print('device data updated : ${state.props}');
               Navigator.popAndPushNamed(context, AppRoutes.homeScreen);
             }
             else if(state is onUserRegisteredState){
@@ -132,6 +133,7 @@ class _VerifyOtpState extends State<VerifyOtp> {
                 Navigator.popAndPushNamed(context, AppRoutes.registerUser);
               }
               else{
+                print('device data not updated');
                 saveUserDetails(state.name!,state.id!);
                 Navigator.popAndPushNamed(context, AppRoutes.homeScreen);
 

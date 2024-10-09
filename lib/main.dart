@@ -75,27 +75,27 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-
+    _firebaseMessaging.requestPermission();
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-    _firebaseMessaging.getToken().then((token) {
-      print('Token: $token');
-    });
+    // _firebaseMessaging.getToken().then((token) {
+    //   print('Token: $token');
+    // });
 
-/*    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       print('onMessage: ${message.messageId}');
       // Handle the notification when the app is in the foreground
-    });*/
+    });
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       print('onMessageOpenedApp: $message');
       // Handle the notification when the app is in the background and opened
     });
 
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      RemoteNotification? notification = message.notification;
-      AndroidNotification? android = message.notification?.android;
-
-    });
+    // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    //   RemoteNotification? notification = message.notification;
+    //   AndroidNotification? android = message.notification?.android;
+    //
+    // });
   }
   // This widget is the root of your application.
   @override

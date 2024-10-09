@@ -10,6 +10,7 @@ import 'package:uggiso/Bloc/CreateOrderBloc/CreateOrderEvent.dart';
 import 'package:uggiso/Bloc/CreateOrderBloc/CreateOrderState.dart';
 import 'package:uggiso/Widgets/ui-kit/RoundedElevatedButton.dart';
 import 'package:uggiso/Widgets/ui-kit/TextFieldCurvedEdges.dart';
+import 'package:uggiso/base/common/utils/LocationManager.dart';
 import 'package:uggiso/base/common/utils/background_service.dart';
 import 'package:uggiso/base/common/utils/fonts.dart';
 import 'package:uggiso/base/common/utils/strings.dart';
@@ -108,6 +109,7 @@ class _CreateOrderState extends State<CreateOrder> {
               CircularProgressIndicator();
             }
             if (state is onLoadedHotelState) {
+              showLoader = false;
               print('this is orderId  : ${state.data.payload?.orderId}');
               _createOrderBloc.add(OnAddTransactionData(
                   orderId: state.data.payload!.orderId!,
@@ -116,6 +118,7 @@ class _CreateOrderState extends State<CreateOrder> {
                   status: "SUCCESS",
                   transactionId: txnId,
                   orderNumber: state.data.payload!.orderNumber!));
+
               initializeService(widget.restLat!, widget.restLng!,
                   state.data.payload!.orderId!);
               Navigator.pushNamedAndRemoveUntil(
@@ -124,7 +127,14 @@ class _CreateOrderState extends State<CreateOrder> {
                   (Route<dynamic> route) => false);
             }
             if (state is onCoinDetailsFetched) {
-              uggiso_point_count = state.data.payload?.balance!;
+              showLoader = false;
+              if((state.data.payload?.balance!??0.0) > 10.0)
+                {
+                  uggiso_point_count = 10.0;
+                }
+              else{
+                uggiso_point_count = 0.0;
+              }
             }
           },
           child: showLoader
@@ -348,45 +358,45 @@ class _CreateOrderState extends State<CreateOrder> {
                       ),
                     ),
                     Gap(18),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Align(
-                        alignment: Alignment.topLeft,
-                        child: Text(
-                          'you have $uggiso_point_count in your wallet and you can redeem upto $uggiso_point_limit',
-                          style: AppFonts.smallText,
-                        ),
-                      ),
-                    ),
-                    Gap(8),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.6,
-                            child: TextFieldCurvedEdges(
-                                controller: points_controller,
-                                backgroundColor: AppColors.white,
-                                keyboardType: TextInputType.number,
-                                borderRadius: 5,
-                                borderColor: AppColors.appSecondaryColor),
-                          ),
-                          RoundedElevatedButton(
-                              width: 80,
-                              height: 50,
-                              text: Strings.apply,
-                              onPressed: () {
-                                calculatePoints(
-                                    double.parse(points_controller.text));
-                              },
-                              cornerRadius: 10,
-                              buttonColor: AppColors.appSecondaryColor,
-                              textStyle: AppFonts.smallText)
-                        ],
-                      ),
-                    ),
+                    // Padding(
+                    //   padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    //   child: Align(
+                    //     alignment: Alignment.topLeft,
+                    //     child: Text(
+                    //       'you have $uggiso_point_count in your wallet and you can redeem upto $uggiso_point_limit',
+                    //       style: AppFonts.smallText,
+                    //     ),
+                    //   ),
+                    // ),
+                    // Gap(8),
+                    // Padding(
+                    //   padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    //   child: Row(
+                    //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //     children: [
+                    //       Container(
+                    //         width: MediaQuery.of(context).size.width * 0.6,
+                    //         child: TextFieldCurvedEdges(
+                    //             controller: points_controller,
+                    //             backgroundColor: AppColors.white,
+                    //             keyboardType: TextInputType.number,
+                    //             borderRadius: 5,
+                    //             borderColor: AppColors.appSecondaryColor),
+                    //       ),
+                    //       RoundedElevatedButton(
+                    //           width: 80,
+                    //           height: 50,
+                    //           text: Strings.apply,
+                    //           onPressed: () {
+                    //             calculatePoints(
+                    //                 double.parse(points_controller.text));
+                    //           },
+                    //           cornerRadius: 10,
+                    //           buttonColor: AppColors.appSecondaryColor,
+                    //           textStyle: AppFonts.smallText)
+                    //     ],
+                    //   ),
+                    // ),
 
                     Gap(18),
                     Text(
@@ -521,8 +531,13 @@ class _CreateOrderState extends State<CreateOrder> {
                         textStyle: AppFonts.title,
                         cornerRadius: 8,
                         buttonColor: AppColors.appPrimaryColor,
-                        onPressed: () {
+                        onPressed: () async{
+                          if(await isLocationEnabled()){
                           createOrder();
+                          }
+                         else{
+                            getUserLocation();
+                          }
                         },
                       ),
                     )
@@ -544,6 +559,17 @@ class _CreateOrderState extends State<CreateOrder> {
     });
   }
 
+  getUserLocation()async{
+    final prefs = await SharedPreferences.getInstance();
+
+    LocationInfo _location = await LocationManager.getCurrentPosition();
+    print('this is user lat lng : ${_location.longitude} and ${_location.latitude}');
+    prefs.setDouble('user_longitude', _location.longitude);
+    prefs.setDouble('user_latitude', _location.latitude);
+    createOrder();
+  }
+
+
   getUserDetails() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -553,8 +579,6 @@ class _CreateOrderState extends State<CreateOrder> {
       _isUggiso_points_selected = prefs.getBool('use_points_status') ?? false;
       // uggiso_coin_count = prefs.getDouble('use_coins_count') ?? 0.0;
     });
-    print('uggiso point status : ${_isUggiso_points_selected}');
-    print('uggiso point count : ${uggiso_point_count}');
     if (_isUggiso_points_selected) {
       getPointsDetails();
     }
@@ -564,11 +588,8 @@ class _CreateOrderState extends State<CreateOrder> {
     _createOrderBloc.add(OnGetRewardsDetails(userId: userId));
   }
 
-  calculatePoints(double points) {
-    uggiso_point_count = (uggiso_point_count!) - points;
-  }
-
   createOrder() async {
+
     final List<Object?> result = await platform.invokeMethod('callSabPaisaSdk',
         [userName, "", "", userNumber, item_sub_total.toString()]);
     print('this is the transaction result : $result');

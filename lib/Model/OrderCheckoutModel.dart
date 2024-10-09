@@ -44,11 +44,11 @@ class Payload {
   String? orderType;
   String? travelMode;
   List<Menus>? menus;
-  Null? timeSlot;
-  int? totalAmount;
-  int? paidAmount;
+  String? timeSlot;
+  double? totalAmount;
+  double? paidAmount;
   int? usedCoins;
-  int? discount;
+  double? discount;
   String? comments;
   String? orderDate;
   String? orderTime;
@@ -137,11 +137,11 @@ class Menus {
   String? orderId;
   String? menuId;
   String? menuName;
-  Null? photo;
+  String? photo;
   String? restaurantMenuType;
-  int? quantityAmount;
+  double? quantityAmount;
   int? quantity;
-  int? parcelAmount;
+  double? parcelAmount;
 
   Menus(
       {this.orderedMenuId,

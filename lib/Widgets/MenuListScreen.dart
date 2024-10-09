@@ -424,6 +424,8 @@ class _MenuListScreenState extends State<MenuListScreen> {
   }
 
   Widget MenuItemCardDisplay(List? data){
+    // List vegData = data?.where((item) => item.menuType == 'VEG').toList() ?? [];
+    // print('this is veg data : $vegData');
     return Padding(
       padding: const EdgeInsets.symmetric(
           horizontal: 12.0),

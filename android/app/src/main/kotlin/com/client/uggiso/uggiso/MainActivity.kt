@@ -1,6 +1,5 @@
 package com.uggiso.customer
 
-
 import android.util.Log
 import android.widget.Toast
 import androidx.annotation.NonNull
@@ -43,17 +42,37 @@ class MainActivity : FlutterActivity(), IPaymentSuccessCallBack<TransactionRespo
                         .setTransUserPassword("RIADA_SP336")
                         .setIntermediateLoading(false)
                         .build()
-                SabPaisaGateway.setInitUrl("https://stage-securepay.sabpaisa.in/SabPaisa/sabPaisaInit?v=1")
-                SabPaisaGateway.setEndPointBaseUrl("https://stage-securepay.sabpaisa.in")
-                SabPaisaGateway.setTxnEnquiryEndpoint("https://stage-txnenquiry.sabpaisa.in")
+
+                //live creds
+                val sabPaisaGateway2 =
+                    SabPaisaGateway.builder()
+                        .setAmount(arguments[4].toDouble())   //Mandatory Parameter
+                        .setFirstName(arguments[0]) //Mandatory Parameter
+                        .setLastName(arguments[1]) //Mandatory Parameter
+                        .setMobileNumber(arguments[3])
+                        .setEmailId(arguments[2])//Mandatory Parameter
+                        .setSabPaisaPaymentScreen(true)//Mandatory Parameter
+                        .setSalutation("")
+                        .setClientCode("UGGI90")
+                        .setAesApiIv("fj2IFxDQu28DkMXR")
+                        .setAesApiKey("SynVuliVLBPsfMUv")
+                        .setTransUserName("nithyapramodgc_18351")
+                        .setTransUserPassword("UGGI90_SP18351")
+                        .setIntermediateLoading(false)
+                        .build()
+
+
+//                SabPaisaGateway.setInitUrl("https://stage-securepay.sabpaisa.in/SabPaisa/sabPaisaInit?v=1")
+//                SabPaisaGateway.setEndPointBaseUrl("https://stage-securepay.sabpaisa.in")
+//                SabPaisaGateway.setTxnEnquiryEndpoint("https://stage-txnenquiry.sabpaisa.in")
 
                 //Live url
-/*                SabPaisaGateway.Companion.setInitUrlSabpaisa("https://securepay.sabpaisa.in/SabPaisa/sabPaisaInit?v=1");
-                SabPaisaGateway.Companion.setEndPointBaseUrlSabpaisa("https://securepay.sabpaisa.in");
-                SabPaisaGateway.Companion.setTxnEnquiryEndpointSabpaisa("https://txnenquiry.sabpaisa.in");*/
+                SabPaisaGateway.setInitUrl("https://securepay.sabpaisa.in/SabPaisa/sabPaisaInit?v=1");
+                SabPaisaGateway.setEndPointBaseUrl("https://securepay.sabpaisa.in");
+                SabPaisaGateway.setTxnEnquiryEndpoint("https://txnenquiry.sabpaisa.in");
 
-
-                sabPaisaGateway1.init(this@MainActivity, this)
+//                sabPaisaGateway1.init(this@MainActivity, this)
+                sabPaisaGateway2.init(this@MainActivity, this)
 
             } else {
                 Toast.makeText(this, "volla", Toast.LENGTH_LONG).show()

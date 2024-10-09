@@ -39,7 +39,6 @@ class _ProfileTabState extends State<ProfileTab> {
             icon: Image.asset('assets/ic_back_arrow.png'),
             onPressed: () {
               Navigator.pop(context);
-
             },
           ),
         ),
@@ -63,7 +62,9 @@ class _ProfileTabState extends State<ProfileTab> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: InkWell(
-              onTap: (){Navigator.pushNamed(context, AppRoutes.rewards);},
+              onTap: () {
+                Navigator.pushNamed(context, AppRoutes.rewards);
+              },
               child: RoundedContainer(
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height * 0.08,
@@ -77,8 +78,8 @@ class _ProfileTabState extends State<ProfileTab> {
                       Gap(8),
                       Text(
                         "Use My Uggiso Points",
-                        style:
-                            AppFonts.subHeader.copyWith(color: AppColors.appPrimaryColor),
+                        style: AppFonts.subHeader
+                            .copyWith(color: AppColors.appPrimaryColor),
                       )
                     ],
                   ),
@@ -95,9 +96,8 @@ class _ProfileTabState extends State<ProfileTab> {
                   onTap: () => goToNextPage(index),
                   child: ListContainerItem(
                       Strings.profileItemList[index]['image'],
-                    Strings.profileItemList[index]['title'],
-                    index
-                  ),
+                      Strings.profileItemList[index]['title'],
+                      index),
                 );
               },
             ),
@@ -107,18 +107,22 @@ class _ProfileTabState extends State<ProfileTab> {
     );
   }
 
-  Widget ListContainerItem(String icon, String text,int index) => Padding(
+  Widget ListContainerItem(String icon, String text, int index) => Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
         child: RoundedContainer(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height * 0.08,
             child: Row(
               children: [
-                index==2?Icon(Icons.rule):index==3?Icon(Icons.privacy_tip):Image.asset(
-                  icon,
-                  height: 24,
-                  width: 24,
-                ),
+                index == 2
+                    ? Icon(Icons.rule)
+                    : index == 3
+                        ? Icon(Icons.privacy_tip)
+                        : Image.asset(
+                            icon,
+                            height: 24,
+                            width: 24,
+                          ),
                 SizedBox(
                   width: 16.0,
                 ),
@@ -133,7 +137,7 @@ class _ProfileTabState extends State<ProfileTab> {
             cornerRadius: 8),
       );
 
-  goToNextPage(int index) {
+  goToNextPage(int index) async {
     switch (index) {
       case 0:
         return Navigator.pushNamed(context, AppRoutes.myOrders);
@@ -148,6 +152,7 @@ class _ProfileTabState extends State<ProfileTab> {
         return Navigator.pushNamed(context, AppRoutes.privacy_policy);
 
       case 4:
+        await signoutUser();
         return Navigator.popAndPushNamed(context, AppRoutes.signupScreen);
 
       case 5:
@@ -164,5 +169,10 @@ class _ProfileTabState extends State<ProfileTab> {
       userNumber = prefs.getString('mobile_number') ?? '';
       userName = prefs.getString('user_name') ?? '';
     });
+  }
+
+  signoutUser() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool('is_user_logged_in', false);
   }
 }

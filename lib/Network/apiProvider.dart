@@ -339,6 +339,8 @@ class ApiProvider {
 
   Future<UpdateOrderModel> updateOrderStatus(
       String orderId, String orderStatus) async {
+    print('calling update order status');
+    print('calling update order id : ${orderId} and status ${orderStatus}');
     try {
       Response response = await _dio.put(
           '${_url}${Constants.update_order_status}',
@@ -352,24 +354,24 @@ class ApiProvider {
     }
   }
 
-  Future<UpdateOrderModel> updateDevice(
-      String orderId, String orderStatus) async {
-    try {
-      Response response =
-          await _dio.put('${_url}${Constants.update_device}', data: {
-        "userId": orderId,
-        "deviceData": orderStatus,
-        "fcmToken": orderStatus,
-        "deviceUserType": "CUSTOMER"
-      });
-      print("${response.data}");
-
-      return UpdateOrderModel.fromJson(response.data);
-    } catch (error, stacktrace) {
-      print("Exception occured: $error stackTrace: $stacktrace");
-      return UpdateOrderModel.withError("Data not found / Connection issue");
-    }
-  }
+  // Future<UpdateOrderModel> updateDevice(
+  //     String orderId, String orderStatus) async {
+  //   try {
+  //     Response response =
+  //         await _dio.put('${_url}${Constants.update_device}', data: {
+  //       "userId": orderId,
+  //       "deviceData": orderStatus,
+  //       "fcmToken": orderStatus,
+  //       "deviceUserType": "CUSTOMER"
+  //     });
+  //     print("${response.data}");
+  //
+  //     return UpdateOrderModel.fromJson(response.data);
+  //   } catch (error, stacktrace) {
+  //     print("Exception occured: $error stackTrace: $stacktrace");
+  //     return UpdateOrderModel.withError("Data not found / Connection issue");
+  //   }
+  // }
 
   Future<RemoveFavRestaurantModel> removeFavRestaurant(
       String userId, String restaurantId) async {

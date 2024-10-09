@@ -20,7 +20,7 @@ Future<bool> onStart(ServiceInstance service) async{
     // getEstimatedTravelTime('','','','');
     print('this is status : $stop');
     if(stop!){
-      repository.updateOrderStatus(orderId!, 'REACHING');
+      await repository.updateOrderStatus(orderId!, 'REACHING');
       timer.cancel();
       service.stopSelf();
     }
