@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,6 +11,7 @@ import 'package:uggiso/app_routes.dart';
 import 'package:uggiso/base/common/utils/colors.dart';
 import 'package:uggiso/base/common/utils/fonts.dart';
 import 'package:uggiso/base/common/utils/strings.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -23,6 +25,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final SignUpBloc _signUpBloc = SignUpBloc();
   bool isInvalidCredentials = false;
   String number = '';
+  bool isChecked = false;
+  bool showPrivacyPolicyError = false;
 
   @override
   Widget build(BuildContext context) {
@@ -91,6 +95,65 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 validatorType: 'phone'),
                               isInvalidCredentials?Text(Strings.error_invalid_credientials,style:
                                 AppFonts.smallText.copyWith(color: Colors.red),):SizedBox(),
+                              showPrivacyPolicyError?Text(Strings.privacy_policy_checkbox_error,style:
+                              AppFonts.smallText.copyWith(color: Colors.red),):SizedBox(),
+                              Row(
+                                children: [
+                                  Checkbox(
+                                    value: isChecked,
+                                    activeColor: AppColors.appPrimaryColor,
+                                    onChanged: (bool? value) {
+                                      setState(() {
+                                        isChecked = value!;
+                                      });
+                                    },
+                                  ),
+                                  Expanded(
+                                    child: RichText(
+                                      text: TextSpan(
+                                        style: TextStyle(color: Colors.black),
+                                        children: [
+                                          TextSpan(text: 'I agree to the ',style: AppFonts.smallText),
+                                          TextSpan(
+                                            text: 'Terms and Conditions',
+                                            style:AppFonts.smallText.copyWith(color: AppColors.appPrimaryColor),
+                                            recognizer: TapGestureRecognizer()
+                                              ..onTap = () async{
+                                              final Uri uri = Uri.parse(Strings.terms_and_conditions_url);
+                                              if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+                                                // Handle the error gracefully
+                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                  SnackBar(content: Text('Could not launch Terms and Conditions URL')),
+                                                );
+                                              }
+                                                // Handle Terms and Conditions tap here
+                                                // _showTermsDialog(context);
+                                              },
+                                          ),
+                                          TextSpan(text: ' and the ',style: AppFonts.smallText),
+                                          TextSpan(
+                                            text: 'Privacy Policy',
+                                            style:AppFonts.smallText.copyWith(color: AppColors.appPrimaryColor),
+                                            recognizer: TapGestureRecognizer()
+                                              ..onTap = () async{
+                                                final Uri uri = Uri.parse(Strings.privacy_policy_url);
+                                                if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+                                                // Handle the error gracefully
+                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                SnackBar(content: Text('Could not launch Terms and Conditions URL')),
+                                                );
+                                                }
+                                                // Handle Privacy Policy tap here
+                                                // _showPrivacyPolicyDialog(context);
+                                              },
+                                          ),
+                                          TextSpan(text: '.'),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                               const SizedBox(height: 20.0),
                               Expanded(
                                 child: Container(
@@ -101,8 +164,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       height: 40.0,
                                       text: Strings.get_otp,
                                       onPressed: () {
-                                        _signUpBloc.add(OnButtonClicked(
-                                            number: _mobileController.text));
+                                        if(isChecked){
+                                          setState(() {
+                                            showPrivacyPolicyError = false;
+                                          });
+                                          _signUpBloc.add(OnButtonClicked(
+                                              number: _mobileController.text));
+                                        }
+                                        else{
+                                          setState(() {
+                                            showPrivacyPolicyError = true;
+                                          });
+                                        }
+
                                       },
                                       cornerRadius: 6.0,
                                       buttonColor: AppColors.appPrimaryColor,

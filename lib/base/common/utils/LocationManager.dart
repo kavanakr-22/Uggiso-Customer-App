@@ -10,7 +10,7 @@ class LocationManager {
     bool serviceEnabled;
     LocationPermission permission;
 
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    // serviceEnabled = await Geolocator.isLocationServiceEnabled();
     // if (!serviceEnabled) {
     //   LocationManager().openLocationSettings();
     // }

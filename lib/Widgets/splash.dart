@@ -46,7 +46,7 @@ class _SplashScreenState extends State<SplashScreen> {
     deviceId = await DeviceUuid().getUUID();
     prefs.setString('device_id', deviceId!);
     print('this is device id : $deviceId');
-    initFirebaseMessaging();
+    // initFirebaseMessaging();
 
     if (await isLocationEnabled()) {
       print('this is islocation enable true');
@@ -56,13 +56,10 @@ class _SplashScreenState extends State<SplashScreen> {
       await _showLocationFetchingDialog();
     }
 
-
-
   }
 
   void initFirebaseMessaging() async {
     final prefs = await SharedPreferences.getInstance();
-
     _firebaseMessaging.getToken().then((token) {
       print("FCM Token: $token");
       prefs.setString('fcm_token', token!);

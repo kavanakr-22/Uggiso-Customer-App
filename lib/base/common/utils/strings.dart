@@ -128,8 +128,9 @@ class Strings {
   static const terms_and_conditions_url = 'https://uggiso.com/terms-and-conditions/';
   static const terms_and_conditions = 'Terms And Conditions';
   static const about_us_url = 'https://uggiso.com/about/';
+  static const privacy_policy_checkbox_error = 'Please accept our privacy policy and terms and conditions';
   static const location_alert_title = 'Allow "Uggiso" to access your background location even when order is placed even app closed';
-  static const location_permission_request = 'This information helps us provide location-based features and improve the overall functionality of the app';
+  static const location_permission_request = 'To see maps for automatically tracked activities, allow Uggios to use your location all of the time. Uggiso will use location in the background to notify the restaurants about your arrival.';
 
 
   static const List<Map<String, dynamic>> profileItemList = [

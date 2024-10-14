@@ -9,42 +9,44 @@ import 'package:uggiso/app_routes.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:io' show Platform;
 
-void main() async {
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  print('Handling a background message: ${message.messageId}');
+  // Handle the notification when the app is in the background or terminated
+}
 
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  if(Platform.isAndroid){
-    await Firebase.initializeApp(
+
+  try {
+    if (Platform.isAndroid) {
+      await Firebase.initializeApp(
         options: const FirebaseOptions(
           apiKey: 'AIzaSyCXfSKnMi_jvtwDIDT4AD9JxoKwJuzWkfQ',
           appId: '1:741537959124:android:b00dd25ac1fe00fdd2bf41',
           messagingSenderId: '741537959124',
           projectId: 'uggiso-469cc',
           storageBucket: 'uggiso-469cc.appspot.com',
-        ));
-  }
-  else if(Platform.isIOS){
-    await Firebase.initializeApp(
+        ),
+      );
+    } else if (Platform.isIOS) {
+      await Firebase.initializeApp(
         options: const FirebaseOptions(
           apiKey: 'AIzaSyBhcdW0lc2uYT1Q14TVXtrTaUp8z8uVZNc',
           appId: '1:741537959124:ios:55e5e8bdc9372ebbd2bf41',
           messagingSenderId: '741537959124',
           projectId: 'uggiso-469cc',
           storageBucket: 'uggiso-469cc.appspot.com',
-        ));
-  }
-
-  /*try {
-    await Firebase.initializeApp();
+        ),
+      );
+    }
   } catch (e) {
     print('Error initializing Firebase: $e');
-  }*/
+  }
+
   SystemChrome.setEnabledSystemUIMode(
     SystemUiMode.immersiveSticky,
     overlays: [SystemUiOverlay.bottom],
   );
-/*  await initializeService();
-  await requestPermissions();
-  await stopService();*/
 
   runApp(MultiBlocProvider(providers: [
     BlocProvider<SignUpBloc>(
@@ -69,17 +71,15 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  // final NotificationService _notificationService = NotificationService();
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance; // Fix the constructor syntax
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
   @override
   void initState() {
     super.initState();
     _firebaseMessaging.requestPermission();
+
+    // Set the background message handler
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-    // _firebaseMessaging.getToken().then((token) {
-    //   print('Token: $token');
-    // });
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       print('onMessage: ${message.messageId}');
@@ -88,29 +88,19 @@ class _MyAppState extends State<MyApp> {
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       print('onMessageOpenedApp: $message');
-      // Handle the notification when the app is in the background and opened
+      // Handle the notification when the app is opened from the background
     });
-
-    // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    //   RemoteNotification? notification = message.notification;
-    //   AndroidNotification? android = message.notification?.android;
-    //
-    // });
   }
-  // This widget is the root of your application.
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      // onBackgroundMessage: myBackgroundMessageHandler, // Add this line
-
       theme: ThemeData(
         pageTransitionsTheme: const PageTransitionsTheme(
           builders: {
-            TargetPlatform.android: const CupertinoPageTransitionsBuilder(),
-            // For Android
-            TargetPlatform.iOS: const CupertinoPageTransitionsBuilder(),
-            // For iOS
+            TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+            TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
           },
         ),
       ),
@@ -118,11 +108,5 @@ class _MyAppState extends State<MyApp> {
       initialRoute: AppRoutes.initialRoute,
       onGenerateRoute: AppRoutes.generateRoute,
     );
-  }
-
-  Future<void> _firebaseMessagingBackgroundHandler(
-      RemoteMessage message) async {
-    print('Handling a background message: ${message.messageId}');
-    // Handle the notification when the app is in the background or terminated
   }
 }
