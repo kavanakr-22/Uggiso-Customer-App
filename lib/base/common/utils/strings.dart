@@ -9,7 +9,7 @@ class Strings {
       'Make payment through our secure and simple payment method';
   static const have_fresh_food = 'Have Fresh Food';
   static const experience_the_joy =
-      'From farm to table, experience the joy of freshness with every bite.';
+      'We are utilizing your background location to enhance your experience, ensuring the joy of freshness and timely bites with every order.';
   static const skip = 'Skip';
   static const hi = 'Hi';
   static const next = 'Next';

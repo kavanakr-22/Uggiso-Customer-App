@@ -75,6 +75,29 @@ class _IntroLandingScreenState extends State<IntroLandingScreen> {
                         Container(
                           width: MediaQuery.of(context).size.width * 0.9,
                           height: MediaQuery.of(context).size.height * 0.4,
+                          child: Image.asset('assets/intro_3.png'),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 48.0, bottom: 32.0),
+                          child: Text(
+                            Strings.have_fresh_food,
+                            style: (AppFonts.header)
+                                .copyWith(color: AppColors.headerColor),
+                          ),
+                        ),
+                        Text(
+                          Strings.experience_the_joy,
+                          style: (AppFonts.subHeader)
+                              .copyWith(color: AppColors.headerColor),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          height: MediaQuery.of(context).size.height * 0.4,
                           child: Image.asset('assets/intro_1.png'),
                         ),
                         Padding(
@@ -116,52 +139,7 @@ class _IntroLandingScreenState extends State<IntroLandingScreen> {
                         ),
                       ],
                     ),
-                    Column(
-                      children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.9,
-                          height: MediaQuery.of(context).size.height * 0.4,
-                          child: Image.asset('assets/intro_3.png'),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 48.0, bottom: 32.0),
-                          child: Text(
-                            Strings.have_fresh_food,
-                            style: (AppFonts.header)
-                                .copyWith(color: AppColors.headerColor),
-                          ),
-                        ),
-                        Text(
-                          Strings.experience_the_joy,
-                          style: (AppFonts.subHeader)
-                              .copyWith(color: AppColors.headerColor),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.9,
-                          height: MediaQuery.of(context).size.height * 0.4,
-                          child: Image.asset('assets/intro_3.png'),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 48.0, bottom: 32.0),
-                          child: Text(
-                            Strings.have_fresh_food,
-                            style: (AppFonts.header)
-                                .copyWith(color: AppColors.headerColor),
-                          ),
-                        ),
-                        Text(
-                          Strings.experience_the_joy,
-                          style: (AppFonts.subHeader)
-                              .copyWith(color: AppColors.headerColor),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
+
                   ],
                 ),
               ),

@@ -1,15 +1,11 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gap/gap.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uggiso/Bloc/CreateOrderBloc/CreateOrderEvent.dart';
 import 'package:uggiso/Bloc/CreateOrderBloc/CreateOrderState.dart';
 import 'package:uggiso/Widgets/ui-kit/RoundedElevatedButton.dart';
-import 'package:uggiso/Widgets/ui-kit/TextFieldCurvedEdges.dart';
 import 'package:uggiso/base/common/utils/LocationManager.dart';
 import 'package:uggiso/base/common/utils/background_service.dart';
 import 'package:uggiso/base/common/utils/fonts.dart';
@@ -55,6 +51,7 @@ class _CreateOrderState extends State<CreateOrder> {
   String txnId = '';
   final CreateOrderBloc _createOrderBloc = CreateOrderBloc();
   TextEditingController points_controller = TextEditingController();
+
   // static const platform = MethodChannel('com.sabpaisa.integration/native');
   static MethodChannel _channel = MethodChannel('easebuzz');
 
@@ -118,7 +115,8 @@ class _CreateOrderState extends State<CreateOrder> {
                   senderId: state.data.payload!.customerId!,
                   status: "SUCCESS",
                   transactionId: txnId,
-                  orderNumber: state.data.payload!.orderNumber!));
+                  orderNumber: state.data.payload!.orderNumber!,
+              paymentId: ''));
 
               initializeService(widget.restLat!, widget.restLng!,
                   state.data.payload!.orderId!);
@@ -129,13 +127,20 @@ class _CreateOrderState extends State<CreateOrder> {
             }
             if (state is onCoinDetailsFetched) {
               showLoader = false;
-              if((state.data.payload?.balance!??0.0) > 10.0)
-                {
-                  uggiso_point_count = 10.0;
-                }
-              else{
+              if ((state.data.payload?.balance! ?? 0.0) > 10.0) {
+                uggiso_point_count = 10.0;
+              } else {
                 uggiso_point_count = 0.0;
               }
+            }
+            if (state is onPaymentInitiated) {
+              String? access_key = state.paymentData.payload?.data;
+              String pay_mode = 'test';
+              Object parameters = {
+                "access_key": access_key,
+                "pay_mode": pay_mode
+              };
+              gotoPaymentScreen(parameters);
             }
           },
           child: showLoader
@@ -532,11 +537,10 @@ class _CreateOrderState extends State<CreateOrder> {
                         textStyle: AppFonts.title,
                         cornerRadius: 8,
                         buttonColor: AppColors.appPrimaryColor,
-                        onPressed: () async{
-                          if(await isLocationEnabled()){
-                          createOrder();
-                          }
-                         else{
+                        onPressed: () async {
+                          if (await isLocationEnabled()) {
+                            createOrder();
+                          } else {
                             getUserLocation();
                           }
                         },
@@ -560,16 +564,16 @@ class _CreateOrderState extends State<CreateOrder> {
     });
   }
 
-  getUserLocation()async{
+  getUserLocation() async {
     final prefs = await SharedPreferences.getInstance();
 
     LocationInfo _location = await LocationManager.getCurrentPosition();
-    print('this is user lat lng : ${_location.longitude} and ${_location.latitude}');
+    print(
+        'this is user lat lng : ${_location.longitude} and ${_location.latitude}');
     prefs.setDouble('user_longitude', _location.longitude);
     prefs.setDouble('user_latitude', _location.latitude);
     createOrder();
   }
-
 
   getUserDetails() async {
     final prefs = await SharedPreferences.getInstance();
@@ -590,24 +594,14 @@ class _CreateOrderState extends State<CreateOrder> {
   }
 
   createOrder() async {
-
     // final List<Object?> result = await platform.invokeMethod('callSabPaisaSdk',
     //     [userName, "", "", userNumber, item_sub_total.toString()]);
 
-    String access_key = '1f8c1a5083bf9284586e050c4ea5a65d13546519ec3c34aa2a868c3662ee1061';
-    String pay_mode = 'test';
-    Object parameters =
-    {
-      "access_key":access_key,
-      "pay_mode":pay_mode
-    };
-    final payment_response = await _channel.invokeMethod("payWithEasebuzz", parameters);
+    _createOrderBloc.add(InitiatePayment(
+        name: userName, number: userNumber, amount: item_sub_total.toString()));
 
-    print('this is response ${payment_response['result']}');
     /* payment_response is the HashMap containing the response of the payment.
 You can parse it accordingly to handle response */
-
-
 
     // print('this is the transaction result : $result');
     // print('this is the transaction result status: ${result[0].toString()}');
@@ -617,7 +611,6 @@ You can parse it accordingly to handle response */
     // setState(() {
     //   txnId = result[1].toString();
     // });
-
 
     // _createOrderBloc.add(OnPaymentClicked(
     //     restaurantId: widget.restaurantId!,
@@ -722,4 +715,12 @@ You can parse it accordingly to handle response */
 
     }
   }*/
+
+  gotoPaymentScreen(Object params) async {
+    final payment_response =
+        await _channel.invokeMethod("payWithEasebuzz", params);
+
+    print('this is response ${payment_response['result']}');
+
+  }
 }

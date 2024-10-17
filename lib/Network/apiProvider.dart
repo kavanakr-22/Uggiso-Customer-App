@@ -416,7 +416,8 @@ class ApiProvider {
       String senderId,
       String status,
       String transactionId,
-      String orderNumber) async {
+      String orderNumber,
+      String paymentId) async {
     try {
       Response response =
           await _dio.post('${_url}${Constants.paymentDetails}', data: {
@@ -426,7 +427,8 @@ class ApiProvider {
         "status": status,
         "statusCode": "200",
         "transactionId": transactionId,
-        "orderNumber": orderNumber
+        "orderNumber": orderNumber,
+        "paymentId": paymentId
       });
       print("${response.data}");
 
@@ -518,38 +520,36 @@ class ApiProvider {
 
   Future<AcceptorsListModel> getAcceptors(String id) async {
     try {
-      Response response =
-      await _dio.get('${_url}${Constants.getAcceptors}$id'); //here id is user / customer / owner id
+      Response response = await _dio.get(
+          '${_url}${Constants.getAcceptors}$id'); //here id is user / customer / owner id
       print("${response.data}");
 
       return AcceptorsListModel.fromJson(response.data);
     } catch (error, stacktrace) {
       print("Exception occured: $error stackTrace: $stacktrace");
-      return AcceptorsListModel.withError(
-          "Data not found / Connection issue");
+      return AcceptorsListModel.withError("Data not found / Connection issue");
     }
   }
 
   Future<InitiatePaymentModel> initiatePayment(
-      String name,
-      String phone,
-      String amount) async {
+      String name, String phone, String amount) async {
     try {
       Response response =
-      await _dio.post('${_url}${Constants.initiate_payment}', data: {
+          await _dio.post('${_url}${Constants.initiate_payment}', data: {
         "name": name,
-        "txnId": "984488345381111",
+        "txnId": "984488345381121",
         "phone": phone,
         "email": "gc@gmail.com",
         "productInfo": "TEST",
-        "amount":amount
+        "amount": int.parse(amount)
       });
       print("${response.data}");
 
       return InitiatePaymentModel.fromJson(response.data);
     } catch (error, stacktrace) {
       print("Exception occured: $error stackTrace: $stacktrace");
-      return InitiatePaymentModel.withError("Data not found / Connection issue");
+      return InitiatePaymentModel.withError(
+          "Data not found / Connection issue");
     }
   }
 }

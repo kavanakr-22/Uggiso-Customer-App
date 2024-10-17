@@ -113,8 +113,8 @@ class ApiRepository {
     return _provider.removeFavMenu( userId,menuId);
   }
 
-  Future<PaymentDetailsModel> addPayDetails(String orderId, String receiverId,String senderId,String status,String transactionId, String orderNumber) {
-    return _provider.addPayDetails( orderId,receiverId,senderId,status,transactionId, orderNumber);
+  Future<PaymentDetailsModel> addPayDetails(String orderId, String receiverId,String senderId,String status,String transactionId, String orderNumber,String paymentId) {
+    return _provider.addPayDetails( orderId,receiverId,senderId,status,transactionId, orderNumber,paymentId);
   }
 
   Future<VerifyOtpModel> updateDeviceData(String userId, String deviceData,String fcmToken) {
