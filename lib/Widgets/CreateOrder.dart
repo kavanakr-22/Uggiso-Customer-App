@@ -55,7 +55,8 @@ class _CreateOrderState extends State<CreateOrder> {
   String txnId = '';
   final CreateOrderBloc _createOrderBloc = CreateOrderBloc();
   TextEditingController points_controller = TextEditingController();
-  static const platform = MethodChannel('com.sabpaisa.integration/native');
+  // static const platform = MethodChannel('com.sabpaisa.integration/native');
+  static MethodChannel _channel = MethodChannel('easebuzz');
 
   @override
   void initState() {
@@ -590,16 +591,34 @@ class _CreateOrderState extends State<CreateOrder> {
 
   createOrder() async {
 
-    final List<Object?> result = await platform.invokeMethod('callSabPaisaSdk',
-        [userName, "", "", userNumber, item_sub_total.toString()]);
-    print('this is the transaction result : $result');
-    print('this is the transaction result status: ${result[0].toString()}');
-    print('this is the transaction result txnId: ${result[1].toString()}');
+    // final List<Object?> result = await platform.invokeMethod('callSabPaisaSdk',
+    //     [userName, "", "", userNumber, item_sub_total.toString()]);
 
-    String txnStatus = result[0].toString();
-    setState(() {
-      txnId = result[1].toString();
-    });
+    String access_key = '1f8c1a5083bf9284586e050c4ea5a65d13546519ec3c34aa2a868c3662ee1061';
+    String pay_mode = 'test';
+    Object parameters =
+    {
+      "access_key":access_key,
+      "pay_mode":pay_mode
+    };
+    final payment_response = await _channel.invokeMethod("payWithEasebuzz", parameters);
+
+    print('this is response ${payment_response['result']}');
+    /* payment_response is the HashMap containing the response of the payment.
+You can parse it accordingly to handle response */
+
+
+
+    // print('this is the transaction result : $result');
+    // print('this is the transaction result status: ${result[0].toString()}');
+    // print('this is the transaction result txnId: ${result[1].toString()}');
+    //
+    // String txnStatus = result[0].toString();
+    // setState(() {
+    //   txnId = result[1].toString();
+    // });
+
+
     // _createOrderBloc.add(OnPaymentClicked(
     //     restaurantId: widget.restaurantId!,
     //     restaurantName: widget.restaurantName!,
@@ -615,38 +634,38 @@ class _CreateOrderState extends State<CreateOrder> {
     //     paidAmount: item_sub_total,
     //     usedCoins: 0));
 
-    if (txnStatus == 'SUCCESS') {
-      _createOrderBloc.add(OnPaymentClicked(
-          restaurantId: widget.restaurantId!,
-          restaurantName: widget.restaurantName!,
-          customerId: userId,
-          menuData: menuList,
-          orderType: "PARCEL",
-          paymentType: 'UPI',
-          orderStatus: 'CREATED',
-          totalAmount: item_sub_total.toInt(),
-          comments: 'Please do little more spicy',
-          timeSlot: selectedSlot,
-          transMode: 'BIKE',
-          usedCoins: 0,
-          paidAmount: item_sub_total));
-    } else {
-      _createOrderBloc.add(OnAddTransactionData(
-          orderId: '',
-          receiverId: widget.restaurantId!,
-          senderId: userId,
-          status: result[0].toString(),
-          transactionId: result[1].toString(),orderNumber: ''));
-
-      Fluttertoast.showToast(
-          msg: txnStatus,
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0);
-    }
+    // if (txnStatus == 'SUCCESS') {
+    //   _createOrderBloc.add(OnPaymentClicked(
+    //       restaurantId: widget.restaurantId!,
+    //       restaurantName: widget.restaurantName!,
+    //       customerId: userId,
+    //       menuData: menuList,
+    //       orderType: "PARCEL",
+    //       paymentType: 'UPI',
+    //       orderStatus: 'CREATED',
+    //       totalAmount: item_sub_total.toInt(),
+    //       comments: 'Please do little more spicy',
+    //       timeSlot: selectedSlot,
+    //       transMode: 'BIKE',
+    //       usedCoins: 0,
+    //       paidAmount: item_sub_total));
+    // } else {
+    //   _createOrderBloc.add(OnAddTransactionData(
+    //       orderId: '',
+    //       receiverId: widget.restaurantId!,
+    //       senderId: userId,
+    //       status: result[0].toString(),
+    //       transactionId: result[1].toString(),orderNumber: ''));
+    //
+    //   Fluttertoast.showToast(
+    //       msg: txnStatus,
+    //       toastLength: Toast.LENGTH_SHORT,
+    //       gravity: ToastGravity.CENTER,
+    //       timeInSecForIosWeb: 1,
+    //       backgroundColor: Colors.red,
+    //       textColor: Colors.white,
+    //       fontSize: 16.0);
+    // }
     // sendPushNotification('', 'order created', 'check for details');
   }
 

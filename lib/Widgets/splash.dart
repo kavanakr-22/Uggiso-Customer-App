@@ -79,7 +79,7 @@ class _SplashScreenState extends State<SplashScreen> {
             title: Column(
               children: [
                 Icon(Icons.location_on,
-                    color: AppColors.appSecondaryColor, size: 40),
+                    color: AppColors.appPrimaryColor, size: 40),
                 Gap(4),
                 Text(Strings.location_alert_title,
                     style: AppFonts.subHeader,textAlign: TextAlign.center,),
@@ -101,7 +101,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 child: Text(
                   'Deny',
                   style:
-                      AppFonts.title.copyWith(color: AppColors.appPrimaryColor),
+                      AppFonts.title.copyWith(color: Colors.red),
                 ),
               ),
 
@@ -115,7 +115,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 child: Text(
                   'Allow',
                   style:
-                  AppFonts.title.copyWith(color: AppColors.appPrimaryColor),
+                  AppFonts.title.copyWith(color: AppColors.alertColor),
                 ),
               ),
             ],

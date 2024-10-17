@@ -55,3 +55,14 @@ class OnGetRewardsDetails extends CreateOrderEvent {
   @override
   String toString() => 'OnButtonClicked { number: $userId }';
 }
+
+class InitiatePayment extends CreateOrderEvent {
+  final String name;
+  final String number;
+  final String amount;
+
+  const InitiatePayment({required this.name,required this.number, required this.amount });
+
+  @override
+  List<Object> get props => [name, number,amount];
+}

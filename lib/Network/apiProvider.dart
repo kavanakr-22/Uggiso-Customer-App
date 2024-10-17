@@ -5,6 +5,7 @@ import 'package:uggiso/Model/AcceptorsListModel.dart';
 import 'package:uggiso/Model/AddFavoriteMenuModel.dart';
 import 'package:uggiso/Model/GetNearByResaturantModel.dart';
 import 'package:uggiso/Model/GetRouteModel.dart';
+import 'package:uggiso/Model/InitiatePaymentModel.dart';
 import 'package:uggiso/Model/MenuListModel.dart';
 import 'package:uggiso/Model/MyOrdersModel.dart';
 import 'package:uggiso/Model/PaymentDetailsModel.dart';
@@ -526,6 +527,29 @@ class ApiProvider {
       print("Exception occured: $error stackTrace: $stacktrace");
       return AcceptorsListModel.withError(
           "Data not found / Connection issue");
+    }
+  }
+
+  Future<InitiatePaymentModel> initiatePayment(
+      String name,
+      String phone,
+      String amount) async {
+    try {
+      Response response =
+      await _dio.post('${_url}${Constants.initiate_payment}', data: {
+        "name": name,
+        "txnId": "984488345381111",
+        "phone": phone,
+        "email": "gc@gmail.com",
+        "productInfo": "TEST",
+        "amount":amount
+      });
+      print("${response.data}");
+
+      return InitiatePaymentModel.fromJson(response.data);
+    } catch (error, stacktrace) {
+      print("Exception occured: $error stackTrace: $stacktrace");
+      return InitiatePaymentModel.withError("Data not found / Connection issue");
     }
   }
 }

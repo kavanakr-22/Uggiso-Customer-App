@@ -20,13 +20,13 @@ class _IntroLandingScreenState extends State<IntroLandingScreen> {
   void nextPage() {
     setState(() {
       print('this is current page : $_currentPage');
-      if (_currentPage < 2) {
+      if (_currentPage < 3) {
         _currentPage++;
         _pageController.jumpToPage(_currentPage);
         print('this is current page inside: $_currentPage');
 
       }
-      else if (_currentPage == 2) {
+      else if (_currentPage == 3) {
         Navigator.pushReplacementNamed(context, AppRoutes.signupScreen);
       }
     });
@@ -110,6 +110,29 @@ class _IntroLandingScreenState extends State<IntroLandingScreen> {
                         ),
                         Text(
                           Strings.payment_secure_simple,
+                          style: (AppFonts.subHeader)
+                              .copyWith(color: AppColors.headerColor),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          height: MediaQuery.of(context).size.height * 0.4,
+                          child: Image.asset('assets/intro_3.png'),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 48.0, bottom: 32.0),
+                          child: Text(
+                            Strings.have_fresh_food,
+                            style: (AppFonts.header)
+                                .copyWith(color: AppColors.headerColor),
+                          ),
+                        ),
+                        Text(
+                          Strings.experience_the_joy,
                           style: (AppFonts.subHeader)
                               .copyWith(color: AppColors.headerColor),
                           textAlign: TextAlign.center,

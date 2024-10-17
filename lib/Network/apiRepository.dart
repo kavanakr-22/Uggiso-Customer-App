@@ -3,6 +3,7 @@ import 'package:http/http.dart';
 import 'package:uggiso/Model/AcceptorsListModel.dart';
 import 'package:uggiso/Model/AddFavoriteMenuModel.dart';
 import 'package:uggiso/Model/GetRouteModel.dart';
+import 'package:uggiso/Model/InitiatePaymentModel.dart';
 import 'package:uggiso/Model/MenuListModel.dart';
 import 'package:uggiso/Model/MyOrdersModel.dart';
 import 'package:uggiso/Model/PaymentDetailsModel.dart';
@@ -122,6 +123,10 @@ class ApiRepository {
 
   Future<AcceptorsListModel> getAcceptors(String id) {
     return _provider.getAcceptors(id);
+  }
+
+  Future<InitiatePaymentModel> initiatePayment(String name, String phone, String amount) {
+    return _provider.initiatePayment(name,phone,amount);
   }
 
 }

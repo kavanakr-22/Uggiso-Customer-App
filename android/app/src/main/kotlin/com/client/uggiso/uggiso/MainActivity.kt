@@ -10,91 +10,105 @@ import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 import java.util.Objects
+import android.content.Intent
+import android.os.Bundle
+import com.google.gson.Gson
+import org.json.JSONObject
+import com.easebuzz.payment.kit.PWECouponsActivity;
+import datamodels.PWEStaticDataModel;
+import com.easebuzz.flutter_kt_androidx_accesskey.JsonConverter
 
-class MainActivity : FlutterActivity(), IPaymentSuccessCallBack<TransactionResponsesModel> {
+class MainActivity : FlutterActivity(){
 
-    private val CHANNEL = "com.sabpaisa.integration/native"
-    var resultCallback:MethodChannel.Result?=null
-    override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
-        super.configureFlutterEngine(flutterEngine)
-        MethodChannel(
-            flutterEngine.dartExecutor.binaryMessenger,
-            CHANNEL
-        ).setMethodCallHandler { call, result ->
-            if (call.method == "callSabPaisaSdk") {
-                resultCallback = result
+//easebuzz payment gateway channel
+    private val CHANNEL = "easebuzz"
+    var channel_result: MethodChannel.Result? = null
+    private var start_payment = true
 
-                Toast.makeText(this, "callSabPaisaSdk", Toast.LENGTH_LONG).show()
-                val arguments = call.arguments as ArrayList<String>
-                val sabPaisaGateway1 =
-                    SabPaisaGateway.builder()
-                        .setAmount(arguments[4].toDouble())   //Mandatory Parameter
-                        .setFirstName(arguments[0]) //Mandatory Parameter
-                        .setLastName(arguments[1]) //Mandatory Parameter
-                        .setMobileNumber(arguments[3])
-                        .setEmailId(arguments[2])//Mandatory Parameter
-                        .setSabPaisaPaymentScreen(true)//Mandatory Parameter
-                        .setSalutation("")
-                        .setClientCode("TM001")
-                        .setAesApiIv("YN2v8qQcU3rGfA1y")
-                        .setAesApiKey("kaY9AIhuJZNvKGp2")
-                        .setTransUserName("spuser_2013")
-                        .setTransUserPassword("RIADA_SP336")
-                        .setIntermediateLoading(false)
-                        .build()
-
-                //live creds
-                val sabPaisaGateway2 =
-                    SabPaisaGateway.builder()
-                        .setAmount(arguments[4].toDouble())   //Mandatory Parameter
-                        .setFirstName(arguments[0]) //Mandatory Parameter
-                        .setLastName(arguments[1]) //Mandatory Parameter
-                        .setMobileNumber(arguments[3])
-                        .setEmailId(arguments[2])//Mandatory Parameter
-                        .setSabPaisaPaymentScreen(true)//Mandatory Parameter
-                        .setSalutation("")
-                        .setClientCode("UGGI90")
-                        .setAesApiIv("fj2IFxDQu28DkMXR")
-                        .setAesApiKey("SynVuliVLBPsfMUv")
-                        .setTransUserName("nithyapramodgc_18351")
-                        .setTransUserPassword("UGGI90_SP18351")
-                        .setIntermediateLoading(false)
-                        .build()
-
-
-//                SabPaisaGateway.setInitUrl("https://stage-securepay.sabpaisa.in/SabPaisa/sabPaisaInit?v=1")
-//                SabPaisaGateway.setEndPointBaseUrl("https://stage-securepay.sabpaisa.in")
-//                SabPaisaGateway.setTxnEnquiryEndpoint("https://stage-txnenquiry.sabpaisa.in")
-
-                //Live url
-                SabPaisaGateway.setInitUrl("https://securepay.sabpaisa.in/SabPaisa/sabPaisaInit?v=1");
-                SabPaisaGateway.setEndPointBaseUrl("https://securepay.sabpaisa.in");
-                SabPaisaGateway.setTxnEnquiryEndpoint("https://txnenquiry.sabpaisa.in");
-
-//                sabPaisaGateway1.init(this@MainActivity, this)
-                sabPaisaGateway2.init(this@MainActivity, this)
-
-            } else {
-                Toast.makeText(this, "volla", Toast.LENGTH_LONG).show()
+    override fun onCreate(savedInstanceState: Bundle?){
+        super.onCreate(savedInstanceState)
+        start_payment = true
+        MethodChannel(flutterEngine!!.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler { call, result ->
+            channel_result = result
+            if (call.method == "payWithEasebuzz") {
+                if (start_payment) {
+                    start_payment = false
+                    startPayment(call.arguments)
+                }
             }
         }
     }
 
-    override fun onPaymentFail(message: TransactionResponsesModel?) {
-        Log.d("SABPAISA", "Payment Fail")
-        val arrayList = ArrayList<String>()
-        arrayList.add(message?.status.toString())
-        arrayList.add(message?.clientTxnId.toString())
-        resultCallback?.success(arrayList)
+
+    private fun startPayment(arguments: Any) {
+        try {
+            val gson = Gson()
+            val parameters = JSONObject(gson.toJson(arguments))
+            val intentProceed = Intent(activity, PWECouponsActivity::class.java)
+            intentProceed.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT;
+            val keys: Iterator<*> = parameters.keys()
+            while (keys.hasNext()) {
+                var value: String? = ""
+                val key = keys.next() as String
+                value = parameters.optString(key)
+                if (key == "amount") {
+                    val amount: Double = parameters.optDouble("amount")
+                    intentProceed.putExtra(key, amount)
+                } else {
+                    intentProceed.putExtra(key, value)
+                }
+            }
+            startActivityForResult(intentProceed, PWEStaticDataModel.PWE_REQUEST_CODE)
+        } catch (e: Exception) {
+            start_payment = true
+            val error_map: MutableMap<String, Any> = HashMap()
+            val error_desc_map: MutableMap<String, Any> = HashMap()
+            val error_desc = "exception occured:" + e.message
+            error_desc_map["error"] = "Exception"
+            error_desc_map["error_msg"] = error_desc
+            error_map["result"] = PWEStaticDataModel.TXN_FAILED_CODE
+            error_map["payment_response"] = error_desc_map
+            channel_result!!.success(error_map)
+        }
     }
 
-    override fun onPaymentSuccess(response: TransactionResponsesModel?) {
-        Log.d("SABPAISA", "Payment Success${response?.statusCode}")
 
-        val arrayList = ArrayList<String>()
-        arrayList.add(response?.status.toString())
-        arrayList.add(response?.clientTxnId.toString())
-        resultCallback?.success(arrayList)
-
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+        if (data != null) {
+            if (requestCode == PWEStaticDataModel.PWE_REQUEST_CODE) {
+                start_payment = true
+                val response = JSONObject()
+                val error_map: MutableMap<String, Any> = HashMap()
+                if (data != null) {
+                    val result = data.getStringExtra("result")
+                    val payment_response = data.getStringExtra("payment_response")
+                    try {
+                        val obj = JSONObject(payment_response)
+                        response.put("result", result)
+                        response.put("payment_response", obj)
+                        channel_result!!.success(JsonConverter.convertToMap(response))
+                    } catch (e: Exception) {
+                        val error_desc_map: MutableMap<String, Any> = HashMap()
+                        /* Used the below code For target 30 api*/
+                        error_desc_map["error"] = result.toString()
+                        error_desc_map["error_msg"] = payment_response.toString()
+                        error_map["result"] = result.toString()
+                        /* End code For target 30 api*/
+                        error_map["payment_response"] = error_desc_map
+                        channel_result!!.success(error_map)
+                    }
+                } else {
+                    val error_desc_map: MutableMap<String, Any> = HashMap()
+                    val error_desc = "Empty payment response"
+                    error_desc_map["error"] = "Empty error"
+                    error_desc_map["error_msg"] = error_desc
+                    error_map["result"] = "payment_failed"
+                    error_map["payment_response"] = error_desc_map
+                    channel_result!!.success(error_map)
+                }
+            } else {
+                super.onActivityResult(requestCode, resultCode, data)
+            }
+        }
     }
 }

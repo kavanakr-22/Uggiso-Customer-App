@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:uggiso/Model/InitiatePaymentModel.dart';
 import 'package:uggiso/Model/OrderCheckoutModel.dart';
 import 'package:uggiso/Model/WalletDetailsModel.dart';
 
@@ -19,6 +20,8 @@ class PaymentStateLoaded extends CreateOrderState {}
 
 class FetchingCoinsDetails extends CreateOrderState {}
 
+class InitiatePaymentMode extends CreateOrderState {}
+
 
 class onLoadedHotelState extends CreateOrderState {
   final OrderCheckoutModel data;
@@ -28,6 +31,11 @@ class onLoadedHotelState extends CreateOrderState {
 class onCoinDetailsFetched extends CreateOrderState {
   final WalletDetailsModel data;
   onCoinDetailsFetched(this.data);
+}
+
+class onPaymentInitiated extends CreateOrderState {
+  final InitiatePaymentModel paymentData;
+  onPaymentInitiated(this.paymentData);
 }
 
 class ErrorState extends CreateOrderState {

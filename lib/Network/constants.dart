@@ -25,4 +25,5 @@ class Constants{
   static String remove_fav_menu = 'favmenu/removefavmenu';
   static String updateDevice = 'user/updatedevice';
   static String getAcceptors = 'referer/acceptors/';
+  static String initiate_payment = 'payment/initiate';
 }
