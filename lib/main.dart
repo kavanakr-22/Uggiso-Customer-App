@@ -21,11 +21,11 @@ void main() async {
     if (Platform.isAndroid) {
       await Firebase.initializeApp(
         options: const FirebaseOptions(
-          apiKey: 'AIzaSyCXfSKnMi_jvtwDIDT4AD9JxoKwJuzWkfQ',
-          appId: '1:741537959124:android:b00dd25ac1fe00fdd2bf41',
-          messagingSenderId: '741537959124',
-          projectId: 'uggiso-469cc',
-          storageBucket: 'uggiso-469cc.appspot.com',
+          apiKey: 'AIzaSyDrVteZil-zMNRhVZNX0EqYgqsneiq6YnI',
+          appId: '1:21951454671:android:f7c5601195813c9c0206ba',
+          messagingSenderId: '21951454671',
+          projectId: 'uggiso-pro',
+          storageBucket: 'uggiso-pro.appspot.com',
         ),
       );
     } else if (Platform.isIOS) {

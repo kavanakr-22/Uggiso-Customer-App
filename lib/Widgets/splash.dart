@@ -46,7 +46,7 @@ class _SplashScreenState extends State<SplashScreen> {
     deviceId = await DeviceUuid().getUUID();
     prefs.setString('device_id', deviceId!);
     print('this is device id : $deviceId');
-    // initFirebaseMessaging();
+    initFirebaseMessaging();
 
     if (await isLocationEnabled()) {
       print('this is islocation enable true');
