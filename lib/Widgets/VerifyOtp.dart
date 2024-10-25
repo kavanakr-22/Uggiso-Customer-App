@@ -272,9 +272,9 @@ class _VerifyOtpState extends State<VerifyOtp> {
                         otpController_2.text +
                         otpController_3.text +
                         otpController_4.text;
-                    // _verifyOtpBloc.add(OnButtonClicked(
-                    //     number: userContactNumber, otp: otp));
-                    Navigator.popAndPushNamed(context, AppRoutes.registerUser);
+                    _verifyOtpBloc.add(OnButtonClicked(
+                        number: userContactNumber, otp: otp));
+                    // Navigator.popAndPushNamed(context, AppRoutes.registerUser);
 
                   },
                   cornerRadius: 6.0,

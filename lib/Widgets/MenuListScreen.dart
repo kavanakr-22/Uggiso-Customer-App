@@ -238,7 +238,6 @@ class _MenuListScreenState extends State<MenuListScreen> {
                 ),
               ),
               Container(
-                height: MediaQuery.of(context).size.height*0.7-kToolbarHeight,
                 decoration: const BoxDecoration(
                   color: AppColors.white,
                   borderRadius: BorderRadius.only(
