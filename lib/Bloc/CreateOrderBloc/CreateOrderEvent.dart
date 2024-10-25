@@ -61,8 +61,9 @@ class InitiatePayment extends CreateOrderEvent {
   final String name;
   final String number;
   final String amount;
+  final String txnId;
 
-  const InitiatePayment({required this.name,required this.number, required this.amount });
+  const InitiatePayment({required this.name,required this.number, required this.amount, required this.txnId });
 
   @override
   List<Object> get props => [name, number,amount];

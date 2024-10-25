@@ -57,7 +57,6 @@ class _CreateOrderState extends State<CreateOrder> {
 
   @override
   void initState() {
-    print('this is checkout list : ${widget.orderlist}');
     super.initState();
     getUserDetails();
     for (int i = 0; i < widget.orderlist.length; i++) {
@@ -116,7 +115,7 @@ class _CreateOrderState extends State<CreateOrder> {
                   status: "SUCCESS",
                   transactionId: txnId,
                   orderNumber: state.data.payload!.orderNumber!,
-              paymentId: ''));
+                  paymentId: ''));
 
               initializeService(widget.restLat!, widget.restLng!,
                   state.data.payload!.orderId!);
@@ -596,9 +595,14 @@ class _CreateOrderState extends State<CreateOrder> {
   createOrder() async {
     // final List<Object?> result = await platform.invokeMethod('callSabPaisaSdk',
     //     [userName, "", "", userNumber, item_sub_total.toString()]);
-
+    setState(() {
+      txnId = generateUUID();
+    });
     _createOrderBloc.add(InitiatePayment(
-        name: userName, number: userNumber, amount: item_sub_total.toString()));
+        name: userName,
+        number: userNumber,
+        amount: item_sub_total.toString(),
+        txnId: txnId));
 
     /* payment_response is the HashMap containing the response of the payment.
 You can parse it accordingly to handle response */
@@ -609,7 +613,7 @@ You can parse it accordingly to handle response */
     //
     // String txnStatus = result[0].toString();
     // setState(() {
-    //   txnId = result[1].toString();
+    //   txnId = result[1].toString();//3d26ebfed87f69893b474aac44b635387a57a49539161bb3737d6c323fea27e0
     // });
 
     // _createOrderBloc.add(OnPaymentClicked(
@@ -717,10 +721,28 @@ You can parse it accordingly to handle response */
   }*/
 
   gotoPaymentScreen(Object params) async {
+    print('this is params : $params');
     final payment_response =
         await _channel.invokeMethod("payWithEasebuzz", params);
 
-    print('this is response ${payment_response['result']}');
-
+    print('this is response from payment screen ${payment_response['result']}');
+    print('this is response from payment screen ${payment_response['payment_response']}');
+    print('this is response from payment screen ${payment_response['payment_response']['mode']}');
+    if(payment_response['result']=='payment_successfull'){
+      _createOrderBloc.add(OnPaymentClicked(
+                restaurantId: widget.restaurantId!,
+                restaurantName: widget.restaurantName!,
+                customerId: userId,
+                menuData: menuList,
+                orderType: "PARCEL",
+                paymentType: '${payment_response['payment_response']['mode']}',
+                orderStatus: 'CREATED',
+                totalAmount: item_sub_total.toInt(),
+                comments: 'Please do little more spicy',
+                timeSlot: selectedSlot,
+                transMode: 'BIKE',
+                usedCoins: 0,
+                paidAmount: item_sub_total));
+    }
   }
 }

@@ -125,8 +125,8 @@ class ApiRepository {
     return _provider.getAcceptors(id);
   }
 
-  Future<InitiatePaymentModel> initiatePayment(String name, String phone, String amount) {
-    return _provider.initiatePayment(name,phone,amount);
+  Future<InitiatePaymentModel> initiatePayment(String name, String phone, String amount,String txnId) {
+    return _provider.initiatePayment(name,phone,amount,txnId);
   }
 
 }

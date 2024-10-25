@@ -232,6 +232,11 @@ class _VerifyOtpState extends State<VerifyOtp> {
                         onTap: () {
                           _verifyOtpBloc.add(OnResendOtpButtonClicked(
                               number: userContactNumber));
+                          setState(() {
+                            isResendButtonEnable = false;
+                            _secondsRemaining = 30;
+                          });
+                          startTimer();
                         },
                         child: RoundedContainer(
                           width: 100,
@@ -267,8 +272,10 @@ class _VerifyOtpState extends State<VerifyOtp> {
                         otpController_2.text +
                         otpController_3.text +
                         otpController_4.text;
-                    _verifyOtpBloc.add(OnButtonClicked(
-                        number: userContactNumber, otp: otp));
+                    // _verifyOtpBloc.add(OnButtonClicked(
+                    //     number: userContactNumber, otp: otp));
+                    Navigator.popAndPushNamed(context, AppRoutes.registerUser);
+
                   },
                   cornerRadius: 6.0,
                   buttonColor: AppColors.appPrimaryColor,

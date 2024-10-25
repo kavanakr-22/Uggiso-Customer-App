@@ -32,8 +32,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => _signUpBloc,
-
-      child: BlocListener<SignUpBloc,SignUpState>(
+      child: BlocListener<SignUpBloc, SignUpState>(
         listener: (BuildContext context, SignUpState state) {
           if (state is onLoadedState) {
             // Navigate to the next screen when NavigationState is emitted
@@ -44,152 +43,176 @@ class _SignUpScreenState extends State<SignUpScreen> {
           }
         },
         child: Scaffold(
-          backgroundColor: AppColors.white,
-          appBar: AppBar(
-            leading: Container(),
             backgroundColor: AppColors.white,
-            elevation: 0.0,
-          ),
-          body: BlocBuilder<SignUpBloc,SignUpState>(
-            builder: (context,state) {
-              if(state is LoadingState){
+            resizeToAvoidBottomInset: false,
+            appBar: AppBar(
+              leading: Container(),
+              backgroundColor: AppColors.white,
+              elevation: 0.0,
+            ),
+            body:
+                BlocBuilder<SignUpBloc, SignUpState>(builder: (context, state) {
+              if (state is LoadingState) {
                 return Center(
                   child: CircularProgressIndicator(
                     color: AppColors.appPrimaryColor,
                   ),
                 );
-
-            }
+              }
               return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(Strings.hi,
-                                  style:
-                                      AppFonts.header.copyWith(color: AppColors.black)),
-                              Text(Strings.uggiso_welcomes_you,
-                                  style: AppFonts.header
-                                      .copyWith(color: AppColors.appPrimaryColor)),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 36.0),
-                                child: Center(
-                                    child: Image.asset(
-                                  'assets/login.png',
-                                  height: MediaQuery.of(context).size.height * 0.25,
-                                  fit: BoxFit.fitWidth,
-                                )),
-                              ),
-                              Center(
-                                  child: Text(Strings.enter_mobile_number,
-                                      style: AppFonts.subHeader
-                                          .copyWith(color: AppColors.textColor))),
-                              const SizedBox(height: 20.0),
-                              TextFieldCurvedEdges(
-                                  controller: _mobileController,
-                                  backgroundColor: AppColors.textFieldBg,
-                                  keyboardType: TextInputType.number,
-                                  borderColor: AppColors.textFieldBorderColor,
-                                length: 10,
-                                inputFormatter: "number",
-                                validatorType: 'phone'),
-                              isInvalidCredentials?Text(Strings.error_invalid_credientials,style:
-                                AppFonts.smallText.copyWith(color: Colors.red),):SizedBox(),
-                              showPrivacyPolicyError?Text(Strings.privacy_policy_checkbox_error,style:
-                              AppFonts.smallText.copyWith(color: Colors.red),):SizedBox(),
-                              Row(
-                                children: [
-                                  Checkbox(
-                                    value: isChecked,
-                                    activeColor: AppColors.appPrimaryColor,
-                                    onChanged: (bool? value) {
-                                      setState(() {
-                                        isChecked = value!;
-                                      });
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(Strings.hi,
+                        style:
+                            AppFonts.header.copyWith(color: AppColors.black)),
+                    Text(Strings.uggiso_welcomes_you,
+                        style: AppFonts.header
+                            .copyWith(color: AppColors.appPrimaryColor)),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 36.0),
+                      child: Center(
+                          child: Image.asset(
+                        'assets/login.png',
+                        height: MediaQuery.of(context).size.height * 0.25,
+                        fit: BoxFit.fitWidth,
+                      )),
+                    ),
+                    Center(
+                        child: Text(Strings.enter_mobile_number,
+                            style: AppFonts.subHeader
+                                .copyWith(color: AppColors.textColor))),
+                    const SizedBox(height: 20.0),
+                    TextFieldCurvedEdges(
+                        controller: _mobileController,
+                        backgroundColor: AppColors.textFieldBg,
+                        keyboardType: TextInputType.number,
+                        borderColor: AppColors.textFieldBorderColor,
+                        length: 10,
+                        inputFormatter: "number",
+                        validatorType: 'phone'),
+                    isInvalidCredentials
+                        ? Text(
+                            Strings.error_invalid_credientials,
+                            style:
+                                AppFonts.smallText.copyWith(color: Colors.red),
+                          )
+                        : SizedBox(),
+                    showPrivacyPolicyError
+                        ? Text(
+                            Strings.privacy_policy_checkbox_error,
+                            style:
+                                AppFonts.smallText.copyWith(color: Colors.red),
+                          )
+                        : SizedBox(),
+                    Row(
+                      children: [
+                        Checkbox(
+                          value: isChecked,
+                          activeColor: AppColors.appPrimaryColor,
+                          onChanged: (bool? value) {
+                            setState(() {
+                              isChecked = value!;
+                            });
+                          },
+                        ),
+                        Expanded(
+                          child: RichText(
+                            text: TextSpan(
+                              style: TextStyle(color: Colors.black),
+                              children: [
+                                TextSpan(
+                                    text: 'I agree to the ',
+                                    style: AppFonts.smallText),
+                                TextSpan(
+                                  text: 'Terms and Conditions',
+                                  style: AppFonts.smallText.copyWith(
+                                      color: AppColors.appPrimaryColor),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () async {
+                                      final Uri uri = Uri.parse(
+                                          Strings.terms_and_conditions_url);
+                                      if (!await launchUrl(uri,
+                                          mode:
+                                              LaunchMode.externalApplication)) {
+                                        // Handle the error gracefully
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                              content: Text(
+                                                  'Could not launch Terms and Conditions URL')),
+                                        );
+                                      }
+                                      // Handle Terms and Conditions tap here
+                                      // _showTermsDialog(context);
                                     },
-                                  ),
-                                  Expanded(
-                                    child: RichText(
-                                      text: TextSpan(
-                                        style: TextStyle(color: Colors.black),
-                                        children: [
-                                          TextSpan(text: 'I agree to the ',style: AppFonts.smallText),
-                                          TextSpan(
-                                            text: 'Terms and Conditions',
-                                            style:AppFonts.smallText.copyWith(color: AppColors.appPrimaryColor),
-                                            recognizer: TapGestureRecognizer()
-                                              ..onTap = () async{
-                                              final Uri uri = Uri.parse(Strings.terms_and_conditions_url);
-                                              if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
-                                                // Handle the error gracefully
-                                                ScaffoldMessenger.of(context).showSnackBar(
-                                                  SnackBar(content: Text('Could not launch Terms and Conditions URL')),
-                                                );
-                                              }
-                                                // Handle Terms and Conditions tap here
-                                                // _showTermsDialog(context);
-                                              },
-                                          ),
-                                          TextSpan(text: ' and the ',style: AppFonts.smallText),
-                                          TextSpan(
-                                            text: 'Privacy Policy',
-                                            style:AppFonts.smallText.copyWith(color: AppColors.appPrimaryColor),
-                                            recognizer: TapGestureRecognizer()
-                                              ..onTap = () async{
-                                                final Uri uri = Uri.parse(Strings.privacy_policy_url);
-                                                if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
-                                                // Handle the error gracefully
-                                                ScaffoldMessenger.of(context).showSnackBar(
-                                                SnackBar(content: Text('Could not launch Terms and Conditions URL')),
-                                                );
-                                                }
-                                                // Handle Privacy Policy tap here
-                                                // _showPrivacyPolicyDialog(context);
-                                              },
-                                          ),
-                                          TextSpan(text: '.'),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 20.0),
-                              Expanded(
-                                child: Container(
-                                  alignment: Alignment.bottomCenter,
-                                  padding: const EdgeInsets.only(bottom: 30),
-                                  child: RoundedElevatedButton(
-                                      width: MediaQuery.of(context).size.width,
-                                      height: 40.0,
-                                      text: Strings.get_otp,
-                                      onPressed: () {
-                                        if(isChecked){
-                                          setState(() {
-                                            showPrivacyPolicyError = false;
-                                          });
-                                          _signUpBloc.add(OnButtonClicked(
-                                              number: _mobileController.text));
-                                        }
-                                        else{
-                                          setState(() {
-                                            showPrivacyPolicyError = true;
-                                          });
-                                        }
-
-                                      },
-                                      cornerRadius: 6.0,
-                                      buttonColor: AppColors.appPrimaryColor,
-                                      textStyle: AppFonts.header
-                                          .copyWith(color: AppColors.black)),
                                 ),
-                              ),
-                            ],
+                                TextSpan(
+                                    text: ' and the ',
+                                    style: AppFonts.smallText),
+                                TextSpan(
+                                  text: 'Privacy Policy',
+                                  style: AppFonts.smallText.copyWith(
+                                      color: AppColors.appPrimaryColor),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () async {
+                                      final Uri uri =
+                                          Uri.parse(Strings.privacy_policy_url);
+                                      if (!await launchUrl(uri,
+                                          mode:
+                                              LaunchMode.externalApplication)) {
+                                        // Handle the error gracefully
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                              content: Text(
+                                                  'Could not launch Terms and Conditions URL')),
+                                        );
+                                      }
+                                      // Handle Privacy Policy tap here
+                                      // _showPrivacyPolicyDialog(context);
+                                    },
+                                ),
+                                TextSpan(text: '.'),
+                              ],
+                            ),
                           ),
-                        );
-            }
-          )
-        ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20.0),
+                    Expanded(
+                      child: Container(
+                        alignment: Alignment.bottomCenter,
+                        padding: const EdgeInsets.only(bottom: 30),
+                        child: RoundedElevatedButton(
+                            width: MediaQuery.of(context).size.width,
+                            height: 40.0,
+                            text: Strings.get_otp,
+                            onPressed: () {
+                              if (isChecked) {
+                                setState(() {
+                                  showPrivacyPolicyError = false;
+                                });
+                                _signUpBloc.add(OnButtonClicked(
+                                    number: _mobileController.text));
+                              } else {
+                                setState(() {
+                                  showPrivacyPolicyError = true;
+                                });
+                              }
+                            },
+                            cornerRadius: 6.0,
+                            buttonColor: AppColors.appPrimaryColor,
+                            textStyle: AppFonts.header
+                                .copyWith(color: AppColors.black)),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            })),
       ),
     );
   }

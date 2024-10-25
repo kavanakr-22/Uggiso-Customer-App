@@ -34,7 +34,7 @@ class InitiatePaymentModel {
 
 class Payload {
   int? status;
-  Null? errorDesc;
+  String? errorDesc;
   String? data;
 
   Payload({this.status, this.errorDesc, this.data});

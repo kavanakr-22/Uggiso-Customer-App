@@ -64,7 +64,7 @@ class _MenuListScreenState extends State<MenuListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.textFieldBg,
+      backgroundColor: AppColors.white,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       appBar: AppBar(
         elevation: 0.0,
@@ -238,6 +238,7 @@ class _MenuListScreenState extends State<MenuListScreen> {
                 ),
               ),
               Container(
+
                 decoration: const BoxDecoration(
                   color: AppColors.white,
                   borderRadius: BorderRadius.only(

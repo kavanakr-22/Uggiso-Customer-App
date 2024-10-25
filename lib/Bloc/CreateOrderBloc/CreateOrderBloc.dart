@@ -7,6 +7,7 @@ import 'package:uggiso/Model/PaymentDetailsModel.dart';
 import 'package:uggiso/Model/WalletDetailsModel.dart';
 import 'package:uggiso/Network/NetworkError.dart';
 import 'package:uggiso/Network/apiRepository.dart';
+import 'package:uuid/uuid.dart';
 class CreateOrderBloc extends Bloc<CreateOrderEvent, CreateOrderState> {
   late OrderCheckoutModel data;
   late WalletDetailsModel walletData;
@@ -81,7 +82,8 @@ class CreateOrderBloc extends Bloc<CreateOrderEvent, CreateOrderState> {
         emit(InitiatePaymentMode()) ;
         if(event.number.isNotEmpty) {
           //String name,String number,String userType,String deviceId,String token
-          initiatePaymentData =  await _apiRepository.initiatePayment(event.name,event.number,event.amount);
+          print('this is initiate payment request : ${event.name}, ${event.number}, ${event.amount}');
+          initiatePaymentData =  await _apiRepository.initiatePayment(event.name,event.number,event.amount,event.txnId);
           print('wallet details api response: ${initiatePaymentData.payload}');
           if(initiatePaymentData.statusCode==200){
             emit(onPaymentInitiated(initiatePaymentData));
@@ -101,4 +103,12 @@ class CreateOrderBloc extends Bloc<CreateOrderEvent, CreateOrderState> {
     });
   }
 
+}
+
+String generateUUID() {
+  var uuid = Uuid();
+  // Generate a v4 (random) UUID
+  String uniqueID = uuid.v4();
+  print('Generated UUID : $uniqueID');
+  return uniqueID;
 }

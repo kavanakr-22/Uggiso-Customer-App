@@ -8,6 +8,7 @@ import 'package:uggiso/base/common/utils/LocationManager.dart';
 import 'package:uggiso/base/common/utils/colors.dart';
 import 'package:uggiso/base/common/utils/fonts.dart';
 import 'package:uggiso/base/common/utils/strings.dart';
+import 'package:uuid/uuid.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -147,4 +148,6 @@ class _SplashScreenState extends State<SplashScreen> {
     }
 
   }
+
+
 }

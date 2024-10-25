@@ -428,7 +428,10 @@ class ApiProvider {
         "statusCode": "200",
         "transactionId": transactionId,
         "orderNumber": orderNumber,
-        "paymentId": paymentId
+        "paymentId": "0c1a0388-ff88-48c7-92fc-b78ca3b0d5ce",
+        "amount": "",
+        "usedCoins": 0,
+        "data": ""
       });
       print("${response.data}");
 
@@ -532,16 +535,16 @@ class ApiProvider {
   }
 
   Future<InitiatePaymentModel> initiatePayment(
-      String name, String phone, String amount) async {
+      String name, String phone, String amount,String txnId) async {
     try {
       Response response =
           await _dio.post('${_url}${Constants.initiate_payment}', data: {
         "name": name,
-        "txnId": "984488345381121",
+        "txnId": txnId,
         "phone": phone,
         "email": "gc@gmail.com",
         "productInfo": "TEST",
-        "amount": int.parse(amount)
+        "amount": double.parse(amount)
       });
       print("${response.data}");
 
