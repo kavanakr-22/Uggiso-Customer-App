@@ -735,7 +735,7 @@ You can parse it accordingly to handle response */
                 customerId: userId,
                 menuData: menuList,
                 orderType: "PARCEL",
-                paymentType: '${payment_response['payment_response']['mode']}',
+                paymentType: 'UPI',
                 orderStatus: 'CREATED',
                 totalAmount: item_sub_total.toInt(),
                 comments: 'Please do little more spicy',
