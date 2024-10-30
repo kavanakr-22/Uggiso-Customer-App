@@ -90,7 +90,7 @@ class Strings {
   static const phone_pay_upi = 'PhonePe UPI';
   static const proceed_this_payment_option = 'Proceed with this option';
   static const you_need_to_have_upi_id = 'You need to have a registered UPI ID';
-  static const select_time_slot = 'Select Time slot';
+  static const select_time_slot = 'Select your time slot';
   static const order_details = 'Order Details';
   static const bill_details = 'Bill Details';
   static const item_total = 'Item Total';
@@ -131,7 +131,8 @@ class Strings {
   static const privacy_policy_checkbox_error = 'Please accept our privacy policy and terms and conditions';
   static const location_alert_title = 'Allow "Uggiso" to access your background location when order is placed even app closed';
   static const location_permission_request = 'Uggiso will use location in the background to notify the restaurants about your arrival.';
-
+  static const take_away = 'Take Away';
+  static const dine_in = 'Dine In';
 
   static const List<Map<String, dynamic>> profileItemList = [
     {'image': 'assets/ic_orders.png', 'title': your_orders},

@@ -53,6 +53,8 @@ class _CreateOrderState extends State<CreateOrder> {
   String access_data = '';
   final CreateOrderBloc _createOrderBloc = CreateOrderBloc();
   TextEditingController points_controller = TextEditingController();
+  bool _istakeAway = true;
+  bool _isDineIn = false;
 
   // static const platform = MethodChannel('com.sabpaisa.integration/native');
   static MethodChannel _channel = MethodChannel('easebuzz');
@@ -164,7 +166,7 @@ class _CreateOrderState extends State<CreateOrder> {
               : Column(
                   children: [
                     Container(
-                      height: MediaQuery.of(context).size.height * 0.12,
+                      height: MediaQuery.of(context).size.height * 0.14,
                       decoration: const BoxDecoration(
                         color: AppColors.white,
                         borderRadius: BorderRadius.only(
@@ -177,21 +179,71 @@ class _CreateOrderState extends State<CreateOrder> {
                             horizontal: 16.0, vertical: 8.0),
                         child: Column(
                           children: [
+                            // Row(
+                            //   mainAxisAlignment: MainAxisAlignment.start,
+                            //   crossAxisAlignment: CrossAxisAlignment.center,
+                            //   children: [
+                            //     Image.asset(
+                            //       'assets/ic_home.png',
+                            //       width: 24,
+                            //       height: 24,
+                            //       color: AppColors.appPrimaryColor,
+                            //     ),
+                            //     SizedBox(
+                            //       width: 8,
+                            //     ),
+                            //     Text('Distance from Home',
+                            //         style: AppFonts.title)
+                            //   ],
+                            // ),
+                            // Gap(12),
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Image.asset(
-                                  'assets/ic_home.png',
-                                  width: 24,
-                                  height: 24,
-                                  color: AppColors.appPrimaryColor,
+                                InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      _istakeAway = true;
+                                      _isDineIn = false;
+                                    });
+                                  },
+                                  child: RoundedContainer(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.4,
+                                      height: 40,
+                                      child: Center(
+                                        child: Text(
+                                          Strings.take_away,
+                                          style: AppFonts.title.copyWith(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                      ),
+                                      color: _istakeAway?AppColors.appSecondaryColor:AppColors.white,
+                                      cornerRadius: 10),
                                 ),
-                                SizedBox(
-                                  width: 8,
-                                ),
-                                Text('Distance from Home',
-                                    style: AppFonts.title)
+                                InkWell(
+                                  onTap: (){
+                                    setState(() {
+                                      _istakeAway = false;
+                                      _isDineIn = true;
+                                    });
+                                  },
+                                  child: RoundedContainer(
+                                      width:
+                                          MediaQuery.of(context).size.width * 0.4,
+                                      height: 40,
+                                      child: Center(
+                                        child: Text(
+                                          Strings.dine_in,
+                                          style: AppFonts.title.copyWith(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                      ),
+                                      color: _isDineIn?AppColors.appSecondaryColor:AppColors.white,
+                                      cornerRadius: 10),
+                                )
                               ],
                             ),
                             Gap(12),
@@ -636,29 +688,22 @@ class _CreateOrderState extends State<CreateOrder> {
     print('this is params : $params');
     final payment_response =
         await _channel.invokeMethod("payWithEasebuzz", params);
-
-    print('this is response from payment screen ${payment_response['result']}');
-    print(
-        'this is response from payment screen ${payment_response['payment_response']}');
-    print(
-        'this is response from payment screen ${payment_response['payment_response']['mode']}');
     if (payment_response['result'] == 'payment_successfull') {
       _createOrderBloc.add(OnPaymentClicked(
           restaurantId: widget.restaurantId!,
           restaurantName: widget.restaurantName!,
           customerId: userId,
           menuData: menuList,
-          orderType: "PARCEL",
+          orderType: _istakeAway?"PARCEL":"DINEIN",
           paymentType: 'UPI',
           orderStatus: 'CREATED',
           totalAmount: item_sub_total.toInt(),
           comments: 'Please do little more spicy',
           timeSlot: selectedSlot,
           transMode: 'BIKE',
-          usedCoins: 0,
+          usedCoins: uggiso_point_count!.toInt(),
           paidAmount: item_sub_total));
-    }
-    else if(payment_response['result'] == 'payment_failed'){
+    } else if (payment_response['result'] == 'payment_failed') {
       _showBottomSheet(context);
     }
   }

@@ -3,7 +3,7 @@ import 'package:uggiso/base/common/utils/colors.dart';
 
 class RoundedContainer extends StatelessWidget {
   final double width;
-  final double height;
+  final double? height;
   final Widget child;
   final double cornerRadius;
   final double borderWidth;
@@ -13,8 +13,7 @@ class RoundedContainer extends StatelessWidget {
 
   const RoundedContainer(
       {Key? key,
-      required this.width,
-      required this.height,
+      required this.width, this.height,
       required this.child,
       required this.cornerRadius,
       this.borderColor = AppColors.borderColor,
