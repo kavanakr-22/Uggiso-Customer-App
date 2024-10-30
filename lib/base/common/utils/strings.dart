@@ -133,6 +133,8 @@ class Strings {
   static const location_permission_request = 'Uggiso will use location in the background to notify the restaurants about your arrival.';
   static const take_away = 'Take Away';
   static const dine_in = 'Dine In';
+  static const transaction_failed = 'Transaction Failed';
+  static const transaction_failed_message = 'Your transaction has failed. Please try again or contact support if the issue persists.';
 
   static const List<Map<String, dynamic>> profileItemList = [
     {'image': 'assets/ic_orders.png', 'title': your_orders},

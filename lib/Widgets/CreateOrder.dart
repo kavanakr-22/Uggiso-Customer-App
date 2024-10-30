@@ -714,26 +714,46 @@ class _CreateOrderState extends State<CreateOrder> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
       ),
+      isDismissible: false,
       builder: (BuildContext context) {
         return Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Text(
-                'Bottom Sheet Title',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 10),
-              Text('This is a sample modal bottom sheet.'),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text('Close'),
-              ),
-            ],
+          child: Container(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height*0.3,
+            child: Column(
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        shape: BoxShape.circle,
+                      ),
+                      child: IconButton(
+                        icon: Icon(Icons.close, color: Colors.grey),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                Text(
+                  '${Strings.transaction_failed}',
+                  style: AppFonts.header.copyWith(color: Colors.red),
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height*0.005),
+                Icon(
+                  Icons.error,
+                  color: Colors.red,
+                  size: 80.0,
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height*0.003),
+                Text('${Strings.transaction_failed_message}',style: AppFonts.title,textAlign: TextAlign.center,),
+              ],
+            ),
           ),
         );
       },
