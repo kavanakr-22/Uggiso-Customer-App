@@ -300,7 +300,7 @@ class _RewardsScreenState extends State<RewardsScreen> {
                                                         switchValue = value;
                                                       });
                                                       print('this is the value : $value');
-                                                      // saveRewardsDetails(value,state.data.payload!.balance??0.0);
+                                                      saveRewardsDetails(value,state.data.payload!.balance??0);
                                                     },
                                                     inactiveTrackColor: AppColors
                                                         .grey,
@@ -390,30 +390,30 @@ class _RewardsScreenState extends State<RewardsScreen> {
                                   .of(context)
                                   .size
                                   .height * 0.08),
-                              Card(
-                                elevation: 5,
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 12.0, vertical: 18),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment
-                                        .spaceBetween,
-                                    children: [
-                                      Text(
-                                        Strings.view_all_transactions,
-                                        style: AppFonts.subHeader.copyWith(
-                                            color: AppColors.rewardsText,
-                                            fontWeight: FontWeight.w600),
-                                      ),
-                                      Image.asset(
-                                        'assets/ic_front_arrow.png',
-                                        width: 16,
-                                        height: 16,
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              )
+                              // Card(
+                              //   elevation: 5,
+                              //   child: Padding(
+                              //     padding: const EdgeInsets.symmetric(
+                              //         horizontal: 12.0, vertical: 18),
+                              //     child: Row(
+                              //       mainAxisAlignment: MainAxisAlignment
+                              //           .spaceBetween,
+                              //       children: [
+                              //         Text(
+                              //           Strings.view_all_transactions,
+                              //           style: AppFonts.subHeader.copyWith(
+                              //               color: AppColors.rewardsText,
+                              //               fontWeight: FontWeight.w600),
+                              //         ),
+                              //         Image.asset(
+                              //           'assets/ic_front_arrow.png',
+                              //           width: 16,
+                              //           height: 16,
+                              //         )
+                              //       ],
+                              //     ),
+                              //   ),
+                              // )
                             ],
                           ),
                         ),
@@ -434,14 +434,16 @@ class _RewardsScreenState extends State<RewardsScreen> {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       userId = prefs.getString('userId') ?? '';
+      switchValue = prefs.getBool('use_points_status')??false;
+
     });
     print('this is user id : $userId');
     _rewardsBloc.add(OnGetRewardsDetails(userId: userId!));
   }
 
-  void saveRewardsDetails(bool status,double coin) async {
+  void saveRewardsDetails(bool status,int coin) async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setBool('use_points_status', status);
-    prefs.setDouble('use_points_count', coin);
+    prefs.setInt('use_points_count', coin);
   }
 }

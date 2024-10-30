@@ -181,10 +181,11 @@ class _MenuItemCardState extends State<MenuItemCard> {
                             cornerRadius: 12,
                             borderColor: AppColors.appPrimaryColor,
                             padding: 0,
-                            child: Center(
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
                               child: Image.network(
                                 widget.listData.photo.toString(),
-                                fit: BoxFit.fill,
+                                fit: BoxFit.cover,
                                 errorBuilder: (BuildContext context,
                                     Object exception, StackTrace? stackTrace) {
                                   // Display a placeholder image or alternative content
@@ -205,32 +206,35 @@ class _MenuItemCardState extends State<MenuItemCard> {
                     Positioned(
                       top: MediaQuery.of(context).size.height *
                           0.08, // Adjust this value as needed
-                      left: 10, // Adjust this value as needed
+                      left: 8,
+                      right: 8,// Adjust this value as needed
                       child: RoundedContainer(
                           width: MediaQuery.of(context).size.width * 0.2,
                           height: MediaQuery.of(context).size.height * 0.04,
-                          cornerRadius: 12,
+                          cornerRadius: 10,
+                          padding: 0,
                           color: AppColors.white,
                           child: _orderCount == 0
                               ? Center(
-                                  child: InkWell(
-                                      onTap: () {
-                                        setState(() {
-                                          _orderCount = 1;
-                                        });
+                                child: InkWell(
+                                    onTap: () {
+                                      setState(() {
+                                        _orderCount = 1;
+                                      });
 
-                                        widget.onItemAdded();
-                                        /* cart.addItem(AddMenuItemToCart(
-                                            menuId: widget.listData.menuId.toString(),
-                                            menuName: widget.listData.menuName.toString(),
-                                            menuType: widget.listData.menuType.toString(),
-                                            price: widget.listData.price!));*/
-                                      },
-                                      child: Text(
-                                        Strings.add,
-                                        style: AppFonts.smallText.copyWith(
-                                            color: AppColors.appPrimaryColor),
-                                      )))
+                                      widget.onItemAdded();
+                                      /* cart.addItem(AddMenuItemToCart(
+                                          menuId: widget.listData.menuId.toString(),
+                                          menuName: widget.listData.menuName.toString(),
+                                          menuType: widget.listData.menuType.toString(),
+                                          price: widget.listData.price!));*/
+                                    },
+                                    child: Text(
+                                      Strings.add,
+                                      style: AppFonts.title.copyWith(
+                                          color: AppColors.appPrimaryColor),
+                                    )),
+                              )
                               : Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
@@ -260,13 +264,15 @@ class _MenuItemCardState extends State<MenuItemCard> {
                                       child: Icon(
                                         Icons.remove,
                                         color: AppColors.appPrimaryColor,
-                                        size: 18,
+                                        size: 20,
                                       ),
                                     ),
+                                    Gap(6),
+
                                     Text(
                                       '${_orderCount.toString()}',
                                       style: AppFonts.smallText.copyWith(
-                                          color: AppColors.appPrimaryColor),
+                                          color: AppColors.appPrimaryColor,fontSize: 16),
                                     ),
                                     Gap(6),
                                     InkWell(
@@ -284,9 +290,11 @@ class _MenuItemCardState extends State<MenuItemCard> {
                                       child: Icon(
                                         Icons.add,
                                         color: AppColors.appPrimaryColor,
-                                        size: 18,
+                                        size: 20,
                                       ),
                                     ),
+                                    Gap(6),
+
                                   ],
                                 )),
                     ),

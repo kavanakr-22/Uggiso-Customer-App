@@ -3,15 +3,80 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:uggiso/Bloc/SignUpBloc/signup_bloc.dart';
 import 'package:uggiso/Bloc/VerifyOtpBloc/VerifyOtpBloc.dart';
 import 'package:uggiso/app_routes.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:io' show Platform;
 
+
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+FlutterLocalNotificationsPlugin();
+
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print('Handling a background message: ${message.messageId}');
-  // Handle the notification when the app is in the background or terminated
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
+}
+
+void requestIOSPermissions() {
+  flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<
+      IOSFlutterLocalNotificationsPlugin>()
+      ?.requestPermissions(
+    alert: true,
+    badge: true,
+    sound: true,
+  );
+}
+
+
+void showNotification(String title, String body, String redirectPath) async {
+  initialiseNotificationSettings();
+  const AndroidNotificationDetails androidPlatformChannelSpecifics =
+  AndroidNotificationDetails(
+    'Uggiso',
+    'message',
+    channelDescription: 'new message',
+    importance: Importance.max,
+    priority: Priority.high,
+    groupKey: 'fcm',
+  );
+  const DarwinNotificationDetails iosNotificationDetails =
+  DarwinNotificationDetails(
+    threadIdentifier: 'Uggiso',
+    presentSound: true,
+    categoryIdentifier: 'fcm',
+  );
+  const NotificationDetails platformChannelSpecifics = NotificationDetails(
+      android: androidPlatformChannelSpecifics, iOS: iosNotificationDetails);
+  if (title != 'null') {
+    await flutterLocalNotificationsPlugin
+        .show(0, title, body, platformChannelSpecifics, payload: redirectPath);
+  }
+}
+
+initialiseNotificationSettings() {
+  const AndroidInitializationSettings initializationSettingsAndroid =
+  AndroidInitializationSettings('@mipmap/ic_launcher');
+  final DarwinInitializationSettings initializationSettingsIOS =
+  DarwinInitializationSettings(
+    onDidReceiveLocalNotification: (id, title, body, payload) {},
+    requestSoundPermission: true,
+    requestBadgePermission: true,
+    requestAlertPermission: true,
+  );
+  final InitializationSettings initializationSettings = InitializationSettings(
+      android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
+  // flutterLocalNotificationsPlugin.initialize(
+  //   initializationSettings,
+  //   onDidReceiveNotificationResponse: (payload) {
+  //     GetStorage get = GetStorage();
+  //     get.writeInMemory('redirect_path', payload);
+  //   },
+  // );
 }
 
 void main() async {
@@ -21,21 +86,21 @@ void main() async {
     if (Platform.isAndroid) {
       await Firebase.initializeApp(
         options: const FirebaseOptions(
-          apiKey: 'AIzaSyDrVteZil-zMNRhVZNX0EqYgqsneiq6YnI',
-          appId: '1:21951454671:android:f7c5601195813c9c0206ba',
-          messagingSenderId: '21951454671',
-          projectId: 'uggiso-pro',
-          storageBucket: 'uggiso-pro.appspot.com',
+          apiKey: 'AIzaSyBaQeRktxRI4f-1nc8e2ysD_6SmjsC954g',
+          appId: '1:692027802741:android:c7ca0866ba8264ca44e43c',
+          messagingSenderId: '692027802741',
+          projectId: 'my-uggiso-89fdd',
+          storageBucket: 'my-uggiso-89fdd.appspot.com',
         ),
       );
     } else if (Platform.isIOS) {
       await Firebase.initializeApp(
         options: const FirebaseOptions(
-          apiKey: 'AIzaSyBhcdW0lc2uYT1Q14TVXtrTaUp8z8uVZNc',
-          appId: '1:741537959124:ios:55e5e8bdc9372ebbd2bf41',
-          messagingSenderId: '741537959124',
-          projectId: 'uggiso-469cc',
-          storageBucket: 'uggiso-469cc.appspot.com',
+          apiKey: 'AIzaSyApPM5HUmnG-4dNPjffhsXMGU15BRqWnxA',
+          appId: '1:692027802741:ios:9fd21d335b28583544e43c',
+          messagingSenderId: '692027802741',
+          projectId: 'my-uggiso-89fdd',
+          storageBucket: 'my-uggiso-89fdd.appspot.com',
         ),
       );
     }

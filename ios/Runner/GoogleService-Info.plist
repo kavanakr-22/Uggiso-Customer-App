@@ -3,17 +3,17 @@
 <plist version="1.0">
 <dict>
 	<key>API_KEY</key>
-	<string>AIzaSyBcK5UuLUkaZS6x8qJH7nRlBKp6thGdtj8</string>
+	<string>AIzaSyApPM5HUmnG-4dNPjffhsXMGU15BRqWnxA</string>
 	<key>GCM_SENDER_ID</key>
-	<string>21951454671</string>
+	<string>692027802741</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.uggiso.customer</string>
 	<key>PROJECT_ID</key>
-	<string>uggiso-pro</string>
+	<string>my-uggiso-89fdd</string>
 	<key>STORAGE_BUCKET</key>
-	<string>uggiso-pro.appspot.com</string>
+	<string>my-uggiso-89fdd.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -25,6 +25,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:21951454671:ios:9c5d1d1e3918bd790206ba</string>
+	<string>1:692027802741:ios:9fd21d335b28583544e43c</string>
 </dict>
 </plist>

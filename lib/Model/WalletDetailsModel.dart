@@ -34,7 +34,7 @@ class WalletDetailsModel {
 
 class Payload {
   String? userId;
-  double? balance;
+  int? balance;
 
   Payload({this.userId, this.balance});
 

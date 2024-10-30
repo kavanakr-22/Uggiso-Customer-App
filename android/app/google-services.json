@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "21951454671",
-    "project_id": "uggiso-pro",
-    "storage_bucket": "uggiso-pro.appspot.com"
+    "project_number": "692027802741",
+    "project_id": "my-uggiso-89fdd",
+    "storage_bucket": "my-uggiso-89fdd.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:21951454671:android:f7c5601195813c9c0206ba",
+        "mobilesdk_app_id": "1:692027802741:android:c7ca0866ba8264ca44e43c",
         "android_client_info": {
           "package_name": "com.uggiso.customer"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDrVteZil-zMNRhVZNX0EqYgqsneiq6YnI"
+          "current_key": "AIzaSyBaQeRktxRI4f-1nc8e2ysD_6SmjsC954g"
         }
       ],
       "services": {
@@ -26,7 +26,7 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:21951454671:android:8ef790abbcc61b3a0206ba",
+        "mobilesdk_app_id": "1:692027802741:android:a3b420b0bbd5fd0c44e43c",
         "android_client_info": {
           "package_name": "com.uggiso.restuarant"
         }
@@ -34,7 +34,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDrVteZil-zMNRhVZNX0EqYgqsneiq6YnI"
+          "current_key": "AIzaSyBaQeRktxRI4f-1nc8e2ysD_6SmjsC954g"
         }
       ],
       "services": {

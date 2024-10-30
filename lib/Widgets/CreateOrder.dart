@@ -43,12 +43,14 @@ class _CreateOrderState extends State<CreateOrder> {
   String userId = '';
   String userNumber = '';
   String userName = '';
+  double parcelCharges = 0.0;
   List menuList = [];
   bool showLoader = false;
   bool _isUggiso_points_selected = false;
   double? uggiso_point_count = 0.0;
   double? uggiso_point_limit = 0.0;
   String txnId = '';
+  String access_data = '';
   final CreateOrderBloc _createOrderBloc = CreateOrderBloc();
   TextEditingController points_controller = TextEditingController();
 
@@ -61,13 +63,14 @@ class _CreateOrderState extends State<CreateOrder> {
     getUserDetails();
     for (int i = 0; i < widget.orderlist.length; i++) {
       calculateTotalAmount(
-          widget.orderlist[i]['price'], widget.orderlist[i]['quantity']);
+          (widget.orderlist[i]['price']), widget.orderlist[i]['quantity']);
+      // parcelCharges = parcelCharges + double.parse(widget.orderlist[i]['parcelCharges']);
       menuList.add({
         "menuId": widget.orderlist[i]['menuId'],
         "quantity": widget.orderlist[i]['quantity'],
         "quantityAmount":
             (widget.orderlist[i]['price'] * widget.orderlist[i]['quantity']),
-        "parcelAmount": 5.0,
+        "parcelAmount": widget.orderlist[i]['parcelCharges'],
         "menuName": widget.orderlist[i]['menuName'],
         "photo": null,
         "restaurantMenuType": widget.orderlist[i]['restaurantMenuType']
@@ -108,6 +111,8 @@ class _CreateOrderState extends State<CreateOrder> {
             if (state is onLoadedHotelState) {
               showLoader = false;
               print('this is orderId  : ${state.data.payload?.orderId}');
+              print('this is data  : $access_data');
+              print('this is usedCoins  : ${uggiso_point_count!}');
               _createOrderBloc.add(OnAddTransactionData(
                   orderId: state.data.payload!.orderId!,
                   receiverId: state.data.payload!.restaurantId!,
@@ -115,8 +120,10 @@ class _CreateOrderState extends State<CreateOrder> {
                   status: "SUCCESS",
                   transactionId: txnId,
                   orderNumber: state.data.payload!.orderNumber!,
-                  paymentId: ''));
-
+                  paymentId: '',
+                  amount: state.data.payload!.paidAmount!,
+                  usedCoins: uggiso_point_count!,
+                  data: access_data));
               initializeService(widget.restLat!, widget.restLng!,
                   state.data.payload!.orderId!);
               Navigator.pushNamedAndRemoveUntil(
@@ -125,16 +132,23 @@ class _CreateOrderState extends State<CreateOrder> {
                   (Route<dynamic> route) => false);
             }
             if (state is onCoinDetailsFetched) {
-              showLoader = false;
+              setState(() {
+                showLoader = false;
+              });
+
               if ((state.data.payload?.balance! ?? 0.0) > 10.0) {
                 uggiso_point_count = 10.0;
               } else {
                 uggiso_point_count = 0.0;
               }
+              item_sub_total = double.parse(
+                  (item_sub_total - uggiso_point_count!).toStringAsFixed(2));
             }
             if (state is onPaymentInitiated) {
               String? access_key = state.paymentData.payload?.data;
               String pay_mode = 'test';
+              access_data = access_key!;
+              print('this is access key : ${access_key}');
               Object parameters = {
                 "access_key": access_key,
                 "pay_mode": pay_mode
@@ -263,11 +277,21 @@ class _CreateOrderState extends State<CreateOrder> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    /*  Image.asset(
-                                  'assets/ic_veg.png',
-                                  width: 12,
-                                  height: 12,
-                                ),*/
+                                    widget.orderlist[count]
+                                                    ['restaurantMenuType']
+                                                .toString()
+                                                .toLowerCase() ==
+                                            'veg'
+                                        ? Image.asset(
+                                            'assets/ic_veg.png',
+                                            width: 12,
+                                            height: 12,
+                                          )
+                                        : Image.asset(
+                                            'assets/ic_non_veg.png',
+                                            width: 12,
+                                            height: 12,
+                                          ),
                                     Gap(4),
                                     Container(
                                         width:
@@ -350,7 +374,7 @@ class _CreateOrderState extends State<CreateOrder> {
                                     Gap(24),
                                     Expanded(
                                       child: Text(
-                                        '₹ ${widget.orderlist[count]['price']}',
+                                        '₹ ${(widget.orderlist[count]['quantity'] * widget.orderlist[count]['price'])}',
                                         textAlign: TextAlign.end,
                                         style: AppFonts.title,
                                       ),
@@ -555,7 +579,9 @@ class _CreateOrderState extends State<CreateOrder> {
   calculateTotalAmount(double price, int quantity) {
     setState(() {
       item_total = item_total + (price * quantity);
+      print('this is item total amount : ${item_total}');
       item_sub_total = item_total - (uggiso_point_count!);
+      print('this is sub total ${item_total - (uggiso_point_count!)}');
       gst_charges = item_sub_total *
           (double.parse((gst_charges / 100).toStringAsFixed(2)));
       item_sub_total =
@@ -598,127 +624,13 @@ class _CreateOrderState extends State<CreateOrder> {
     setState(() {
       txnId = generateUUID();
     });
+    print('this is item sub total : ${item_sub_total.toString()}');
     _createOrderBloc.add(InitiatePayment(
         name: userName,
         number: userNumber,
         amount: item_sub_total.toString(),
         txnId: txnId));
-
-    /* payment_response is the HashMap containing the response of the payment.
-You can parse it accordingly to handle response */
-
-    // print('this is the transaction result : $result');
-    // print('this is the transaction result status: ${result[0].toString()}');
-    // print('this is the transaction result txnId: ${result[1].toString()}');
-    //
-    // String txnStatus = result[0].toString();
-    // setState(() {
-    //   txnId = result[1].toString();//3d26ebfed87f69893b474aac44b635387a57a49539161bb3737d6c323fea27e0
-    // });
-
-    // _createOrderBloc.add(OnPaymentClicked(
-    //     restaurantId: widget.restaurantId!,
-    //     restaurantName: widget.restaurantName!,
-    //     customerId: userId,
-    //     menuData: menuList,
-    //     orderType: "PARCEL",
-    //     paymentType: 'UPI',
-    //     orderStatus: 'CREATED',
-    //     totalAmount: item_sub_total.toInt(),
-    //     comments: 'Please do little more spicy',
-    //     timeSlot: 'null',
-    //     transMode: 'BIKE',
-    //     paidAmount: item_sub_total,
-    //     usedCoins: 0));
-
-    // if (txnStatus == 'SUCCESS') {
-    //   _createOrderBloc.add(OnPaymentClicked(
-    //       restaurantId: widget.restaurantId!,
-    //       restaurantName: widget.restaurantName!,
-    //       customerId: userId,
-    //       menuData: menuList,
-    //       orderType: "PARCEL",
-    //       paymentType: 'UPI',
-    //       orderStatus: 'CREATED',
-    //       totalAmount: item_sub_total.toInt(),
-    //       comments: 'Please do little more spicy',
-    //       timeSlot: selectedSlot,
-    //       transMode: 'BIKE',
-    //       usedCoins: 0,
-    //       paidAmount: item_sub_total));
-    // } else {
-    //   _createOrderBloc.add(OnAddTransactionData(
-    //       orderId: '',
-    //       receiverId: widget.restaurantId!,
-    //       senderId: userId,
-    //       status: result[0].toString(),
-    //       transactionId: result[1].toString(),orderNumber: ''));
-    //
-    //   Fluttertoast.showToast(
-    //       msg: txnStatus,
-    //       toastLength: Toast.LENGTH_SHORT,
-    //       gravity: ToastGravity.CENTER,
-    //       timeInSecForIosWeb: 1,
-    //       backgroundColor: Colors.red,
-    //       textColor: Colors.white,
-    //       fontSize: 16.0);
-    // }
-    // sendPushNotification('', 'order created', 'check for details');
   }
-
-/*notifyRestaurant(OrderCheckoutModel data){
-    sendPushNotification(data.payload!.fcmToken.toString(), 'order created', 'check for details');
-   */ /* Navigator.pushNamedAndRemoveUntil(
-        context,
-        AppRoutes.orderSuccessScreen,
-            (Route<dynamic> route) => false);*/ /*
-  }*/
-
-/* Future<void> sendPushNotification(String token, String title, String body) async {
-    try {
-      final String serverKey = await PushNotificationService.getAccessToken();
-      print('this is fcm token : $serverKey');
-      // await PushNotificationService().getEstimatedTravelTime(12.900740,77.764267);
-
-      const String firebaseUrl = 'https://fcm.googleapis.com/v1/projects/uggiso-customer/messages:send';
-
-      final Map<String, String> headers = {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $serverKey',
-      };
-
-      final Map<String, dynamic> notificationData = {'title': title, 'body': body,};
-
-      final Map<String, dynamic> message = {
-        'message': {
-          'token': 'eVZyDSCNRH-LuvLf9LsZc5:APA91bF89qJfhldrtURgGBRZWdaZq1aISob61yX_6wi_S99MIAKHeEIGZwt1dXm_pljvuBk-5dkom1XgofdcbEk-zo4UtQuIrFLuW4E1KuYVdTmIrpeHiRzfQdZWU-M2utcreR3EoOuL',
-          'notification': notificationData,
-          'data': {
-            'click_action': 'FLUTTER_NOTIFICATION_CLICK',
-            'id': '1',
-            'status': 'done',
-          },
-        },
-      };
-
-
-      final http.Response response = await http.post(
-          Uri.parse(firebaseUrl),
-          headers: headers,
-          body: jsonEncode(message)
-      );
-
-      if (response.statusCode == 200) {
-        print('Notification sent successfully');
-      } else {
-        print('Notification could not be sent. Status code: ${response.statusCode}');
-        print('Response body: ${response.body}');
-      }
-    }catch(e){
-      print('An error occurred while sending the notification: $e');
-
-    }
-  }*/
 
   gotoPaymentScreen(Object params) async {
     print('this is params : $params');
@@ -726,23 +638,60 @@ You can parse it accordingly to handle response */
         await _channel.invokeMethod("payWithEasebuzz", params);
 
     print('this is response from payment screen ${payment_response['result']}');
-    print('this is response from payment screen ${payment_response['payment_response']}');
-    print('this is response from payment screen ${payment_response['payment_response']['mode']}');
-    if(payment_response['result']=='payment_successfull'){
+    print(
+        'this is response from payment screen ${payment_response['payment_response']}');
+    print(
+        'this is response from payment screen ${payment_response['payment_response']['mode']}');
+    if (payment_response['result'] == 'payment_successfull') {
       _createOrderBloc.add(OnPaymentClicked(
-                restaurantId: widget.restaurantId!,
-                restaurantName: widget.restaurantName!,
-                customerId: userId,
-                menuData: menuList,
-                orderType: "PARCEL",
-                paymentType: 'UPI',
-                orderStatus: 'CREATED',
-                totalAmount: item_sub_total.toInt(),
-                comments: 'Please do little more spicy',
-                timeSlot: selectedSlot,
-                transMode: 'BIKE',
-                usedCoins: 0,
-                paidAmount: item_sub_total));
+          restaurantId: widget.restaurantId!,
+          restaurantName: widget.restaurantName!,
+          customerId: userId,
+          menuData: menuList,
+          orderType: "PARCEL",
+          paymentType: 'UPI',
+          orderStatus: 'CREATED',
+          totalAmount: item_sub_total.toInt(),
+          comments: 'Please do little more spicy',
+          timeSlot: selectedSlot,
+          transMode: 'BIKE',
+          usedCoins: 0,
+          paidAmount: item_sub_total));
     }
+    else if(payment_response['result'] == 'payment_failed'){
+      _showBottomSheet(context);
+    }
+  }
+
+  void _showBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+      ),
+      builder: (BuildContext context) {
+        return Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Text(
+                'Bottom Sheet Title',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 10),
+              Text('This is a sample modal bottom sheet.'),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text('Close'),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 }

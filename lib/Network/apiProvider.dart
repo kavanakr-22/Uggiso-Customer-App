@@ -233,7 +233,7 @@ class ApiProvider {
     print(
         'this is request data :{ restaurantId: $restaurantId, restaurantName: $restaurantName,"customerId": $customerId,"menus": $menuData'
         ',"orderType":$orderType,"paymentType": $paymentType,"orderStatus": $orderStatus,"totalAmount": $totalAmount'
-        ',"comments": $comments,"timeSlot": $timeSlot,"transMode":$transMode');
+        ',"comments": $comments,"timeSlot": $timeSlot,"transMode":$transMode, paid amount : $paidAmount');
     try {
       Response response =
           await _dio.post('${_url}${Constants.createOrder}', data: {
@@ -417,7 +417,10 @@ class ApiProvider {
       String status,
       String transactionId,
       String orderNumber,
-      String paymentId) async {
+      String paymentId,
+      double amount,
+      double usedCoins,
+      String data) async {
     try {
       Response response =
           await _dio.post('${_url}${Constants.paymentDetails}', data: {
@@ -429,9 +432,9 @@ class ApiProvider {
         "transactionId": transactionId,
         "orderNumber": orderNumber,
         "paymentId": "0c1a0388-ff88-48c7-92fc-b78ca3b0d5ce",
-        "amount": "",
-        "usedCoins": 0,
-        "data": ""
+        "amount": amount,
+        "usedCoins": usedCoins,
+        "data": data
       });
       print("${response.data}");
 
@@ -535,7 +538,7 @@ class ApiProvider {
   }
 
   Future<InitiatePaymentModel> initiatePayment(
-      String name, String phone, String amount,String txnId) async {
+      String name, String phone, String amount, String txnId) async {
     try {
       Response response =
           await _dio.post('${_url}${Constants.initiate_payment}', data: {

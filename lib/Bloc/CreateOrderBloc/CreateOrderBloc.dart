@@ -9,10 +9,10 @@ import 'package:uggiso/Network/NetworkError.dart';
 import 'package:uggiso/Network/apiRepository.dart';
 import 'package:uuid/uuid.dart';
 class CreateOrderBloc extends Bloc<CreateOrderEvent, CreateOrderState> {
-  late OrderCheckoutModel data;
-  late WalletDetailsModel walletData;
-  late PaymentDetailsModel paymentData;
-  late InitiatePaymentModel initiatePaymentData;
+   OrderCheckoutModel? data;
+   WalletDetailsModel? walletData;
+   PaymentDetailsModel? paymentData;
+   InitiatePaymentModel? initiatePaymentData;
   CreateOrderBloc() : super(InitialState()) {
     final ApiRepository _apiRepository = ApiRepository();
 
@@ -22,12 +22,12 @@ class CreateOrderBloc extends Bloc<CreateOrderEvent, CreateOrderState> {
         data = await _apiRepository.createOrder(event.restaurantId,event.restaurantName, event.customerId,
             event.menuData,event.orderType,event.paymentType,event.orderStatus,event.totalAmount,
         event.comments,event.timeSlot,event.transMode,event.paidAmount,event.usedCoins);
-        if(data.payload == null){
+        if(data!.payload == null){
 
-          emit(ErrorState(data.message.toString()));
+          emit(ErrorState(data!.message.toString()));
         }
         else{
-          emit(onLoadedHotelState(data));
+          emit(onLoadedHotelState(data!));
 
         }
 
@@ -41,10 +41,10 @@ class CreateOrderBloc extends Bloc<CreateOrderEvent, CreateOrderState> {
       try {
         emit(LoadPaymentState());
         paymentData = await _apiRepository.addPayDetails(event.orderId,event.receiverId, event.senderId,
-            event.status,event.transactionId,event.orderNumber,event.paymentId);
-        if(paymentData.payload == null){
+            event.status,event.transactionId,event.orderNumber,event.paymentId, event.amount, event.usedCoins,event.data);
+        if(paymentData!.payload == null){
 
-          emit(ErrorState(paymentData.message.toString()));
+          emit(ErrorState(paymentData!.message.toString()));
         }
         else{
           emit(PaymentStateLoaded());
@@ -63,8 +63,8 @@ class CreateOrderBloc extends Bloc<CreateOrderEvent, CreateOrderState> {
         if(event.userId.isNotEmpty) {
           //String name,String number,String userType,String deviceId,String token
           walletData =  await _apiRepository.getWalletDetails(event.userId);
-          print('wallet details api response: ${data.payload}');
-          emit(onCoinDetailsFetched(walletData));
+          print('wallet details api response: ${walletData!.payload}');
+          emit(onCoinDetailsFetched(walletData!));
 
         }
         else{
@@ -82,15 +82,15 @@ class CreateOrderBloc extends Bloc<CreateOrderEvent, CreateOrderState> {
         emit(InitiatePaymentMode()) ;
         if(event.number.isNotEmpty) {
           //String name,String number,String userType,String deviceId,String token
-          print('this is initiate payment request : ${event.name}, ${event.number}, ${event.amount}');
+          print('this is initiate payment request : ${event.name}, ${event.number}, ${event.amount},txn Id : ${event.txnId}');
           initiatePaymentData =  await _apiRepository.initiatePayment(event.name,event.number,event.amount,event.txnId);
-          print('wallet details api response: ${initiatePaymentData.payload}');
-          if(initiatePaymentData.statusCode==200){
-            emit(onPaymentInitiated(initiatePaymentData));
+          print('wallet details api response: ${initiatePaymentData!.payload}');
+          if(initiatePaymentData!.statusCode==200){
+            emit(onPaymentInitiated(initiatePaymentData!));
 
           }
           else{
-            emit(ErrorState(initiatePaymentData.message!));
+            emit(ErrorState(initiatePaymentData!.message!));
           }
         }
         else{
