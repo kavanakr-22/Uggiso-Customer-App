@@ -115,8 +115,9 @@ class ApiRepository {
 
   Future<PaymentDetailsModel> addPayDetails(String orderId, String receiverId,String senderId,
       String status,String transactionId, String orderNumber,String paymentId,double amount,
-      double usedCoins,String data) {
-    return _provider.addPayDetails( orderId,receiverId,senderId,status,transactionId, orderNumber,paymentId,amount,usedCoins,data);//243040008
+      double usedCoins,String data, double paidAmount, String paymentMode, String payerName, String payerMobile) {
+    return _provider.addPayDetails( orderId,receiverId,senderId,status,transactionId,
+      orderNumber,paymentId,amount,usedCoins,data,paidAmount,paymentMode,payerName,payerMobile);
   }
 
   Future<VerifyOtpModel> updateDeviceData(String userId, String deviceData,String fcmToken) {

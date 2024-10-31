@@ -95,6 +95,7 @@ class Strings {
   static const bill_details = 'Bill Details';
   static const item_total = 'Item Total';
   static const gst_charges = 'Gst & Restaurant Charges';
+  static const parcel_charges = 'Parcel Charges';
   static const to_pay = 'TO PAY';
   static const payment_methods = 'Payment Methods';
   static const note = 'Note : ';

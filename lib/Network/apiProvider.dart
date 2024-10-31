@@ -420,7 +420,11 @@ class ApiProvider {
       String paymentId,
       double amount,
       double usedCoins,
-      String data) async {
+      String data,
+      double paidAmount,
+      String paymentMode,
+      String payerName,
+      String payerMobile) async {
     try {
       Response response =
           await _dio.post('${_url}${Constants.paymentDetails}', data: {
@@ -431,10 +435,14 @@ class ApiProvider {
         "statusCode": "200",
         "transactionId": transactionId,
         "orderNumber": orderNumber,
-        "paymentId": "0c1a0388-ff88-48c7-92fc-b78ca3b0d5ce",
+        "paymentId": paymentId,
         "amount": amount,
         "usedCoins": usedCoins,
-        "data": data
+        "data": data,
+        "paidAmount": paidAmount,
+        "paymentMode": paymentMode,
+        "payerName": payerName,
+        "payerMobile": payerMobile
       });
       print("${response.data}");
 

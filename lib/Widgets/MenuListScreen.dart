@@ -453,7 +453,8 @@ class _MenuListScreenState extends State<MenuListScreen> {
                   'price': data[index].price!,
                   'restaurantMenuType': data[index]
                       .restaurantMenuType!,
-                  'quantity': 1
+                  'quantity': 1,
+                  'parcelCharges':data[index].parcelCharges!
                 });
               },
               onEmptyCart: (value) {
@@ -476,7 +477,8 @@ class _MenuListScreenState extends State<MenuListScreen> {
                   'price':data[index].price!,
                   'restaurantMenuType': data[index]
                       .restaurantMenuType!,
-                  'quantity': value
+                  'quantity': value,
+                  'parcelCharges':data[index].parcelCharges!
                 });
               },
               userId: userId,

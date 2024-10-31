@@ -39,7 +39,7 @@ class _CreateOrderState extends State<CreateOrder> {
   String selectedSlot = 'Immediately';
   double item_total = 0.0;
   double item_sub_total = 0.0;
-  double gst_charges = 18.0;
+  double gst_charges = 0.0;
   String userId = '';
   String userNumber = '';
   String userName = '';
@@ -63,10 +63,12 @@ class _CreateOrderState extends State<CreateOrder> {
   void initState() {
     super.initState();
     getUserDetails();
+    print('this  is order list : ${widget.orderlist}');
     for (int i = 0; i < widget.orderlist.length; i++) {
+      parcelCharges = parcelCharges + widget.orderlist[i]['parcelCharges'];
+
       calculateTotalAmount(
-          (widget.orderlist[i]['price']), widget.orderlist[i]['quantity']);
-      // parcelCharges = parcelCharges + double.parse(widget.orderlist[i]['parcelCharges']);
+          widget.orderlist[i]['price'], widget.orderlist[i]['quantity'],parcelCharges);
       menuList.add({
         "menuId": widget.orderlist[i]['menuId'],
         "quantity": widget.orderlist[i]['quantity'],
@@ -122,10 +124,14 @@ class _CreateOrderState extends State<CreateOrder> {
                   status: "SUCCESS",
                   transactionId: txnId,
                   orderNumber: state.data.payload!.orderNumber!,
-                  paymentId: '',
-                  amount: state.data.payload!.paidAmount!,
+                  paymentId: generateUUID(),
+                  amount: state.data.payload!.totalAmount!,
                   usedCoins: uggiso_point_count!,
-                  data: access_data));
+                  data: access_data,
+                  paidAmount: state.data.payload!.paidAmount!,
+                  paymentMode: state.data.payload!.paymentType!,
+                  payerName: userName,
+                  payerMobile: userNumber));
               initializeService(widget.restLat!, widget.restLng!,
                   state.data.payload!.orderId!);
               Navigator.pushNamedAndRemoveUntil(
@@ -219,19 +225,21 @@ class _CreateOrderState extends State<CreateOrder> {
                                               fontWeight: FontWeight.w600),
                                         ),
                                       ),
-                                      color: _istakeAway?AppColors.appSecondaryColor:AppColors.white,
+                                      color: _istakeAway
+                                          ? AppColors.appSecondaryColor
+                                          : AppColors.white,
                                       cornerRadius: 10),
                                 ),
                                 InkWell(
-                                  onTap: (){
+                                  onTap: () {
                                     setState(() {
                                       _istakeAway = false;
                                       _isDineIn = true;
                                     });
                                   },
                                   child: RoundedContainer(
-                                      width:
-                                          MediaQuery.of(context).size.width * 0.4,
+                                      width: MediaQuery.of(context).size.width *
+                                          0.4,
                                       height: 40,
                                       child: Center(
                                         child: Text(
@@ -241,7 +249,9 @@ class _CreateOrderState extends State<CreateOrder> {
                                               fontWeight: FontWeight.w600),
                                         ),
                                       ),
-                                      color: _isDineIn?AppColors.appSecondaryColor:AppColors.white,
+                                      color: _isDineIn
+                                          ? AppColors.appSecondaryColor
+                                          : AppColors.white,
                                       cornerRadius: 10),
                                 )
                               ],
@@ -518,6 +528,20 @@ class _CreateOrderState extends State<CreateOrder> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
+                                  Strings.parcel_charges,
+                                  style: AppFonts.title,
+                                ),
+                                Text(
+                                  '${parcelCharges.toStringAsFixed(2)}',
+                                  style: AppFonts.title,
+                                )
+                              ],
+                            ),
+                            Gap(18),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
                                   Strings.gst_charges,
                                   style: AppFonts.title,
                                 ),
@@ -628,16 +652,16 @@ class _CreateOrderState extends State<CreateOrder> {
     );
   }
 
-  calculateTotalAmount(double price, int quantity) {
+  calculateTotalAmount(double price, int quantity,double parcelAmount) {
     setState(() {
-      item_total = item_total + (price * quantity);
+      item_total = item_total + ((price) * quantity);
       print('this is item total amount : ${item_total}');
       item_sub_total = item_total - (uggiso_point_count!);
       print('this is sub total ${item_total - (uggiso_point_count!)}');
       gst_charges = item_sub_total *
           (double.parse((gst_charges / 100).toStringAsFixed(2)));
       item_sub_total =
-          item_sub_total + (double.parse(gst_charges.toStringAsFixed(2)));
+          item_sub_total + (double.parse(gst_charges.toStringAsFixed(2)))+parcelAmount;
     });
   }
 
@@ -694,7 +718,7 @@ class _CreateOrderState extends State<CreateOrder> {
           restaurantName: widget.restaurantName!,
           customerId: userId,
           menuData: menuList,
-          orderType: _istakeAway?"PARCEL":"DINEIN",
+          orderType: _istakeAway ? "PARCEL" : "DINEIN",
           paymentType: 'UPI',
           orderStatus: 'CREATED',
           totalAmount: item_sub_total.toInt(),
@@ -720,7 +744,7 @@ class _CreateOrderState extends State<CreateOrder> {
           padding: const EdgeInsets.all(16.0),
           child: Container(
             width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height*0.3,
+            height: MediaQuery.of(context).size.height * 0.3,
             child: Column(
               children: <Widget>[
                 Row(
@@ -744,14 +768,18 @@ class _CreateOrderState extends State<CreateOrder> {
                   '${Strings.transaction_failed}',
                   style: AppFonts.header.copyWith(color: Colors.red),
                 ),
-                SizedBox(height: MediaQuery.of(context).size.height*0.005),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.005),
                 Icon(
                   Icons.error,
                   color: Colors.red,
                   size: 80.0,
                 ),
-                SizedBox(height: MediaQuery.of(context).size.height*0.003),
-                Text('${Strings.transaction_failed_message}',style: AppFonts.title,textAlign: TextAlign.center,),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.003),
+                Text(
+                  '${Strings.transaction_failed_message}',
+                  style: AppFonts.title,
+                  textAlign: TextAlign.center,
+                ),
               ],
             ),
           ),
