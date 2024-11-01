@@ -124,6 +124,7 @@ class AppRoutes {
                   restaurantName: create_order_args.restaurantName,
                   restLat: create_order_args.restaurantLat,
                   restLng: create_order_args.restaurantLng,
+                  gstPercent: create_order_args.gstPercent,
                 ));
       case paymentOptions:
         return MaterialPageRoute(builder: (_) => const PaymentOptionsScreen());

@@ -42,3 +42,7 @@ class ErrorState extends CreateOrderState {
   final String message;
   ErrorState(this.message);
 }
+class InitiatePaymentFailed extends CreateOrderState {
+  final String message;
+  InitiatePaymentFailed(this.message);
+}

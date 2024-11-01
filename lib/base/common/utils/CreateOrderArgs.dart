@@ -4,7 +4,8 @@ class CreateOrderArgs {
   final String? restaurantName;
   final double? restaurantLat;
   final double? restaurantLng;
+  final double? gstPercent;
 
   CreateOrderArgs({required this.orderlist, required this.restaurantId,required this.restaurantName,
-    required this.restaurantLat,required this.restaurantLng});
+    required this.restaurantLat,required this.restaurantLng, required this.gstPercent});
 }

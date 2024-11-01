@@ -248,7 +248,7 @@ class ApiProvider {
         "paidAmount": paidAmount,
         "usedCoins": usedCoins,
         "comments": comments,
-        "timeSlot": null,
+        "timeSlot": timeSlot,
         "travelMode": transMode
       });
       print("${response.data}");
@@ -553,8 +553,6 @@ class ApiProvider {
         "name": name,
         "txnId": txnId,
         "phone": phone,
-        "email": "gc@gmail.com",
-        "productInfo": "TEST",
         "amount": double.parse(amount)
       });
       print("${response.data}");

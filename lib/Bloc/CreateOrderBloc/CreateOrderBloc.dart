@@ -22,12 +22,11 @@ class CreateOrderBloc extends Bloc<CreateOrderEvent, CreateOrderState> {
         data = await _apiRepository.createOrder(event.restaurantId,event.restaurantName, event.customerId,
             event.menuData,event.orderType,event.paymentType,event.orderStatus,event.totalAmount,
         event.comments,event.timeSlot,event.transMode,event.paidAmount,event.usedCoins);
-        if(data!.payload == null){
-
-          emit(ErrorState(data!.message.toString()));
+        if(data!.statusCode==200 || data!.statusCode == 201){
+          emit(onLoadedHotelState(data!));
         }
         else{
-          emit(onLoadedHotelState(data!));
+          emit(ErrorState(data!.message.toString()));
 
         }
 
@@ -91,7 +90,7 @@ class CreateOrderBloc extends Bloc<CreateOrderEvent, CreateOrderState> {
 
           }
           else{
-            emit(ErrorState(initiatePaymentData!.message!));
+            emit(InitiatePaymentFailed(initiatePaymentData!.message!));
           }
         }
         else{

@@ -181,7 +181,7 @@ class Strings {
   static const List<String> travel_mode = ["BIKE", "CAR", "WALK", "BUS"];
 
   static const List<String> time_slot = [
-    'After 5min', 'After 10min', 'Immediately'
+    '5-10min', '10-15min', 'Immediately'
   ];
 
   static const List<String> order_type = ['Take Away', 'Dine In'];

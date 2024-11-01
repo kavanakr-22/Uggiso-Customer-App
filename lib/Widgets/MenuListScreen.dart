@@ -104,7 +104,8 @@ class _MenuListScreenState extends State<MenuListScreen> {
                         restaurantId: widget.restaurantId,
                         restaurantName: widget.restaurantName!,
                     restaurantLat: widget.payload?.lat,
-                    restaurantLng: widget.payload?.lng));
+                    restaurantLng: widget.payload?.lng,
+                    gstPercent: widget.payload?.gstPercent));
               },
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10.0),
@@ -416,6 +417,7 @@ class _MenuListScreenState extends State<MenuListScreen> {
   }
 
   void loadData(String? restId) async{
+    print('this is gst charges : ${widget.payload!.gstPercent}');
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       userId = prefs.getString('userId') ?? '';
@@ -454,7 +456,8 @@ class _MenuListScreenState extends State<MenuListScreen> {
                   'restaurantMenuType': data[index]
                       .restaurantMenuType!,
                   'quantity': 1,
-                  'parcelCharges':data[index].parcelCharges!
+                  'parcelCharges':data[index].parcelCharges!,
+                  "photo" : data[index].photo!
                 });
               },
               onEmptyCart: (value) {
@@ -478,7 +481,8 @@ class _MenuListScreenState extends State<MenuListScreen> {
                   'restaurantMenuType': data[index]
                       .restaurantMenuType!,
                   'quantity': value,
-                  'parcelCharges':data[index].parcelCharges!
+                  'parcelCharges':data[index].parcelCharges!,
+                  "photo" : data[index].photo!
                 });
               },
               userId: userId,

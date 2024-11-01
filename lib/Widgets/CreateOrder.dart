@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gap/gap.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uggiso/Bloc/CreateOrderBloc/CreateOrderEvent.dart';
@@ -21,6 +22,7 @@ class CreateOrder extends StatefulWidget {
   final String? restaurantName;
   final double? restLat;
   final double? restLng;
+  final double? gstPercent;
 
   const CreateOrder(
       {Key? key,
@@ -28,7 +30,7 @@ class CreateOrder extends StatefulWidget {
       required this.restaurantId,
       required this.restaurantName,
       required this.restLat,
-      required this.restLng})
+      required this.restLng,required this.gstPercent})
       : super(key: key);
 
   @override
@@ -63,23 +65,7 @@ class _CreateOrderState extends State<CreateOrder> {
   void initState() {
     super.initState();
     getUserDetails();
-    print('this  is order list : ${widget.orderlist}');
-    for (int i = 0; i < widget.orderlist.length; i++) {
-      parcelCharges = parcelCharges + widget.orderlist[i]['parcelCharges'];
-
-      calculateTotalAmount(
-          widget.orderlist[i]['price'], widget.orderlist[i]['quantity'],parcelCharges);
-      menuList.add({
-        "menuId": widget.orderlist[i]['menuId'],
-        "quantity": widget.orderlist[i]['quantity'],
-        "quantityAmount":
-            (widget.orderlist[i]['price'] * widget.orderlist[i]['quantity']),
-        "parcelAmount": widget.orderlist[i]['parcelCharges'],
-        "menuName": widget.orderlist[i]['menuName'],
-        "photo": null,
-        "restaurantMenuType": widget.orderlist[i]['restaurantMenuType']
-      });
-    }
+    loadOrderData();
   }
 
   @override
@@ -163,7 +149,19 @@ class _CreateOrderState extends State<CreateOrder> {
               };
               gotoPaymentScreen(parameters);
             }
+            if(state is InitiatePaymentFailed){
+              Fluttertoast.showToast(
+                  msg: state.message.toString(),
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                  timeInSecForIosWeb: 1,
+                  backgroundColor: Colors.red,
+                  textColor: Colors.white,
+                  fontSize: 16.0
+              );
+            }
           },
+
           child: showLoader
               ? Center(
                   child: CircularProgressIndicator(
@@ -212,6 +210,7 @@ class _CreateOrderState extends State<CreateOrder> {
                                       _istakeAway = true;
                                       _isDineIn = false;
                                     });
+                                    loadOrderData();
                                   },
                                   child: RoundedContainer(
                                       width: MediaQuery.of(context).size.width *
@@ -236,6 +235,7 @@ class _CreateOrderState extends State<CreateOrder> {
                                       _istakeAway = false;
                                       _isDineIn = true;
                                     });
+                                    loadOrderData();
                                   },
                                   child: RoundedContainer(
                                       width: MediaQuery.of(context).size.width *
@@ -523,8 +523,8 @@ class _CreateOrderState extends State<CreateOrder> {
                                 )
                               ],
                             ),
-                            Gap(18),
-                            Row(
+                            _istakeAway?Gap(18):SizedBox(),
+                            _istakeAway?Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
@@ -536,7 +536,7 @@ class _CreateOrderState extends State<CreateOrder> {
                                   style: AppFonts.title,
                                 )
                               ],
-                            ),
+                            ):SizedBox(),
                             Gap(18),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -659,9 +659,24 @@ class _CreateOrderState extends State<CreateOrder> {
       item_sub_total = item_total - (uggiso_point_count!);
       print('this is sub total ${item_total - (uggiso_point_count!)}');
       gst_charges = item_sub_total *
-          (double.parse((gst_charges / 100).toStringAsFixed(2)));
-      item_sub_total =
-          item_sub_total + (double.parse(gst_charges.toStringAsFixed(2)))+parcelAmount;
+          (double.parse((widget.gstPercent! / 100).toStringAsFixed(2)));
+      if(_istakeAway){
+        item_sub_total =
+            item_sub_total + (double.parse(gst_charges.toStringAsFixed(2)))+parcelAmount;
+      }
+      else if(_isDineIn){
+        item_sub_total =
+            item_sub_total + (double.parse(gst_charges.toStringAsFixed(2)));
+      }
+
+    });
+  }
+  clearBillDetails(){
+    setState(() {
+      item_sub_total = 0.0;
+      gst_charges = 0.0;
+      item_total = 0.0;
+      parcelCharges = 0.0;
     });
   }
 
@@ -712,6 +727,7 @@ class _CreateOrderState extends State<CreateOrder> {
     print('this is params : $params');
     final payment_response =
         await _channel.invokeMethod("payWithEasebuzz", params);
+
     if (payment_response['result'] == 'payment_successfull') {
       _createOrderBloc.add(OnPaymentClicked(
           restaurantId: widget.restaurantId!,
@@ -723,12 +739,22 @@ class _CreateOrderState extends State<CreateOrder> {
           orderStatus: 'CREATED',
           totalAmount: item_sub_total.toInt(),
           comments: 'Please do little more spicy',
-          timeSlot: selectedSlot,
+          timeSlot: getTimeSlot(selectedSlot),
           transMode: 'BIKE',
           usedCoins: uggiso_point_count!.toInt(),
           paidAmount: item_sub_total));
     } else if (payment_response['result'] == 'payment_failed') {
       _showBottomSheet(context);
+    }
+  }
+
+
+  String getTimeSlot(String slot){
+    switch(slot){
+      case 'Immediately': return 'IMMEDIATELY';
+      case '10-15min': return 'TENTOFIFTEEN';
+      case '5-10min': return 'FIVETOTEN';
+      default : return 'IMMEDIATELY';
     }
   }
 
@@ -786,5 +812,26 @@ class _CreateOrderState extends State<CreateOrder> {
         );
       },
     );
+  }
+
+  void loadOrderData() {
+    print('this  is order list : ${widget.orderlist}');
+    clearBillDetails();
+    for (int i = 0; i < widget.orderlist.length; i++) {
+      parcelCharges = parcelCharges + widget.orderlist[i]['parcelCharges'];
+
+      calculateTotalAmount(
+          widget.orderlist[i]['price'], widget.orderlist[i]['quantity'],parcelCharges);
+      menuList.add({
+        "menuId": widget.orderlist[i]['menuId'],
+        "quantity": widget.orderlist[i]['quantity'],
+        "quantityAmount":
+        (widget.orderlist[i]['price'] * widget.orderlist[i]['quantity']),
+        "parcelAmount": widget.orderlist[i]['parcelCharges'],
+        "menuName": widget.orderlist[i]['menuName'],
+        "photo": widget.orderlist[i]['photo'],
+        "restaurantMenuType": widget.orderlist[i]['restaurantMenuType']
+      });
+    }
   }
 }

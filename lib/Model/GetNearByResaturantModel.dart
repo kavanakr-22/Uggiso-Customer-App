@@ -51,6 +51,7 @@ class Payload {
   String? distance;
   String? imageUrl;
   bool? favourite;
+  double? gstPercent;
 
   Payload(
       {this.restaurantId,
@@ -65,7 +66,7 @@ class Payload {
         this.duration,
         this.distance,
         this.imageUrl,
-        this.favourite});
+        this.favourite,this.gstPercent});
 
   Payload.fromJson(Map<String, dynamic> json) {
     restaurantId = json['restaurantId'];
@@ -81,6 +82,7 @@ class Payload {
     distance = json['distance'];
     imageUrl = json['imageUrl'];
     favourite = json['favourite'];
+    gstPercent = json['gstPercent'];
   }
 
   Map<String, dynamic> toJson() {
@@ -98,6 +100,7 @@ class Payload {
     data['distance'] = this.distance;
     data['imageUrl'] = this.imageUrl;
     data['favourite'] = this.favourite;
+    data['gstPercent'] = this.gstPercent;
     return data;
   }
 }
