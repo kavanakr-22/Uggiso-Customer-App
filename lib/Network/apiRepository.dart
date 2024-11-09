@@ -52,8 +52,8 @@ class ApiRepository {
     return _provider.getMenuList(id!,restId!);
   }
 
-  Future<AddFavoriteMenuModel> addFavMenu(String userId, String menuId) {
-    return _provider.addFavMenu(userId,menuId);
+  Future<AddFavoriteMenuModel> addFavMenu(String userId, String menuId, String restaurantId) {
+    return _provider.addFavMenu(userId,menuId,restaurantId);
   }
 
   Future<String> deleteFavMenu(String userId) {

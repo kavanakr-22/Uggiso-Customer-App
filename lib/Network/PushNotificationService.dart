@@ -60,7 +60,7 @@ class PushNotificationService {
 
       print('this is the received duration ::::: ${duration}');
       sec = convertDurationToMinutes(duration);
-      if(sec<=10){
+      if(sec<=4){
         return true;
       }
       else{

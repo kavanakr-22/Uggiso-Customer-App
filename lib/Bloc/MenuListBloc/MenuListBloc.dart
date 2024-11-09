@@ -13,17 +13,20 @@ class MenuListBloc extends Bloc<MenuListEvent, MenuListState> {
     final ApiRepository _apiRepository = ApiRepository();
     AddFavoriteMenuModel? addFavoriteMenuModel;
     RemoveFavRestaurantModel? data;
+    late MenuListModel menuListModel = MenuListModel();
+    List<Payload> vegMenu = [];
+    List<Payload> nonVegMenu = [];
 
 
     on<onInitialised>((event,emit)async{
       try{
         emit(FetchingState()) ;
-        final res = await _apiRepository.getMenuList(event.userId,event.restaurantId);
-        if(res.statusCode == 200) {
-          final List<Payload>? items = res.payload; // Extract the list from the response
+        menuListModel = await _apiRepository.getMenuList(event.userId,event.restaurantId);
+        if(menuListModel.statusCode == 200) {
+          final List<Payload>? items = menuListModel.payload; // Extract the list from the response
           emit(FetchedListsState(items));
         } else {
-          emit(ErrorState(res.message));
+          emit(ErrorState(menuListModel.message));
         }
       }on NetworkError {
         emit(ErrorState('this is network error'));
@@ -42,7 +45,7 @@ class MenuListBloc extends Bloc<MenuListEvent, MenuListState> {
           emit(ErrorState("userId or restaurantId is null"));
           return;
         }
-        addFavoriteMenuModel = (await _apiRepository.addFavMenu(event.userId!, event.menuId!));
+        addFavoriteMenuModel = (await _apiRepository.addFavMenu(event.userId!, event.menuId!,event.restaurantId!));
         if (addFavoriteMenuModel?.statusCode!=200) {
           emit(ErrorState(addFavoriteMenuModel?.message));
         } else {

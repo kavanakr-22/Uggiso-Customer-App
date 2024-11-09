@@ -148,7 +148,7 @@ class _MenuItemCardState extends State<MenuItemCard> {
                           onTap: () {
                             _menuListBloc.add(OnAddFavMenu(
                                 userId: widget.userId,
-                                menuId: widget.listData.menuId));
+                                menuId: widget.listData.menuId,restaurantId: widget.listData.restaurantId));
                           },
                           child: Image.asset(
                             'assets/ic_heart.png',

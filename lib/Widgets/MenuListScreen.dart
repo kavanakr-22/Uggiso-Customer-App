@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uggiso/Bloc/MenuListBloc/MenuListBloc.dart';
 import 'package:uggiso/Bloc/MenuListBloc/MenuListState.dart';
 import 'package:uggiso/Model/GetNearByResaturantModel.dart';
+import '../../Model/MenuListModel.dart' as menuListPayload;
 import 'package:uggiso/Widgets/ui-kit/RoundedContainer.dart';
 import 'package:uggiso/base/common/utils/CreateOrderArgs.dart';
 import 'package:uggiso/base/common/utils/strings.dart';
@@ -52,12 +53,13 @@ class _MenuListScreenState extends State<MenuListScreen> {
   List bestSellerMenuItems = [];
   Map<String, Map<String, dynamic>> uniqueMenuMap = {};
   String userId='';
+  List<menuListPayload.Payload> vegMenu = [];
+  List<menuListPayload.Payload> nonVegMenu = [];
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    print('restaurant lat : ${widget.payload?.lat} and restaurant lng : ${widget.payload?.lng}');
     if (widget.restaurantId != null) loadData(widget.restaurantId);
   }
 
@@ -295,6 +297,7 @@ class _MenuListScreenState extends State<MenuListScreen> {
                                 _isNonVeg = false;
                                 _isVeg = true;
                               });
+
                             },
                             child: RoundedContainer(
                                 width: MediaQuery.of(context).size.width * 0.2,
@@ -387,24 +390,43 @@ class _MenuListScreenState extends State<MenuListScreen> {
                       ),
                     ),
                     const Gap(24),
-                    BlocBuilder<MenuListBloc, MenuListState>(
-                      builder: (context, state) {
-                        if (state is FetchingState) {
-                          return Container(
-                              width: MediaQuery.of(context).size.width,
-                              height: MediaQuery.of(context).size.height,
-                              color: AppColors.white,
-                              child: Center(
-                                  child: CircularProgressIndicator(
-                                color: AppColors.appPrimaryColor,
-                              )));
-                        } else if (state is FetchedListsState) {
-                          return state.data?.length == 0
-                              ? Expanded(child: Center(child: Text('No Items Found')))
-                              : MenuItemCardDisplay(state.data);
+                    BlocListener<MenuListBloc, MenuListState>(
+                      listener: (BuildContext context, MenuListState state){
+                        if(state is FetchedListsState){
+                          print('inside listener');
+
+                          for (var item in state.data!) {
+                            if (item.restaurantMenuType == 'VEG') {
+                              vegMenu.add(item);
+                            } else if (item.restaurantMenuType == 'NONVEG') {
+                              nonVegMenu.add(item);
+                            }
+                          }
+                          print('inside listener veg menu : $vegMenu');
+                          print('inside listener non veg menu : $nonVegMenu');
+
+                          MenuItemCardDisplay(vegMenu);
                         }
-                        return Container();
                       },
+                      child: BlocBuilder<MenuListBloc, MenuListState>(
+                        builder: (context, state) {
+                          if (state is FetchingState) {
+                            return Container(
+                                width: MediaQuery.of(context).size.width,
+                                height: MediaQuery.of(context).size.height,
+                                color: AppColors.white,
+                                child: Center(
+                                    child: CircularProgressIndicator(
+                                  color: AppColors.appPrimaryColor,
+                                )));
+                          } else if (state is FetchedListsState) {
+                            return state.data?.length == 0
+                                ? Expanded(child: Center(child: Text('No Items Found')))
+                                : MenuItemCardDisplay(_isVeg?vegMenu:_isNonVeg?nonVegMenu:state.data);
+                          }
+                          return Container();
+                        },
+                      ),
                     )
                   ],
                 ),

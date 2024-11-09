@@ -10,6 +10,8 @@ import 'package:uggiso/Bloc/HomeBloc/HomeBloc.dart';
 import 'package:uggiso/Bloc/HomeBloc/HomeState.dart';
 import 'package:uggiso/Model/GetRouteModel.dart';
 import 'package:uggiso/Widgets/ui-kit/RoundedContainer.dart';
+import 'package:uggiso/app_routes.dart';
+import 'package:uggiso/base/common/utils/MenuListArgs.dart';
 import 'package:uggiso/base/common/utils/colors.dart';
 import 'package:uggiso/base/common/utils/fonts.dart';
 import 'package:google_search_place/model/prediction.dart';
@@ -78,7 +80,7 @@ class _GetRouteMapState extends State<GetRouteMap> {
 
               for (int i = 0; i < state.result.payload!.length; i++) {
                 addRestaurantMarker(state.result.payload?[i].lat,
-                    state.result.payload?[i].lng);
+                    state.result.payload?[i].lng,state.result.payload?[i].restaurantName,state.result.payload?[i]);
                 // _setMarkers(state.result.payload);
               }
             }
@@ -141,7 +143,7 @@ class _GetRouteMapState extends State<GetRouteMap> {
     }
   }
 
-  _addMarker(LatLng position, String id, BitmapDescriptor descriptor) {
+  _addMarker(LatLng position, String id, BitmapDescriptor descriptor,Payload? payload) {
     print('this is add marker lat lng : ${position.latitude} and ${position
         .longitude}');
     MarkerId markerId = MarkerId(id);
@@ -151,17 +153,22 @@ class _GetRouteMapState extends State<GetRouteMap> {
 
       infoWindow: InfoWindow(
           title: markerId.value,
-          onTap: ()=>print('info window clicked')
-        // Navigator.pushNamed(context, AppRoutes.menuList,
-        //     arguments: MenuListArgs(
-        //         restaurantId: restaurant.restaurantId,
-        //         name: restaurant.restaurantName,
-        //         foodType: restaurant.restaurantMenuType,
-        //         ratings: restaurant.ratings,
-        //         landmark: restaurant.landmark,
-        //         distance: restaurant.distance,
-        //         duration: restaurant.duration,
-        //         payload: restaurant))
+          onTap: ()=> {
+            // if(payload!=null){
+            //   Navigator.pushNamed(context, AppRoutes.menuList,
+            //       arguments: MenuListArgs(
+            //           restaurantId: payload.restaurantId,
+            //           name: payload.restaurantName,
+            //           foodType: payload.restaurantMenuType,
+            //           ratings: payload.ratings,
+            //           landmark: payload.landmark,
+            //           distance: payload.distance,
+            //           duration: payload.duration,
+            //           payload: payload))
+            // }
+
+          }
+
       ),);
     markers[markerId] = marker;
   }
@@ -488,12 +495,12 @@ class _GetRouteMapState extends State<GetRouteMap> {
 
   addDestinationMarker(double lat, double lng) {
     _addMarker(LatLng(lat, lng), "destination",
-        BitmapDescriptor.defaultMarker);
+        BitmapDescriptor.defaultMarker,null);
   }
 
-  addRestaurantMarker(double? hotel_lat, double? hotel_lng) {
-    _addMarker(LatLng(hotel_lat!, hotel_lng!), "restaurant",
-        BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange));
+  addRestaurantMarker(double? hotel_lat, double? hotel_lng, String? restaurant_name,Payload? payload) {
+    _addMarker(LatLng(hotel_lat!, hotel_lng!), restaurant_name!,
+        BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),payload);
   }
 
   void _setMarkers(List<Payload>? payload) {

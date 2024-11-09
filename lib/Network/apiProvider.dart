@@ -103,11 +103,14 @@ class ApiProvider {
     }
   }
 
-  Future<AddFavoriteMenuModel> addFavMenu(String userId, String menuId) async {
+  Future<AddFavoriteMenuModel> addFavMenu(String userId, String menuId,String restaurantId) async {
+    print('user id : $userId');
+    print('menu id : $menuId');
+    print('restaurantId : $restaurantId');
     try {
       Response response = await _dio.post('${_url}${Constants.addFavMenu}',
-          data: {"userId": userId, "menuId": menuId});
-      print("${response.data}");
+          data: {"userId": userId, "menuId": menuId,"restaurantId":restaurantId});
+      print("fav menu response : ${response.data}");
 
       return AddFavoriteMenuModel.fromJson(response.data);
     } catch (error, stacktrace) {
@@ -207,7 +210,7 @@ class ApiProvider {
     try {
       Response response = await _dio.post('${_url}${Constants.getFavMenu}',
           data: {"userId": userId, "restaurantId": restaurantID});
-      print("${response.data}");
+      print("getFavMenuList : ${response.data}");
 
       return GetFavMenuModel.fromJson(response.data);
     } catch (error, stacktrace) {

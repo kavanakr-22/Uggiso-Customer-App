@@ -102,7 +102,7 @@ class _FavMenuTabState extends State<FavMenuTab> {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       userId = prefs.getString('userId') ?? '';
-      userId = prefs.getString('userId') ?? '';
+      restaurantId = restaurantId;
     });
     print('this is user id : $userId');
     _favouritesBloc.add(OnGetFavMenu(userId:userId,restaurantId: ''));

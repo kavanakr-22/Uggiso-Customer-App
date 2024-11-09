@@ -6,6 +6,7 @@ import 'package:gap/gap.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uggiso/Bloc/CreateOrderBloc/CreateOrderEvent.dart';
 import 'package:uggiso/Bloc/CreateOrderBloc/CreateOrderState.dart';
+import 'package:uggiso/Network/constants.dart';
 import 'package:uggiso/Widgets/ui-kit/RoundedElevatedButton.dart';
 import 'package:uggiso/base/common/utils/LocationManager.dart';
 import 'package:uggiso/base/common/utils/background_service.dart';
@@ -140,7 +141,7 @@ class _CreateOrderState extends State<CreateOrder> {
             }
             if (state is onPaymentInitiated) {
               String? access_key = state.paymentData.payload?.data;
-              String pay_mode = 'test';
+              String pay_mode = Constants.mode;
               access_data = access_key!;
               print('this is access key : ${access_key}');
               Object parameters = {
@@ -734,7 +735,7 @@ class _CreateOrderState extends State<CreateOrder> {
           restaurantName: widget.restaurantName!,
           customerId: userId,
           menuData: menuList,
-          orderType: _istakeAway ? "PARCEL" : "DINEIN",
+          orderType: _istakeAway ? "PARCEL" : "DINEING",
           paymentType: 'UPI',
           orderStatus: 'CREATED',
           totalAmount: item_sub_total.toInt(),

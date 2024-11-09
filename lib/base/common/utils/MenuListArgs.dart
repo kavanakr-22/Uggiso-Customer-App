@@ -11,5 +11,5 @@ class MenuListArgs{
   final Payload? payload;
 
   MenuListArgs({required this.restaurantId, required this.name, required this.foodType,
-    required this.ratings, required this.landmark,required this.distance,required this.duration,required this.payload});
+    required this.ratings, required this.landmark,required this.distance,required this.duration,this.payload});
 }

@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -27,6 +28,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
   String number = '';
   bool isChecked = false;
   bool showPrivacyPolicyError = false;
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _firebaseMessaging.requestPermission();
+
+  }
 
   @override
   Widget build(BuildContext context) {
