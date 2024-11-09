@@ -86,7 +86,8 @@ class _ReferralHistoryState extends State<ReferralHistory> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text('Name',style: AppFonts.smallText.copyWith(fontWeight: FontWeight.w600),),
-                                Text('Coins Received',style: AppFonts.smallText.copyWith(fontWeight: FontWeight.w600),),
+                                // Text('Points Received',style: AppFonts.smallText.copyWith(fontWeight: FontWeight.w600),),
+                                // Text('Reference',style: AppFonts.smallText.copyWith(fontWeight: FontWeight.w600),),
                                 Text('Date',style: AppFonts.smallText.copyWith(fontWeight: FontWeight.w600),)
 
                               ],
@@ -96,23 +97,24 @@ class _ReferralHistoryState extends State<ReferralHistory> {
                               child: ListView.builder(
                                 itemCount: state.data.payload?.length,
                                   itemBuilder: (BuildContext context, int count){
-                                  return Padding(
-                                    padding: const EdgeInsets.symmetric(vertical:8.0),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
+                                  return Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        padding: EdgeInsets.all(8),
+                                        child: Row(
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
-                                            Text('${state.data.payload?[count].acceptorName}',style: AppFonts.smallText,),
-                                            Text('${state.data.payload?[count].availedCoins}',style: AppFonts.smallText,),
-                                            Text(dateConvert('${state.data.payload?[count].referedDate}'),style: AppFonts.smallText,)
+                                            Text('${state.data.payload?[count].acceptorName}',
+                                              style: AppFonts.smallText.copyWith(color: state.data.payload?[count].addedToWallet==true?Colors.green:Colors.black),),
+                                            // Text('${state.data.payload?[count].referenceType}',style: AppFonts.smallText.copyWith(color: state.data.payload?[count].addedToWallet==true?Colors.green:Colors.black),),
+                                            Text(dateConvert('${state.data.payload?[count].referedDate}'),style: AppFonts.smallText.copyWith(color: state.data.payload?[count].addedToWallet==true?Colors.green:Colors.black),)
 
                                           ],
                                         ),
-                                        Divider(color: AppColors.grey,),
-                                      ],
-                                    ),
+                                      ),
+                                      Divider(color: AppColors.grey,),
+                                    ],
                                   );
 
                               }),

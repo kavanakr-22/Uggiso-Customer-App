@@ -82,8 +82,8 @@ class CreateOrderBloc extends Bloc<CreateOrderEvent, CreateOrderState> {
         emit(InitiatePaymentMode()) ;
         if(event.number.isNotEmpty) {
           //String name,String number,String userType,String deviceId,String token
-          print('this is initiate payment request : ${event.name}, ${event.number}, ${event.amount},txn Id : ${event.txnId}');
-          initiatePaymentData =  await _apiRepository.initiatePayment(event.name,event.number,event.amount,event.txnId);
+          print('this is initiate payment request : ${event.name.trim().split(' ').last}, ${event.number}, ${event.amount},txn Id : ${event.txnId}');
+          initiatePaymentData =  await _apiRepository.initiatePayment(event.name.trim().split(' ').last,event.number,event.amount,event.txnId);
           print('wallet details api response: ${initiatePaymentData!.payload}');
           if(initiatePaymentData!.statusCode==200){
             emit(onPaymentInitiated(initiatePaymentData!));

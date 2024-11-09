@@ -77,7 +77,7 @@ class _ProfileTabState extends State<ProfileTab> {
                       ),
                       Gap(8),
                       Text(
-                        "Use My Uggiso Points",
+                        "My Uggiso Points",
                         style: AppFonts.subHeader
                             .copyWith(color: AppColors.appPrimaryColor),
                       )
