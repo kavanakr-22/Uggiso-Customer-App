@@ -20,6 +20,8 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   String? deviceId = '';
   String? fcmToken = '';
+  bool? _isUserLoggedIn = false;
+
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
   @override
@@ -48,10 +50,23 @@ class _SplashScreenState extends State<SplashScreen> {
     prefs.setString('device_id', deviceId!);
     print('this is device id : $deviceId');
     initFirebaseMessaging();
+    setState(() {
+      _isUserLoggedIn = prefs.getBool('is_user_logged_in');
 
+    });
     if (await isLocationEnabled()) {
       print('this is islocation enable true');
-      await getUserCurrentLocation(true);
+      print('this is user logged in value : $_isUserLoggedIn');
+
+      if(_isUserLoggedIn!){
+        await getUserCurrentLocation(true);
+
+      }
+      else{
+        await _showLocationFetchingDialog();
+      }
+
+
     } else {
       print('this is islocation enable false');
       await _showLocationFetchingDialog();
@@ -126,7 +141,6 @@ class _SplashScreenState extends State<SplashScreen> {
 
   getUserCurrentLocation(bool isGetLocation) async {
 
-    bool? _isUserLoggedIn = false;
     final prefs = await SharedPreferences.getInstance();
 
     if(isGetLocation){
@@ -135,7 +149,9 @@ class _SplashScreenState extends State<SplashScreen> {
       prefs.setDouble('user_longitude', _location.longitude);
       prefs.setDouble('user_latitude', _location.latitude);
     }
-    _isUserLoggedIn = prefs.getBool('is_user_logged_in');
+    else{
+      prefs.setBool('userLocationEnabled', false);
+    }
 
     if(_isUserLoggedIn==null || _isUserLoggedIn ==false){
 

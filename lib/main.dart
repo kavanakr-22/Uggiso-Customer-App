@@ -17,7 +17,7 @@ FlutterLocalNotificationsPlugin();
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print('Handling a background message: ${message.messageId}');
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  // await Firebase.initializeApp();
 
 }
 
@@ -82,31 +82,34 @@ initialiseNotificationSettings() {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  try {
-    if (Platform.isAndroid) {
-      await Firebase.initializeApp(
-        options: const FirebaseOptions(
-          apiKey: 'AIzaSyBaQeRktxRI4f-1nc8e2ysD_6SmjsC954g',
-          appId: '1:692027802741:android:c7ca0866ba8264ca44e43c',
-          messagingSenderId: '692027802741',
-          projectId: 'my-uggiso-89fdd',
-          storageBucket: 'my-uggiso-89fdd.appspot.com',
-        ),
-      );
-    } else if (Platform.isIOS) {
-      await Firebase.initializeApp(
-        options: const FirebaseOptions(
-          apiKey: 'AIzaSyApPM5HUmnG-4dNPjffhsXMGU15BRqWnxA',
-          appId: '1:692027802741:ios:9fd21d335b28583544e43c',
-          messagingSenderId: '692027802741',
-          projectId: 'my-uggiso-89fdd',
-          storageBucket: 'my-uggiso-89fdd.appspot.com',
-        ),
-      );
+  if(Firebase.apps.isEmpty){
+    try {
+      if (Platform.isAndroid) {
+        await Firebase.initializeApp(
+          options: const FirebaseOptions(
+            apiKey: 'AIzaSyBaQeRktxRI4f-1nc8e2ysD_6SmjsC954g',
+            appId: '1:692027802741:android:c7ca0866ba8264ca44e43c',
+            messagingSenderId: '692027802741',
+            projectId: 'my-uggiso-89fdd',
+            storageBucket: 'my-uggiso-89fdd.appspot.com',
+          ),
+        );
+      } else if (Platform.isIOS) {
+        await Firebase.initializeApp(
+          options: const FirebaseOptions(
+            apiKey: 'AIzaSyApPM5HUmnG-4dNPjffhsXMGU15BRqWnxA',
+            appId: '1:692027802741:ios:9fd21d335b28583544e43c',
+            messagingSenderId: '692027802741',
+            projectId: 'my-uggiso-89fdd',
+            storageBucket: 'my-uggiso-89fdd.appspot.com',
+          ),
+        );
+      }
+    } catch (e) {
+      print('Error initializing Firebase: $e');
     }
-  } catch (e) {
-    print('Error initializing Firebase: $e');
   }
+
 
   SystemChrome.setEnabledSystemUIMode(
     SystemUiMode.immersiveSticky,
@@ -123,12 +126,12 @@ void main() async {
   ], child: MyApp()));
 }
 
-Future<void> requestPermissions() async {
-  // Check and request SCHEDULE_EXACT_ALARM permission
-  if (await Permission.scheduleExactAlarm.isDenied) {
-    await Permission.scheduleExactAlarm.request();
-  }
-}
+// Future<void> requestPermissions() async {
+//   // Check and request SCHEDULE_EXACT_ALARM permission
+//   if (await Permission.scheduleExactAlarm.isDenied) {
+//     await Permission.scheduleExactAlarm.request();
+//   }
+// }
 
 class MyApp extends StatefulWidget {
   @override

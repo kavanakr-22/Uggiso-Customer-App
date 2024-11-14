@@ -51,7 +51,7 @@ class _CreateOrderState extends State<CreateOrder> {
   bool showLoader = false;
   bool _isUggiso_points_selected = false;
   double? uggiso_point_count = 0.0;
-  double? uggiso_point_limit = 0.0;
+  double? uggiso_point_balance = 0.0;
   String txnId = '';
   String access_data = '';
   final CreateOrderBloc _createOrderBloc = CreateOrderBloc();
@@ -131,13 +131,16 @@ class _CreateOrderState extends State<CreateOrder> {
                 showLoader = false;
               });
 
-              if ((state.data.payload?.balance! ?? 0.0) > 10.0) {
+              if ((state.data.payload?.balance! ?? 0.0) >= 10.0) {
+
                 uggiso_point_count = 10.0;
               } else {
+
                 uggiso_point_count = 0.0;
               }
-              item_sub_total = double.parse(
-                  (item_sub_total - uggiso_point_count!).toStringAsFixed(2));
+              uggiso_point_balance = state.data.payload?.balance!.toDouble();
+              // item_sub_total = double.parse(
+              //     (item_sub_total - uggiso_point_count!).toStringAsFixed(2));
             }
             if (state is onPaymentInitiated) {
               String? access_key = state.paymentData.payload?.data;
@@ -552,8 +555,8 @@ class _CreateOrderState extends State<CreateOrder> {
                                 )
                               ],
                             ),
-                            _isUggiso_points_selected ? Gap(18) : Container(),
-                            _isUggiso_points_selected
+                            _isUggiso_points_selected && item_sub_total.toInt()>20? Gap(18) : Container(),
+                            _isUggiso_points_selected && item_sub_total.toInt()>20
                                 ? Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
@@ -657,8 +660,12 @@ class _CreateOrderState extends State<CreateOrder> {
     setState(() {
       item_total = item_total + ((price) * quantity);
       print('this is item total amount : ${item_total}');
-      item_sub_total = item_total - (uggiso_point_count!);
-      print('this is sub total ${item_total - (uggiso_point_count!)}');
+      if(item_total>=20 && item_total<=100){
+        item_sub_total = item_total - (uggiso_point_count!);
+      }
+      else{
+        item_sub_total = item_total;
+      }
       gst_charges = item_sub_total *
           (double.parse((widget.gstPercent! / 100).toStringAsFixed(2)));
       if(_istakeAway){
@@ -669,8 +676,8 @@ class _CreateOrderState extends State<CreateOrder> {
         item_sub_total =
             item_sub_total + (double.parse(gst_charges.toStringAsFixed(2)));
       }
-
     });
+    print('this is item sub total :$item_sub_total');
   }
   clearBillDetails(){
     setState(() {
