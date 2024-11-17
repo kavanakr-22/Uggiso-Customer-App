@@ -2,12 +2,15 @@ import 'package:device_uuid/device_uuid.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uggiso/Network/apiRepository.dart';
 import 'package:uggiso/app_routes.dart';
 import 'package:uggiso/base/common/utils/LocationManager.dart';
 import 'package:uggiso/base/common/utils/colors.dart';
 import 'package:uggiso/base/common/utils/fonts.dart';
 import 'package:uggiso/base/common/utils/strings.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -40,8 +43,8 @@ class _SplashScreenState extends State<SplashScreen> {
             Image.asset('assets/uggiso_splash.png', width: 200, height: 200));
   }
 
-  void checkUserLoggedStatus() {
-    getDeviceId();
+  void checkUserLoggedStatus() async{
+    getAppVersion();
   }
 
   void getDeviceId() async {
@@ -51,7 +54,7 @@ class _SplashScreenState extends State<SplashScreen> {
     print('this is device id : $deviceId');
     initFirebaseMessaging();
     setState(() {
-      _isUserLoggedIn = prefs.getBool('is_user_logged_in');
+      _isUserLoggedIn = prefs.getBool('is_user_logged_in')?? false;
 
     });
     if (await isLocationEnabled()) {
@@ -165,5 +168,51 @@ class _SplashScreenState extends State<SplashScreen> {
 
   }
 
+  getAppVersion() async {
+    var res = await ApiRepository().getAppVersion();
+    PackageInfo _packageInfo = await PackageInfo.fromPlatform();
 
+    print('inside status  : ${res.payload?.mandatoryUpdate}');
+    if(res.payload?.mandatoryUpdate==true){
+      if(_packageInfo.version==res.payload?.latestVersion){
+        getDeviceId();
+      }
+      else{
+        showUpdateDialog(res.payload?.updateUrl);
+        // getDeviceId();
+      }
+    }
+    else{
+      getDeviceId();
+    }
+  }
+
+  showUpdateDialog(String? url){
+    return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Center(child: Text("Update Available",style: AppFonts.subHeader.copyWith(color: AppColors.appPrimaryColor,),)),
+          content: Text(
+              "Please update the app to the latest version to continue using all features.",textAlign: TextAlign.center,),
+          actions: <Widget>[
+            TextButton(
+              child: Center(child: Text("Update",style: AppFonts.title.copyWith(fontWeight: FontWeight.w600,color: AppColors.appPrimaryColor),)),
+              onPressed: () async{
+                if (await canLaunch(url!)) {
+                await launch(url);
+                } else {
+                // Show an error message if the URL can't be launched
+                ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text("Unable to open the Play Store.")),
+                );
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 }

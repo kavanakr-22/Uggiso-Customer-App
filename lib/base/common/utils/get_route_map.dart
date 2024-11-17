@@ -66,7 +66,7 @@ class _GetRouteMapState extends State<GetRouteMap> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: AppColors.appPrimaryColor,
-          title: Text('By Route', style: AppFonts.appBarText.copyWith(
+          title: Text(Strings.by_route, style: AppFonts.appBarText.copyWith(
               color: AppColors.white),),
           centerTitle: false,
         ),
@@ -95,27 +95,19 @@ class _GetRouteMapState extends State<GetRouteMap> {
                 }
                 return Stack(
                   children: [
-                    Expanded(
-                      child: Container(height: MediaQuery
-                          .of(context)
-                          .size
-                          .height,
-                        child: GoogleMap(
-                          initialCameraPosition:
-                          CameraPosition(target: LatLng(latitude, longitude),
-                              zoom: 13),
-                          myLocationEnabled: true,
-                          myLocationButtonEnabled: true,
-                          tiltGesturesEnabled: true,
-                          compassEnabled: true,
-                          scrollGesturesEnabled: true,
-                          zoomGesturesEnabled: true,
-                          onMapCreated: _onMapCreated,
-                          markers: Set<Marker>.of(markers.values),
-                          polylines: Set<Polyline>.of(polylines.values),
-                        ),
-
-                      ),
+                    GoogleMap(
+                      initialCameraPosition:
+                      CameraPosition(target: LatLng(latitude, longitude),
+                          zoom: 8),
+                      myLocationEnabled: true,
+                      myLocationButtonEnabled: true,
+                      tiltGesturesEnabled: true,
+                      compassEnabled: true,
+                      scrollGesturesEnabled: true,
+                      zoomGesturesEnabled: true,
+                      onMapCreated: _onMapCreated,
+                      markers: Set<Marker>.of(markers.values),
+                      polylines: Set<Polyline>.of(polylines.values),
                     ),
                     HomeHeaderContainer(),
                   ],
@@ -190,7 +182,7 @@ class _GetRouteMapState extends State<GetRouteMap> {
       if (data['status'] == 'OK') {
         double shortestDistance = double.infinity;
         int shortestIndex = 0;
-
+        List<LatLng> shortestRoute = [];
         int index = 0;
         for (var route in data['routes']) {
           List<LatLng> polylineCoordinates = [];
@@ -206,15 +198,20 @@ class _GetRouteMapState extends State<GetRouteMap> {
           // Determine if this route is the shortest
           if (distance < shortestDistance) {
             shortestDistance = distance;
+            shortestRoute = polylineCoordinates;
             shortestIndex = index;
           }
-
-          if (data['routes'].length > 0) {
-            bool isShortest = index == data['routes'].length - 1;
-            _addPolyLine(
-                polylineCoordinates, index, isShortest, destLat, destLng);
-          }
+          //
+          // if (data['routes'].length > 0) {
+          //   bool isShortest = index == data['routes'].length - 1;
+          //   _addPolyLine(
+          //       polylineCoordinates, index, isShortest, destLat, destLng);
+          // }
           index++;
+        }
+        // Add only the shortest route to the map
+        if (shortestRoute.isNotEmpty) {
+          _addPolyLine(shortestRoute, shortestIndex, true, destLat, destLng);
         }
         print('calling api resp :');
         _homeBloc.add(OnGetRestaurantByRoute(userId: userId,
@@ -222,10 +219,7 @@ class _GetRouteMapState extends State<GetRouteMap> {
                 .toString()
                 .replaceAll(r'\', r'\\'),
             originLat: lat, originLng: lng));
-        print(
-            'this is polyline sending : ${data['routes'][0]['overview_polyline']['points']
-                .toString().toString()
-                .replaceAll(r'\', r'\\')}');
+
       } else {
         print('Error: ${data['status']} - ${data['error_message']}');
       }

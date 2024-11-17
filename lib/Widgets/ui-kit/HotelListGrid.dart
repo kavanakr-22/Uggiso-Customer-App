@@ -51,40 +51,35 @@ class HotelListGrid extends StatelessWidget {
               return Center(child: CircularProgressIndicator(color: AppColors.appPrimaryColor,),);
             }
             else if(state is onLoadedHotelState){
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: GridView.builder(
-                  shrinkWrap: true,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
-                    childAspectRatio: 0.9,
-                  ),
-                  itemCount:state.data.payload?.length,
-                  itemBuilder: (context, index) {
-                    return GridItem(context, state.data.payload?[index]);
-                  },
+              return GridView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
+                  childAspectRatio: 0.9,
                 ),
+                itemCount:state.data.payload?.length,
+                itemBuilder: (context, index) {
+                  return GridItem(context, state.data.payload?[index]);
+                },
               );
             }
               else{
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: GridView.builder(
-                  shrinkWrap: true,
-
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
-                    childAspectRatio: 0.9,
-                  ),
-                  itemCount: payload?.length,
-                  itemBuilder: (context, index) {
-                    return GridItem(context, payload?[index]);
-                  },
+              return GridView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
+                  childAspectRatio: 0.9,
                 ),
+                itemCount: payload?.length,
+                itemBuilder: (context, index) {
+                  return GridItem(context, payload?[index]);
+                },
               );
             }
 
@@ -93,184 +88,193 @@ class HotelListGrid extends StatelessWidget {
       ),
     );
   }
-
   Widget GridItem(BuildContext c, Payload? item) => RoundedContainer(
-      width: MediaQuery.of(c).size.width * 0.3,
+      width: MediaQuery.of(c).size.width * 0.5,
       color: AppColors.white,
       borderColor: AppColors.white,
-      height: MediaQuery.of(c).size.height,
       cornerRadius: 8,
       padding: 0,
       child: InkWell(
-        onTap: () => Navigator.pushNamed(c, AppRoutes.menuList,
-            arguments: MenuListArgs(
-                restaurantId: item!.restaurantId,
-                name: item.restaurantName,
-                foodType: item.restaurantMenuType,
-                ratings: item.ratings,
-                landmark: item.landmark,
+        onTap: () => Navigator.pushNamed(
+          c,
+          AppRoutes.menuList,
+          arguments: MenuListArgs(
+            restaurantId: item!.restaurantId,
+            name: item.restaurantName,
+            foodType: item.restaurantMenuType,
+            ratings: item.ratings,
+            landmark: item.landmark,
             distance: item.distance,
             duration: item.duration,
-            payload: item)),
+            payload: item,
+          ),
+        ),
         child: Column(
           children: [
-            Flexible(
-              flex: 6,
-              child: Container(
-                width: double.infinity,
-                padding: EdgeInsets.zero,
-                child: Image.network(
-                            item!.imageUrl.toString(),fit: BoxFit.fill,
-                  errorBuilder: (BuildContext context, Object exception,
-                      StackTrace? stackTrace) {
-                    // Display a placeholder image or alternative content
-                    return SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.2,
-                      height: MediaQuery.of(context).size.height * 0.08,
-                      child: Center(
-                        child: Icon(Icons.broken_image,size: 60,color: AppColors.grey,)
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ),
-            Flexible(
-              flex: 8,
-              child: Container(
-                width: MediaQuery.of(c).size.width * 0.42,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Gap(4),
-
-                    item?.restaurantName == null
-                        ? Container()
-                        : Text(
-                            '${item?.restaurantName}',
-                            style: AppFonts.title.copyWith(
-                                color: AppColors.bottomTabInactiveColor),
+            // Using Stack for the image and the top-right icon
+            Stack(
+              children: [
+                // Image
+                Container(
+                  width: double.infinity,
+                  height: MediaQuery.of(c).size.height * 0.1,
+                  child: Image.network(
+                    item!.imageUrl.toString(),
+                    fit: BoxFit.fitWidth,
+                    errorBuilder: (BuildContext context, Object exception,
+                        StackTrace? stackTrace) {
+                      return SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.2,
+                        height: MediaQuery.of(context).size.height * 0.08,
+                        child: Center(
+                          child: Icon(
+                            Icons.broken_image,
+                            size: 60,
+                            color: AppColors.grey,
                           ),
-                    const Gap(4),
-                    Row(
-                      children: [
-                        Flexible(
-                          flex: 3,
-                          child: item?.restaurantMenuType == null
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                // Top-right icon
+                Positioned(
+                  top: 0,
+                  right: 0,
+                  child: InkWell(
+                    onTap: () {
+                      // Handle icon click event
+                      print('Top-right icon clicked for ${item.restaurantName}');
+                    },
+                    child: item.favourite == true
+                        ? IconButton(
+                      padding: EdgeInsets.zero,
+                      onPressed: () {
+                        _homeBloc.add(OnDeleteFavRestaurant(
+                            userId: userId,
+                            restaurantId: item.restaurantId));
+                      },
+                      icon: Image.asset(
+                        'assets/ic_heart_fill.png',
+                        width: 24,
+                        height: 24,
+                        color: AppColors.appPrimaryColor,
+                      ),
+                    )
+                        : IconButton(
+                      padding: EdgeInsets.zero,
+                      onPressed: () {
+                        _homeBloc.add(OnAddFavRestaurant(
+                            userId: userId,
+                            restaurantId: item?.restaurantId));
+                      },
+                      icon: Image.asset(
+                        'assets/ic_heart.png',
+                        width: 24,
+                        height: 24,
+                        color: AppColors.appPrimaryColor,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            // Details Section
+            Container(
+              width: MediaQuery.of(c).size.width * 0.42,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Gap(4),
+                  item?.restaurantName == null
+                      ? Container()
+                      : Text(
+                    '${item?.restaurantName}',
+                    style: AppFonts.title.copyWith(
+                        color: AppColors.bottomTabInactiveColor),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const Gap(4),
+                  Row(
+                    children: [
+                      item?.restaurantMenuType == null
+                          ? Container()
+                          : Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          item?.restaurantMenuType == 'VEG'
+                              ? Image.asset(
+                            'assets/ic_veg.png',
+                            height: 12,
+                            width: 12,
+                          )
+                              : Image.asset(
+                            'assets/ic_non_veg.png',
+                            height: 12,
+                            width: 12,
+                          ),
+                          const Gap(4),
+                          Text(
+                            '${item?.restaurantMenuType}',
+                            style: AppFonts.smallText
+                                .copyWith(fontWeight: FontWeight.w500),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          item?.ratings == null
                               ? Container()
                               : Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    item?.restaurantMenuType == 'VEG'
-                                        ? Image.asset(
-                                            'assets/ic_veg.png',
-                                            height: 12,
-                                            width: 12,
-                                          )
-                                        : Image.asset(
-                                            'assets/ic_non_veg.png',
-                                            height: 12,
-                                            width: 12,
-                                          ),
-                                    const Gap(4),
-                                    Text(
-                                      '${item?.restaurantMenuType}',
-                                      style: AppFonts.smallText
-                                          .copyWith(fontWeight: FontWeight.w500),
-                                    ),
-                                  ],
-                                ),
-                        ),
-                        Flexible(
-                          flex: 1,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              item?.ratings == null
-                                  ? Container()
-                                  : Row(
-                                children: [
-                                  Image.asset(
-                                    'assets/ic_star.png',
-                                    height: 14,
-                                    width: 14,
-                                  ),
-                                  Text('${item?.ratings}',
-                                      style: AppFonts.smallText
-                                          .copyWith(color: AppColors.textColor)),
-                                ],
+                              Image.asset(
+                                'assets/ic_star.png',
+                                height: 14,
+                                width: 14,
                               ),
-
+                              Text('${item?.ratings}',
+                                  style: AppFonts.smallText.copyWith(
+                                      color: AppColors.textColor)),
                             ],
                           ),
-                        ),
-                      ],
-                    ),
-                    // Gap(12),
-
-                    Gap(8),
-                    item?.distance==null || item?.duration==null?Container():Row(
-                      children: [
-                        Image.asset(
-                          'assets/ic_small_marker.png',
-                          height: 12,
-                          width: 12,
-                        ),
-                        Gap(4),
-
-                        Text('${item?.distance} | ',
-                            style: AppFonts.smallText
-                                .copyWith(color: AppColors.textGrey)),
-                        Gap(4),
-
-                        Image.asset(
-                          'assets/ic_clock.png',
-                          height: 12,
-                          width: 12,
-                        ),
-                        Gap(4),
-                        Text('${item?.duration}',
-                            style: AppFonts.smallText
-                                .copyWith(color: AppColors.textGrey)),
-                      ],
-                    ),
-
-                    Align(
-                      alignment: Alignment.bottomRight,
-                      child: item.favourite==true?IconButton(
-                                  padding: EdgeInsets.zero,
-                                  onPressed: () {
-                                    _homeBloc.add(OnDeleteFavRestaurant(
-                                        userId:userId,restaurantId: item.restaurantId));
-                                  },
-                                  icon: Image.asset(
-                                    'assets/ic_heart_fill.png',
-                                    width: 24,
-                                    height: 24,
-                                    color: AppColors.appPrimaryColor,
-                                  )):IconButton(
-                                  padding: EdgeInsets.zero,
-                                  onPressed: () {
-                                    _homeBloc.add(OnAddFavRestaurant(
-                                        userId:userId,
-                                        restaurantId:item?.restaurantId));
-                                  },
-                                  icon: Image.asset(
-                                    'assets/ic_heart.png',
-                                    width: 24,
-                                    height: 24,
-                                    color: AppColors.appPrimaryColor,
-                                  )
-
-                          ),
-                    ),
-                  ],
-                ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  Gap(8),
+                  item?.distance == null || item?.duration == null
+                      ? Container()
+                      : Row(
+                    children: [
+                      Image.asset(
+                        'assets/ic_small_marker.png',
+                        height: 12,
+                        width: 12,
+                      ),
+                      Gap(4),
+                      Text('${item?.distance} | ',
+                          style: AppFonts.smallText
+                              .copyWith(color: AppColors.textGrey)),
+                      Gap(4),
+                      Image.asset(
+                        'assets/ic_clock.png',
+                        height: 12,
+                        width: 12,
+                      ),
+                      Gap(4),
+                      Text('${item?.duration}',
+                          style: AppFonts.smallText
+                              .copyWith(color: AppColors.textGrey)),
+                    ],
+                  ),
+                ],
               ),
             )
           ],
         ),
       ));
+
   updateHotelData(String userId,double lat, double lng, double distance,String mode){
     _homeBloc.add(
         OnUpdateFavOrder(userId:userId,lat: lat, lag: lng, distance: distance,mode: mode));  }

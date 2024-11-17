@@ -5,7 +5,6 @@ class MyOrdersModel {
   String? timeStamp;
   String? error;
 
-
   MyOrdersModel({this.statusCode, this.message, this.payload, this.timeStamp});
 
   MyOrdersModel.fromJson(Map<String, dynamic> json) {
@@ -39,90 +38,108 @@ class MyOrdersModel {
 class Payload {
   String? orderId;
   String? restaurantId;
+  String? orderNumber;
+  String? verifyCode;
   String? restaurantName;
   String? customerId;
+  List<Menus>? menus;
   String? paymentType;
   String? orderStatus;
   String? orderType;
   String? travelMode;
-  List<Menus>? menus;
   String? timeSlot;
   double? totalAmount;
+  double? paidAmount;
+  int? usedCoins;
   double? discount;
   String? comments;
   String? orderDate;
   String? orderTime;
-  String? fcmToken;
+  double? lat;
+  double? lng;
 
   Payload(
       {this.orderId,
         this.restaurantId,
+        this.orderNumber,
+        this.verifyCode,
         this.restaurantName,
         this.customerId,
+        this.menus,
         this.paymentType,
         this.orderStatus,
         this.orderType,
         this.travelMode,
-        this.menus,
         this.timeSlot,
         this.totalAmount,
+        this.paidAmount,
+        this.usedCoins,
         this.discount,
         this.comments,
         this.orderDate,
         this.orderTime,
-        this.fcmToken});
+        this.lat,
+        this.lng});
 
   Payload.fromJson(Map<String, dynamic> json) {
     orderId = json['orderId'];
     restaurantId = json['restaurantId'];
+    orderNumber = json['orderNumber'];
+    verifyCode = json['verifyCode'];
     restaurantName = json['restaurantName'];
     customerId = json['customerId'];
-    paymentType = json['paymentType'];
-    orderStatus = json['orderStatus'];
-    orderType = json['orderType'];
-    travelMode = json['travelMode'];
     if (json['menus'] != null) {
       menus = <Menus>[];
       json['menus'].forEach((v) {
         menus!.add(new Menus.fromJson(v));
       });
     }
+    paymentType = json['paymentType'];
+    orderStatus = json['orderStatus'];
+    orderType = json['orderType'];
+    travelMode = json['travelMode'];
     timeSlot = json['timeSlot'];
     totalAmount = json['totalAmount'];
+    paidAmount = json['paidAmount'];
+    usedCoins = json['usedCoins'];
     discount = json['discount'];
     comments = json['comments'];
     orderDate = json['orderDate'];
     orderTime = json['orderTime'];
-    fcmToken = json['fcmToken'];
+    lat = json['lat'];
+    lng = json['lng'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['orderId'] = this.orderId;
     data['restaurantId'] = this.restaurantId;
+    data['orderNumber'] = this.orderNumber;
+    data['verifyCode'] = this.verifyCode;
     data['restaurantName'] = this.restaurantName;
     data['customerId'] = this.customerId;
+    if (this.menus != null) {
+      data['menus'] = this.menus!.map((v) => v.toJson()).toList();
+    }
     data['paymentType'] = this.paymentType;
     data['orderStatus'] = this.orderStatus;
     data['orderType'] = this.orderType;
     data['travelMode'] = this.travelMode;
-    if (this.menus != null) {
-      data['menus'] = this.menus!.map((v) => v.toJson()).toList();
-    }
     data['timeSlot'] = this.timeSlot;
     data['totalAmount'] = this.totalAmount;
+    data['paidAmount'] = this.paidAmount;
+    data['usedCoins'] = this.usedCoins;
     data['discount'] = this.discount;
     data['comments'] = this.comments;
     data['orderDate'] = this.orderDate;
     data['orderTime'] = this.orderTime;
-    data['fcmToken'] = this.fcmToken;
+    data['lat'] = this.lat;
+    data['lng'] = this.lng;
     return data;
   }
 }
 
 class Menus {
-  int? orderedMenuId;
-  String? orderId;
   String? menuId;
   String? menuName;
   String? photo;
@@ -132,9 +149,7 @@ class Menus {
   double? parcelAmount;
 
   Menus(
-      {this.orderedMenuId,
-        this.orderId,
-        this.menuId,
+      {this.menuId,
         this.menuName,
         this.photo,
         this.restaurantMenuType,
@@ -143,8 +158,6 @@ class Menus {
         this.parcelAmount});
 
   Menus.fromJson(Map<String, dynamic> json) {
-    orderedMenuId = json['orderedMenuId'];
-    orderId = json['orderId'];
     menuId = json['menuId'];
     menuName = json['menuName'];
     photo = json['photo'];
@@ -156,8 +169,6 @@ class Menus {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['orderedMenuId'] = this.orderedMenuId;
-    data['orderId'] = this.orderId;
     data['menuId'] = this.menuId;
     data['menuName'] = this.menuName;
     data['photo'] = this.photo;

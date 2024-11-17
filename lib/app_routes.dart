@@ -132,7 +132,9 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const PaymentSuccessScreen());
 
       case orderSuccessScreen:
-        return MaterialPageRoute(builder: (_) => const OrderSuccessScreen());
+        final _orderSuccessArgs = settings.arguments as OrderSuccessArgs;
+        return MaterialPageRoute(builder: (_) => OrderSuccessScreen(lat: _orderSuccessArgs.restLat!,
+          lng: _orderSuccessArgs.restLng!,));
 
       case rewards:
         return MaterialPageRoute(builder: (_) => const RewardsScreen());

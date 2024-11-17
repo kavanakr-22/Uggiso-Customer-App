@@ -4,11 +4,14 @@ import 'package:uggiso/Widgets/ui-kit/RoundedElevatedButton.dart';
 import 'package:uggiso/base/common/utils/colors.dart';
 import 'package:uggiso/base/common/utils/fonts.dart';
 import 'package:uggiso/base/common/utils/strings.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../app_routes.dart';
 
 class OrderSuccessScreen extends StatefulWidget {
-  const OrderSuccessScreen({super.key});
+  final double lat;
+  final double lng;
+  const OrderSuccessScreen({super.key, required this.lat,required this.lng});
 
   @override
   State<OrderSuccessScreen> createState() => _OrderSuccessScreenState();
@@ -37,22 +40,39 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen> {
             style: AppFonts.header,
           ),
           Gap(28),
-          Expanded(
-            child: Container(
-              alignment: Alignment.bottomCenter,
-              padding: const EdgeInsets.only(bottom: 50),
-              child: RoundedElevatedButton(
+          Column(
+            children: [
+              RoundedElevatedButton(
                 width: MediaQuery.of(context).size.width * 0.7,
                 height: 40,
-                text: 'Done',
-                onPressed: () =>
-                    Navigator.popAndPushNamed(context, AppRoutes.homeScreen),
+                text: 'Get Route',
+                onPressed: () async{
+                  final googleMapsUrl =
+                      'https://www.google.com/maps/search/?api=1&query=${widget.lat},${widget.lng}';
+                  if (await canLaunch(googleMapsUrl)) {
+                  await launch(googleMapsUrl);
+                  } else {
+                  print('Could not open Google Maps');
+                  }
+                },
                 cornerRadius: 12,
                 buttonColor: AppColors.white,
                 textStyle: AppFonts.subHeader
                     .copyWith(color: AppColors.appPrimaryColor),
               ),
-            ),
+              Gap(10),
+              RoundedElevatedButton(
+                width: MediaQuery.of(context).size.width * 0.7,
+                height: 40,
+                text: 'Done',
+                onPressed: () =>
+                    Navigator.popAndPushNamed(context, AppRoutes.myOrders),
+                cornerRadius: 12,
+                buttonColor: AppColors.white,
+                textStyle: AppFonts.subHeader
+                    .copyWith(color: AppColors.appPrimaryColor),
+              ),
+            ],
           )
         ],
       ),

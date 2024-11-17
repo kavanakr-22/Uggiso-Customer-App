@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:uggiso/Model/AcceptorsListModel.dart';
 import 'package:uggiso/Model/AddFavoriteMenuModel.dart';
+import 'package:uggiso/Model/AppVersionModel.dart';
 import 'package:uggiso/Model/GetNearByResaturantModel.dart';
 import 'package:uggiso/Model/GetRouteModel.dart';
 import 'package:uggiso/Model/InitiatePaymentModel.dart';
@@ -232,7 +233,7 @@ class ApiProvider {
       String timeSlot,
       String transMode,
       double paidAmount,
-      int usedCoins) async {
+      int usedCoins,double lat, double lng) async {
     print(
         'this is request data :{ restaurantId: $restaurantId, restaurantName: $restaurantName,"customerId": $customerId,"menus": $menuData'
         ',"orderType":$orderType,"paymentType": $paymentType,"orderStatus": $orderStatus,"totalAmount": $totalAmount'
@@ -252,7 +253,8 @@ class ApiProvider {
         "usedCoins": usedCoins,
         "comments": comments,
         "timeSlot": timeSlot,
-        "travelMode": transMode
+        "travelMode": transMode,
+            "lat":lat,"lng":lng
       });
       print("${response.data}");
 
@@ -323,6 +325,8 @@ class ApiProvider {
 
   Future<GetRouteModel> getRestaurantOnway(
       String userId, String polylinePoints, double lat, double lng) async {
+    print('get roues request : "userId": $userId,"roadPolyline": $polylinePoints,'
+        ' "originLat": $lat, "originLang": $lng, "mode": "DRIVE"');
     try {
       Response response =
           await _dio.post('${_url}${Constants.restaurantOnway}', data: {
@@ -565,6 +569,18 @@ class ApiProvider {
       print("Exception occured: $error stackTrace: $stacktrace");
       return InitiatePaymentModel.withError(
           "Data not found / Connection issue");
+    }
+  }
+  Future<AppVersionModel> getAppVersion() async {
+    try {
+      Response response = await _dio.get(
+          '${_url}${Constants.check_app_version}'); //here id is user / customer / owner id
+      print("${response.data}");
+
+      return AppVersionModel.fromJson(response.data);
+    } catch (error, stacktrace) {
+      print("Exception occured: $error stackTrace: $stacktrace");
+      return AppVersionModel.withError("Data not found / Connection issue");
     }
   }
 }

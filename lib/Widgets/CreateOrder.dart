@@ -8,6 +8,7 @@ import 'package:uggiso/Bloc/CreateOrderBloc/CreateOrderEvent.dart';
 import 'package:uggiso/Bloc/CreateOrderBloc/CreateOrderState.dart';
 import 'package:uggiso/Network/constants.dart';
 import 'package:uggiso/Widgets/ui-kit/RoundedElevatedButton.dart';
+import 'package:uggiso/base/common/utils/CreateOrderArgs.dart';
 import 'package:uggiso/base/common/utils/LocationManager.dart';
 import 'package:uggiso/base/common/utils/background_service.dart';
 import 'package:uggiso/base/common/utils/fonts.dart';
@@ -123,7 +124,7 @@ class _CreateOrderState extends State<CreateOrder> {
                   state.data.payload!.orderId!);
               Navigator.pushNamedAndRemoveUntil(
                   context,
-                  AppRoutes.orderSuccessScreen,
+                  AppRoutes.orderSuccessScreen,arguments:OrderSuccessArgs(restLat:widget.restLat,restLng: widget.restLng) ,
                   (Route<dynamic> route) => false);
             }
             if (state is onCoinDetailsFetched) {
@@ -720,15 +721,31 @@ class _CreateOrderState extends State<CreateOrder> {
   createOrder() async {
     // final List<Object?> result = await platform.invokeMethod('callSabPaisaSdk',
     //     [userName, "", "", userNumber, item_sub_total.toString()]);
-    setState(() {
-      txnId = generateUUID();
-    });
-    print('this is item sub total : ${item_sub_total.toString()}');
-    _createOrderBloc.add(InitiatePayment(
-        name: userName,
-        number: userNumber,
-        amount: item_sub_total.toString(),
-        txnId: txnId));
+    // setState(() {
+    //   txnId = generateUUID();
+    // });
+    // print('this is item sub total : ${item_sub_total.toString()}');
+    // _createOrderBloc.add(InitiatePayment(
+    //     name: userName,
+    //     number: userNumber,
+    //     amount: item_sub_total.toString(),
+    //     txnId: txnId));
+
+    _createOrderBloc.add(OnPaymentClicked(
+        restaurantId: widget.restaurantId!,
+        restaurantName: widget.restaurantName!,
+        customerId: userId,
+        menuData: menuList,
+        orderType: _istakeAway ? "PARCEL" : "DINEING",
+        paymentType: 'UPI',
+        orderStatus: 'CREATED',
+        totalAmount: item_sub_total.toInt(),
+        comments: 'Please do little more spicy',
+        timeSlot: getTimeSlot(selectedSlot),
+        transMode: 'BIKE',
+        usedCoins: uggiso_point_count!.toInt(),
+        paidAmount: item_sub_total,
+        lat:widget.restLat!,lng:widget.restLng!));
   }
 
   gotoPaymentScreen(Object params) async {
@@ -750,7 +767,8 @@ class _CreateOrderState extends State<CreateOrder> {
           timeSlot: getTimeSlot(selectedSlot),
           transMode: 'BIKE',
           usedCoins: uggiso_point_count!.toInt(),
-          paidAmount: item_sub_total));
+          paidAmount: item_sub_total,
+          lat:widget.restLat!,lng:widget.restLng!));
     } else if (payment_response['result'] == 'payment_failed') {
       _showBottomSheet(context);
     }

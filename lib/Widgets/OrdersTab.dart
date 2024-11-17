@@ -6,6 +6,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uggiso/Bloc/MyOrderBloc/MyOrderBloc.dart';
 import 'package:uggiso/Bloc/MyOrderBloc/MyOrderEvent.dart';
 import 'package:uggiso/Bloc/MyOrderBloc/MyOrderState.dart';
+import 'package:uggiso/app_routes.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../Model/MyOrdersModel.dart';
 import '../base/common/utils/colors.dart';
 import '../base/common/utils/fonts.dart';
@@ -32,66 +34,62 @@ class _OrdersTabState extends State<OrdersTab> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.textFieldBg,
-      appBar: AppBar(
+        backgroundColor: AppColors.textFieldBg,
+        appBar: AppBar(
           elevation: 0,
-          leading:Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10.0),
-      child: IconButton(
-        iconSize: 18,
-        icon: Image.asset('assets/ic_back_arrow.png'),
-        onPressed: () {
-          Navigator.pop(context);
-        },
-      ),
-    ),
-    backgroundColor: AppColors.appPrimaryColor,
-    title: const Text(
-    Strings.your_orders,
-    style: AppFonts.appBarText,
-    ),
-    centerTitle: true,
-    ),
-    body: BlocProvider(
-    create: (context) => _myOrderBloc,
-    child: BlocBuilder<MyOrderBloc, MyOrderState>(
-    builder: (BuildContext context, MyOrderState state) {
-    if (state is OrderFetchingState) {
-    return Center(
-    child: CircularProgressIndicator(
-    color: AppColors.appPrimaryColor,
-    ),
-    );
-    } else if (state is ErrorState) {
-    return Center(
-    child: Text(
-    '${state.message}',
-    textAlign: TextAlign.center,
-    style: AppFonts.title,
-    ),
-    );
-    } else if (state is OrderFetchedState) {
-    return ShowOrderList(state.data);
-    }
-    return Container();
-    })
-    ,
-    )
-    );
+          leading: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10.0),
+            child: IconButton(
+              iconSize: 18,
+              icon: Image.asset('assets/ic_back_arrow.png'),
+              color: AppColors.white,
+              onPressed: () {
+                Navigator.popAndPushNamed(context, AppRoutes.homeScreen);
+
+              },
+            ),
+          ),
+          backgroundColor: AppColors.appPrimaryColor,
+          title: const Text(
+            Strings.your_orders,
+            style: AppFonts.appBarText,
+          ),
+          centerTitle: true,
+        ),
+        body: BlocProvider(
+          create: (context) => _myOrderBloc,
+          child: BlocBuilder<MyOrderBloc, MyOrderState>(
+              builder: (BuildContext context, MyOrderState state) {
+            if (state is OrderFetchingState) {
+              return Center(
+                child: CircularProgressIndicator(
+                  color: AppColors.appPrimaryColor,
+                ),
+              );
+            } else if (state is ErrorState) {
+              return Center(
+                child: Text(
+                  '${state.message}',
+                  textAlign: TextAlign.center,
+                  style: AppFonts.title,
+                ),
+              );
+            } else if (state is OrderFetchedState) {
+              return ShowOrderList(state.data);
+            }
+            return Container();
+          }),
+        ));
   }
 
-  Widget ShowOrderList(MyOrdersModel data) =>
-      Padding(
+  Widget ShowOrderList(MyOrdersModel data) => Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
         child: ListView.builder(
             itemCount: data.payload?.length,
             itemBuilder: (BuildContext context, int count) {
               return Container(
                   margin: EdgeInsets.only(top: 8.0),
-                  width: MediaQuery
-                      .of(context)
-                      .size
-                      .width,
+                  width: MediaQuery.of(context).size.width,
                   padding: EdgeInsets.all(4.0),
                   decoration: ShapeDecoration(
                     color: AppColors.white,
@@ -120,23 +118,43 @@ class _OrdersTabState extends State<OrdersTab> {
                             ),
                             Flexible(
                               flex: 1,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: AppColors.appSecondaryColor,
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 12.0, vertical: 4.0),
-                                child: Text(
-                                  '${data.payload?[count].orderStatus}',
-                                  style: AppFonts.smallText,
-                                ),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      color: AppColors.appSecondaryColor,
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 12.0, vertical: 4.0),
+                                    child: Text(
+                                      '${data.payload?[count].orderStatus}',
+                                      style: AppFonts.smallText,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ],
                         ),
                       ),
                       Divider(),
+                      Gap(8),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Order No : ${data.payload?[count].orderNumber}',
+                            style: AppFonts.title
+                                .copyWith(fontSize: 12),
+                          ),
+                          Text(
+                            'CODE : ${data.payload?[count].verifyCode}',
+                            style: AppFonts.smallText
+                                .copyWith(color: AppColors.appPrimaryColor,fontSize: 14,fontWeight: FontWeight.w600),
+                          )
+                        ],
+                      ),
                       Gap(8),
                       ListView.builder(
                           shrinkWrap: true,
@@ -148,24 +166,35 @@ class _OrdersTabState extends State<OrdersTab> {
                               child: Row(
                                 children: [
                                   data.payload?[count].menus?[menuItem]
-                                      .restaurantMenuType ==
-                                      'VEG'
+                                              .restaurantMenuType ==
+                                          'VEG'
                                       ? Image.asset(
-                                    'assets/ic_veg.png',
-                                    height: 14,
-                                    width: 14,
-                                  )
+                                          'assets/ic_veg.png',
+                                          height: 14,
+                                          width: 14,
+                                        )
                                       : Image.asset(
-                                    'assets/ic_non_veg.png',
-                                    height: 14,
-                                    width: 14,
-                                  ),
+                                          'assets/ic_non_veg.png',
+                                          height: 14,
+                                          width: 14,
+                                        ),
                                   Gap(8),
                                   Text(
-                                    '${data.payload?[count].menus?[menuItem]
-                                        .quantity} x ${data.payload?[count]
-                                        .menus?[menuItem].menuName}',
+                                    '${data.payload?[count].menus?[menuItem].quantity} x ${data.payload?[count].menus?[menuItem].menuName}',
                                     style: AppFonts.title,
+                                  ),
+                                  Flexible(
+                                    flex:1,
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        Text(
+                                          '₹ ${data.payload?[count].menus?[menuItem].quantityAmount}',
+                                          style: AppFonts.title,
+                                          textAlign: TextAlign.end,
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ],
                               ),
@@ -192,8 +221,7 @@ class _OrdersTabState extends State<OrdersTab> {
                                     ),
                                     TextSpan(
                                       text:
-                                      '${convertDate(
-                                          data.payload![count].orderDate)}',
+                                          '${convertDate(data.payload![count].orderDate)}',
                                       style: AppFonts
                                           .smallText, // Original style for the comments
                                     ),
@@ -211,20 +239,51 @@ class _OrdersTabState extends State<OrdersTab> {
                           ],
                         ),
                       ),
-                      /*RichText(
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                          text: 'Comments : ',
-                          style: AppFonts.smallText.copyWith(color: AppColors.appPrimaryColor), // Color for the word "Comments"
+                      Divider(),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text(
+                              'Locate on Map',style: AppFonts.smallText.copyWith(fontSize: 14),
+                            ),
+                            Gap(10),
+
+                            IconButton(
+                              padding: EdgeInsets.zero,
+                              onPressed: () async {
+                                final googleMapsUrl =
+                                    'https://www.google.com/maps/search/?api=1&query=${data.payload?[count].lat},${data.payload?[count].lng}';
+                                if (await canLaunch(googleMapsUrl)) {
+                                  await launch(googleMapsUrl);
+                                } else {
+                                  print('Could not open Google Maps');
+                                }
+                              },
+                              icon: Icon(
+                                Icons.directions, // Icon for navigation
+                                color: Colors.blue, // Blue color for the icon
+                                size: 24, // Icon size
+                              ),
+                            ),
+                          ],
                         ),
-                        TextSpan(
-                          text: '${data.payload?[count].comments}',
-                          style: AppFonts.smallText, // Original style for the comments
-                        ),
-                      ],
-                    ),
-                  ),*/
+                      ),
+                  //     RichText(
+                  //   text: TextSpan(
+                  //     children: [
+                  //       TextSpan(
+                  //         text: 'Locate on Map',
+                  //         style: AppFonts.smallText, // Color for the word "Comments"
+                  //       ),
+                  //       TextSpan(
+                  //         text: '${data.payload?[count].comments}',
+                  //         style: AppFonts.smallText, // Original style for the comments
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
                     ],
                   ));
             }),

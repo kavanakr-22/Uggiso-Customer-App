@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:uggiso/Model/AcceptorsListModel.dart';
 import 'package:uggiso/Model/AddFavoriteMenuModel.dart';
+import 'package:uggiso/Model/AppVersionModel.dart';
 import 'package:uggiso/Model/GetRouteModel.dart';
 import 'package:uggiso/Model/InitiatePaymentModel.dart';
 import 'package:uggiso/Model/MenuListModel.dart';
@@ -79,10 +80,9 @@ class ApiRepository {
       List menuData,String orderType,String paymentType,
       String orderStatus,int totalAmount,String comments,
       String timeSlot,String transMode,
-      double paidAmount,
-      int usedCoins) {
+      double paidAmount, int usedCoins, double lat, double lng) {
     return _provider.createOrder(restaurantId,restaurantName,customerId,menuData,orderType,paymentType,orderStatus,
-    totalAmount,comments,timeSlot,transMode,paidAmount,usedCoins);
+    totalAmount,comments,timeSlot,transMode,paidAmount,usedCoins,lat,lng);
   }
 
   Future<WalletDetailsModel> getWalletDetails(String userId) {
@@ -130,6 +130,9 @@ class ApiRepository {
 
   Future<InitiatePaymentModel> initiatePayment(String name, String phone, String amount,String txnId) {
     return _provider.initiatePayment(name,phone,amount,txnId);
+  }
+  Future<AppVersionModel> getAppVersion() {
+    return _provider.getAppVersion();
   }
 
 }

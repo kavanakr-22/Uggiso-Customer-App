@@ -26,7 +26,7 @@ class Strings {
   static const world_of_flavor = 'Step into a world of flavor with';
   static const enter_your_name = 'Enter your Name';
   static const submit = 'Submit';
-  static const by_route = 'By Route';
+  static const by_route = 'My Route';
   static const search_now = 'Search Now';
   static const view_all = 'View All';
   static const home = 'Home';
