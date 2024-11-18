@@ -1,9 +1,9 @@
 class Constants{
 
-  static String baseUrl = 'http://34.93.59.219:80/'; // test url
-  // static String baseUrl = 'http://uggiso.co.in/'; //prod url
-  static String mode = 'test';
-  // static String mode = 'production';
+  // static String baseUrl = 'http://34.93.59.219:80/'; // test url
+  static String baseUrl = 'http://uggiso.co.in/'; //prod url
+  // static String mode = 'test';
+  static String mode = 'production';
   static String getOtp = 'user/otp';
   static String verifyOtp = 'user/otp/verify';
   static String registerUser = 'user/register';

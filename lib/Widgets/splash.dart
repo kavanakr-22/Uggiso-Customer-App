@@ -2,7 +2,6 @@ import 'package:device_uuid/device_uuid.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uggiso/Network/apiRepository.dart';
 import 'package:uggiso/app_routes.dart';
@@ -44,7 +43,8 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void checkUserLoggedStatus() async{
-    getAppVersion();
+    // getAppVersion();
+    getDeviceId();
   }
 
   void getDeviceId() async {
@@ -168,24 +168,24 @@ class _SplashScreenState extends State<SplashScreen> {
 
   }
 
-  getAppVersion() async {
-    var res = await ApiRepository().getAppVersion();
-    PackageInfo _packageInfo = await PackageInfo.fromPlatform();
-
-    print('inside status  : ${res.payload?.mandatoryUpdate}');
-    if(res.payload?.mandatoryUpdate==true){
-      if(_packageInfo.version==res.payload?.latestVersion){
-        getDeviceId();
-      }
-      else{
-        showUpdateDialog(res.payload?.updateUrl);
-        // getDeviceId();
-      }
-    }
-    else{
-      getDeviceId();
-    }
-  }
+  // getAppVersion() async {
+  //   var res = await ApiRepository().getAppVersion();
+  //   PackageInfo _packageInfo = await PackageInfo.fromPlatform();
+  //
+  //   print('inside status  : ${res.payload?.mandatoryUpdate}');
+  //   if(res.payload?.mandatoryUpdate==true){
+  //     if(_packageInfo.version==res.payload?.latestVersion){
+  //       getDeviceId();
+  //     }
+  //     else{
+  //       showUpdateDialog(res.payload?.updateUrl);
+  //       // getDeviceId();
+  //     }
+  //   }
+  //   else{
+  //     getDeviceId();
+  //   }
+  // }
 
   showUpdateDialog(String? url){
     return showDialog(
