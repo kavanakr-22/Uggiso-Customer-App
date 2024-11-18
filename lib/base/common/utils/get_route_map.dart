@@ -66,21 +66,26 @@ class _GetRouteMapState extends State<GetRouteMap> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: AppColors.appPrimaryColor,
-          title: Text(Strings.by_route, style: AppFonts.appBarText.copyWith(
-              color: AppColors.white),),
+          title: Text(
+            Strings.by_route,
+            style: AppFonts.appBarText.copyWith(color: AppColors.white),
+          ),
           centerTitle: false,
         ),
         body: BlocListener<HomeBloc, HomeState>(
           listener: (BuildContext context, HomeState state) {
             if (state is RestaurantsLocationFound) {
-              print('this is result payload length : ${state.result.payload
-                  ?.length}');
-              print('this is result payload lat lng : ${state.result.payload
-                  ?.first.lat} and ${state.result.payload?.first.lng}');
+              print(
+                  'this is result payload length : ${state.result.payload?.length}');
+              print(
+                  'this is result payload lat lng : ${state.result.payload?.first.lat} and ${state.result.payload?.first.lng}');
 
               for (int i = 0; i < state.result.payload!.length; i++) {
-                addRestaurantMarker(state.result.payload?[i].lat,
-                    state.result.payload?[i].lng,state.result.payload?[i].restaurantName,state.result.payload?[i]);
+                addRestaurantMarker(
+                    state.result.payload?[i].lat,
+                    state.result.payload?[i].lng,
+                    state.result.payload?[i].restaurantName,
+                    state.result.payload?[i]);
                 // _setMarkers(state.result.payload);
               }
             }
@@ -89,33 +94,33 @@ class _GetRouteMapState extends State<GetRouteMap> {
           },
           child: BlocBuilder<HomeBloc, HomeState>(
               builder: (context, HomeState state) {
-                if (state is LoadingHotelState) {
-                  return Center(child: CircularProgressIndicator(
-                    color: AppColors.appPrimaryColor,),);
-                }
-                return Stack(
-                  children: [
-                    GoogleMap(
-                      initialCameraPosition:
-                      CameraPosition(target: LatLng(latitude, longitude),
-                          zoom: 8),
-                      myLocationEnabled: true,
-                      myLocationButtonEnabled: true,
-                      tiltGesturesEnabled: true,
-                      compassEnabled: true,
-                      scrollGesturesEnabled: true,
-                      zoomGesturesEnabled: true,
-                      onMapCreated: _onMapCreated,
-                      markers: Set<Marker>.of(markers.values),
-                      polylines: Set<Polyline>.of(polylines.values),
-                    ),
-                    HomeHeaderContainer(),
-                  ],
-                );
-              }
-          ),
+            if (state is LoadingHotelState) {
+              return Center(
+                child: CircularProgressIndicator(
+                  color: AppColors.appPrimaryColor,
+                ),
+              );
+            }
+            return Stack(
+              children: [
+                GoogleMap(
+                  initialCameraPosition: CameraPosition(
+                      target: LatLng(latitude, longitude), zoom: 8),
+                  myLocationEnabled: true,
+                  myLocationButtonEnabled: true,
+                  tiltGesturesEnabled: true,
+                  compassEnabled: true,
+                  scrollGesturesEnabled: true,
+                  zoomGesturesEnabled: true,
+                  onMapCreated: _onMapCreated,
+                  markers: Set<Marker>.of(markers.values),
+                  polylines: Set<Polyline>.of(polylines.values),
+                ),
+                HomeHeaderContainer(),
+              ],
+            );
+          }),
         ),
-
       ),
     );
   }
@@ -135,33 +140,33 @@ class _GetRouteMapState extends State<GetRouteMap> {
     }
   }
 
-  _addMarker(LatLng position, String id, BitmapDescriptor descriptor,Payload? payload) {
-    print('this is add marker lat lng : ${position.latitude} and ${position
-        .longitude}');
+  _addMarker(LatLng position, String id, BitmapDescriptor descriptor,
+      Payload? payload) {
+    print(
+        'this is add marker lat lng : ${position.latitude} and ${position.longitude}');
     MarkerId markerId = MarkerId(id);
-    Marker marker =
-    Marker(markerId: markerId, icon: descriptor, position: position,
-        onTap: ()=>print('this is on marker tap with marker id : ${markerId}'),
-
+    Marker marker = Marker(
+      markerId: markerId,
+      icon: descriptor,
+      position: position,
+      onTap: () => print('this is on marker tap with marker id : ${markerId}'),
       infoWindow: InfoWindow(
           title: markerId.value,
-          onTap: ()=> {
-            // if(payload!=null){
-            //   Navigator.pushNamed(context, AppRoutes.menuList,
-            //       arguments: MenuListArgs(
-            //           restaurantId: payload.restaurantId,
-            //           name: payload.restaurantName,
-            //           foodType: payload.restaurantMenuType,
-            //           ratings: payload.ratings,
-            //           landmark: payload.landmark,
-            //           distance: payload.distance,
-            //           duration: payload.duration,
-            //           payload: payload))
-            // }
-
-          }
-
-      ),);
+          onTap: () => {
+                // if(payload!=null){
+                //   Navigator.pushNamed(context, AppRoutes.menuList,
+                //       arguments: MenuListArgs(
+                //           restaurantId: payload.restaurantId,
+                //           name: payload.restaurantName,
+                //           foodType: payload.restaurantMenuType,
+                //           ratings: payload.ratings,
+                //           landmark: payload.landmark,
+                //           distance: payload.distance,
+                //           duration: payload.duration,
+                //           payload: payload))
+                // }
+              }),
+    );
     markers[markerId] = marker;
   }
 
@@ -186,8 +191,8 @@ class _GetRouteMapState extends State<GetRouteMap> {
         int index = 0;
         for (var route in data['routes']) {
           List<LatLng> polylineCoordinates = [];
-          var points = PolylinePoints().decodePolyline(
-              route['overview_polyline']['points']);
+          var points = PolylinePoints()
+              .decodePolyline(route['overview_polyline']['points']);
           points.forEach((point) {
             polylineCoordinates.add(LatLng(point.latitude, point.longitude));
           });
@@ -214,12 +219,13 @@ class _GetRouteMapState extends State<GetRouteMap> {
           _addPolyLine(shortestRoute, shortestIndex, true, destLat, destLng);
         }
         print('calling api resp :');
-        _homeBloc.add(OnGetRestaurantByRoute(userId: userId,
+        _homeBloc.add(OnGetRestaurantByRoute(
+            userId: userId,
             polylinePoints: data['routes'][0]['overview_polyline']['points']
                 .toString()
                 .replaceAll(r'\', r'\\'),
-            originLat: lat, originLng: lng));
-
+            originLat: lat,
+            originLng: lng));
       } else {
         print('Error: ${data['status']} - ${data['error_message']}');
       }
@@ -269,8 +275,7 @@ class _GetRouteMapState extends State<GetRouteMap> {
         onTap: () {
           _onPolylineTapped(id);
         },
-        consumeTapEvents: true
-    );
+        consumeTapEvents: true);
     polylines[id] = polyline;
     setState(() {});
   }
@@ -294,8 +299,10 @@ class _GetRouteMapState extends State<GetRouteMap> {
     double dLat = (lat2 - lat1) * pi / 180;
     double dLon = (lon2 - lon1) * pi / 180;
     double a = (math.sin(dLat / 2) * math.sin(dLat / 2)) +
-        (math.cos(lat1 * pi / 180) * math.cos(lat2 * pi / 180) *
-            math.sin(dLon / 2) * math.sin(dLon / 2));
+        (math.cos(lat1 * pi / 180) *
+            math.cos(lat2 * pi / 180) *
+            math.sin(dLon / 2) *
+            math.sin(dLon / 2));
     double c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a));
     return R * c;
   }
@@ -311,8 +318,8 @@ class _GetRouteMapState extends State<GetRouteMap> {
       setState(() {
         polylines[selectedPolylineId!] =
             polylines[selectedPolylineId!]!.copyWith(
-              colorParam: Colors.grey,
-            );
+          colorParam: Colors.grey,
+        );
       });
     }
 
@@ -325,17 +332,9 @@ class _GetRouteMapState extends State<GetRouteMap> {
     });
   }
 
-
-  Widget HomeHeaderContainer() =>
-      Container(
-        height: MediaQuery
-            .of(context)
-            .size
-            .height * 0.16,
-        width: MediaQuery
-            .of(context)
-            .size
-            .width,
+  Widget HomeHeaderContainer() => Container(
+        height: MediaQuery.of(context).size.height * 0.16,
+        width: MediaQuery.of(context).size.width,
         decoration: const BoxDecoration(
           color: AppColors.appPrimaryColor,
           borderRadius: BorderRadius.only(
@@ -351,14 +350,8 @@ class _GetRouteMapState extends State<GetRouteMap> {
               RoundedContainer(
                   color: AppColors.white,
                   borderColor: AppColors.white,
-                  width: MediaQuery
-                      .of(context)
-                      .size
-                      .width,
-                  height: MediaQuery
-                      .of(context)
-                      .size
-                      .height * 0.05,
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height * 0.05,
                   cornerRadius: 8,
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -369,34 +362,22 @@ class _GetRouteMapState extends State<GetRouteMap> {
                         child: Text(
                           '$currentLocation',
                           style: AppFonts.title,
-
                         ),
                       ),
-
                     ],
                   )),
               Gap(8),
               PlaceSearchWidget()
             ],
           ),
-        )
-
-        ,
-
+        ),
       );
 
-  Widget PlaceSearchWidget() =>
-      RoundedContainer(
+  Widget PlaceSearchWidget() => RoundedContainer(
         color: AppColors.white,
         borderColor: AppColors.white,
-        width: MediaQuery
-            .of(context)
-            .size
-            .width,
-        height: MediaQuery
-            .of(context)
-            .size
-            .height * 0.06,
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height * 0.06,
         cornerRadius: 8,
         padding: 0,
         child: Row(
@@ -405,24 +386,20 @@ class _GetRouteMapState extends State<GetRouteMap> {
           children: [
             Padding(
               padding: const EdgeInsets.only(left: 8.0),
-              child: Flexible(
-                flex: 1,
-                child: Icon(
-                  Icons.search,
-                  size: 18,
-                  color: AppColors.textGrey,
-                ),
-
+              child: Icon(
+                Icons.search,
+                size: 18,
+                color: AppColors.textGrey,
               ),
             ),
-            Flexible(
-              flex: 7,
+            Container(
+              width: MediaQuery.of(context).size.width * 0.69,
+              padding: EdgeInsets.zero,
               child: SearchPlaceAutoCompletedTextField(
                   googleAPIKey: googleApiKey,
                   textStyle: AppFonts.title,
                   countries: ['in'],
                   isLatLngRequired: true,
-
                   inputDecoration: InputDecoration(
                     border: OutlineInputBorder(
                       borderSide: BorderSide.none, // No border
@@ -433,7 +410,7 @@ class _GetRouteMapState extends State<GetRouteMap> {
                   itmOnTap: (Prediction prediction) {
                     setState(() {
                       _placeSearchEditingController.text =
-                      prediction.description!;
+                          prediction.description!;
 
                       // currentLocation = _placeSearchEditingController.text;
                       _showPlaceSearchWidget = false;
@@ -453,26 +430,35 @@ class _GetRouteMapState extends State<GetRouteMap> {
                     addDestinationMarker(double.parse(prediction.lat!),
                         double.parse(prediction.lng!));
                     _getPolylines(
-                        latitude, longitude, double.parse(prediction.lat!),
+                        latitude,
+                        longitude,
+                        double.parse(prediction.lat!),
                         double.parse(prediction.lng!));
                   }),
             ),
-            Flexible(
-                flex: 1,
-                child: IconButton(
-                  padding: EdgeInsets.zero,
-                  icon: const Icon(
-                    Icons.close,
-                    size: 18,
-                    color: AppColors.textGrey,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      _showPlaceSearchWidget = false;
-                      _placeSearchEditingController.clear();
-                    });
-                  },
-                ))
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: InkWell(
+                onTap: () {
+                  setState(() {
+                    _showPlaceSearchWidget = false;
+                    _placeSearchEditingController.clear();
+                  });
+                },
+                child: Icon(
+                  Icons.close,
+                  size: 18,
+                  color: AppColors.textGrey,
+                ),
+              ),
+            ),
+            // IconButton(
+            //   padding: EdgeInsets.zero,
+            //   icon: const
+            //   onPressed: () {
+            //
+            //   },
+            // )
           ],
         ),
       );
@@ -488,43 +474,47 @@ class _GetRouteMapState extends State<GetRouteMap> {
   }
 
   addDestinationMarker(double lat, double lng) {
-    _addMarker(LatLng(lat, lng), "destination",
-        BitmapDescriptor.defaultMarker,null);
+    _addMarker(
+        LatLng(lat, lng), "destination", BitmapDescriptor.defaultMarker, null);
   }
 
-  addRestaurantMarker(double? hotel_lat, double? hotel_lng, String? restaurant_name,Payload? payload) {
-    _addMarker(LatLng(hotel_lat!, hotel_lng!), restaurant_name!,
-        BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),payload);
+  addRestaurantMarker(double? hotel_lat, double? hotel_lng,
+      String? restaurant_name, Payload? payload) {
+    _addMarker(
+        LatLng(hotel_lat!, hotel_lng!),
+        restaurant_name!,
+        BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+        payload);
   }
 
   void _setMarkers(List<Payload>? payload) {
     if (payload != null) {
-
       setState(() {
         _markers = payload.map((restaurant) {
-          print('this is restaurant lat lng : ${restaurant.lat} and ${restaurant.lng}');
+          print(
+              'this is restaurant lat lng : ${restaurant.lat} and ${restaurant.lng}');
           return Marker(
             markerId: MarkerId(restaurant.restaurantName!),
             position: LatLng(restaurant.lat!, restaurant.lng!),
-            icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
+            icon: BitmapDescriptor.defaultMarkerWithHue(
+                BitmapDescriptor.hueOrange),
             infoWindow: InfoWindow(
                 title: restaurant.restaurantName!,
-                onTap: ()=>print('info window clicked')
-                    // Navigator.pushNamed(context, AppRoutes.menuList,
-                    //     arguments: MenuListArgs(
-                    //         restaurantId: restaurant.restaurantId,
-                    //         name: restaurant.restaurantName,
-                    //         foodType: restaurant.restaurantMenuType,
-                    //         ratings: restaurant.ratings,
-                    //         landmark: restaurant.landmark,
-                    //         distance: restaurant.distance,
-                    //         duration: restaurant.duration,
-                    //         payload: restaurant))
-            ),
+                onTap: () => print('info window clicked')
+                // Navigator.pushNamed(context, AppRoutes.menuList,
+                //     arguments: MenuListArgs(
+                //         restaurantId: restaurant.restaurantId,
+                //         name: restaurant.restaurantName,
+                //         foodType: restaurant.restaurantMenuType,
+                //         ratings: restaurant.ratings,
+                //         landmark: restaurant.landmark,
+                //         distance: restaurant.distance,
+                //         duration: restaurant.duration,
+                //         payload: restaurant))
+                ),
           );
         }).toSet();
       });
     }
   }
-
 }

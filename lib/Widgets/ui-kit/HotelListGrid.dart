@@ -52,8 +52,7 @@ class HotelListGrid extends StatelessWidget {
             }
             else if(state is onLoadedHotelState){
               return GridView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
+
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   crossAxisSpacing: 10,
@@ -68,8 +67,7 @@ class HotelListGrid extends StatelessWidget {
             }
               else{
               return GridView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
+
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   crossAxisSpacing: 10,

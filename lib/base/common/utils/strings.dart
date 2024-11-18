@@ -39,7 +39,7 @@ class Strings {
   static const dishes = 'Dishes';
   static const myProfile = 'My Profile';
   static const saved_address = 'Saved Address';
-  static const your_orders = 'Your Orders';
+  static const your_orders = 'My Orders';
   static const orders = 'Orders';
   static const settings = 'Settings';
   static const sign_out = 'Sign out';

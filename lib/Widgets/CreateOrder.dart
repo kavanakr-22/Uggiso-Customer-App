@@ -719,33 +719,32 @@ class _CreateOrderState extends State<CreateOrder> {
   }
 
   createOrder() async {
-    // final List<Object?> result = await platform.invokeMethod('callSabPaisaSdk',
-    //     [userName, "", "", userNumber, item_sub_total.toString()]);
-    // setState(() {
-    //   txnId = generateUUID();
-    // });
-    // print('this is item sub total : ${item_sub_total.toString()}');
-    // _createOrderBloc.add(InitiatePayment(
-    //     name: userName,
-    //     number: userNumber,
-    //     amount: item_sub_total.toString(),
-    //     txnId: txnId));
 
-    _createOrderBloc.add(OnPaymentClicked(
-        restaurantId: widget.restaurantId!,
-        restaurantName: widget.restaurantName!,
-        customerId: userId,
-        menuData: menuList,
-        orderType: _istakeAway ? "PARCEL" : "DINEING",
-        paymentType: 'UPI',
-        orderStatus: 'CREATED',
-        totalAmount: item_sub_total.toInt(),
-        comments: 'Please do little more spicy',
-        timeSlot: getTimeSlot(selectedSlot),
-        transMode: 'BIKE',
-        usedCoins: uggiso_point_count!.toInt(),
-        paidAmount: item_sub_total,
-        lat:widget.restLat!,lng:widget.restLng!));
+    setState(() {
+      txnId = generateUUID();
+    });
+    print('this is item sub total : ${item_sub_total.toString()}');
+    _createOrderBloc.add(InitiatePayment(
+        name: userName,
+        number: userNumber,
+        amount: item_sub_total.toString(),
+        txnId: txnId));
+
+    // _createOrderBloc.add(OnPaymentClicked(
+    //     restaurantId: widget.restaurantId!,
+    //     restaurantName: widget.restaurantName!,
+    //     customerId: userId,
+    //     menuData: menuList,
+    //     orderType: _istakeAway ? "PARCEL" : "DINEING",
+    //     paymentType: 'UPI',
+    //     orderStatus: 'CREATED',
+    //     totalAmount: item_sub_total.toInt(),
+    //     comments: 'Please do little more spicy',
+    //     timeSlot: getTimeSlot(selectedSlot),
+    //     transMode: 'BIKE',
+    //     usedCoins: uggiso_point_count!.toInt(),
+    //     paidAmount: item_sub_total,
+    //     lat:widget.restLat!,lng:widget.restLng!));
   }
 
   gotoPaymentScreen(Object params) async {

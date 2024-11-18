@@ -39,7 +39,6 @@ class _HomeTabState extends State<HomeTab> {
   TextEditingController userlocationController = TextEditingController();
   TextEditingController userDistanceController = TextEditingController();
   TextEditingController _placeSearchEditingController = TextEditingController();
-  static const platform = MethodChannel('com.sabpaisa.integration/native');
   String txnId = '';
 
 
@@ -132,65 +131,66 @@ class _HomeTabState extends State<HomeTab> {
                 ),
               ),
             ),
-            body: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  HomeHeaderContainer(),
-                  BlocBuilder<HomeBloc, HomeState>(
-                    builder: (BuildContext context, HomeState state) {
-                      if (state is onLoadedHotelState) {
-                        print('this is state data : ${state.data.payload}');
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Gap(24),
-                              const Text(
-                                Strings.near_by_restaurants,
-                                style: AppFonts.subHeader,
-                              ),
-                              const Gap(12),
-                              _isShowMaps ? HotelListGrid(
-                                  state.data.payload,userId,latitude,longitude,selectedMode,selectedDistance):GetHotelListinMap(state.data.payload,userId) ,
-                            ],
-                          ),
-                        );
-                        // Navigator.pushNamed(context, AppRoutes.verifyOtp);
-                      } else if (state is ErrorState) {
-                        // isInvalidCredentials =
-              
-                        return Expanded(
-                          child: Column(
-                            children: [
-                              Gap(MediaQuery
-                                  .of(context)
-                                  .size
-                                  .height * 0.2),
-                              Icon(Icons.no_food,color: AppColors.rewardsText,size: 86),
-                              const Gap(20),
-                              Container(
-                                child: Center(
-                                  child: Text(
-                                    '${state.message}',
-                                    style: AppFonts.title,
-                                  ),
+            body: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                HomeHeaderContainer(),
+                BlocBuilder<HomeBloc, HomeState>(
+                  builder: (BuildContext context, HomeState state) {
+                    if (state is onLoadedHotelState) {
+                      print('this is state data : ${state.data.payload}');
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Gap(24),
+                            const Text(
+                              Strings.near_by_restaurants,
+                              style: AppFonts.subHeader,
+                            ),
+                            const Gap(12),
+                            _isShowMaps ? Container(
+                              height: MediaQuery.of(context).size.height*0.7,
+                              child: HotelListGrid(
+                                  state.data.payload,userId,latitude,longitude,selectedMode,selectedDistance),
+                            ):GetHotelListinMap(state.data.payload,userId) ,
+                          ],
+                        ),
+                      );
+                      // Navigator.pushNamed(context, AppRoutes.verifyOtp);
+                    } else if (state is ErrorState) {
+                      // isInvalidCredentials =
+
+                      return Expanded(
+                        child: Column(
+                          children: [
+                            Gap(MediaQuery
+                                .of(context)
+                                .size
+                                .height * 0.2),
+                            Icon(Icons.no_food,color: AppColors.rewardsText,size: 86),
+                            const Gap(20),
+                            Container(
+                              child: Center(
+                                child: Text(
+                                  '${state.message}',
+                                  style: AppFonts.title,
                                 ),
                               ),
-                            ],
-                          ),
-                        );
-                      } else if (state is LoadingHotelState) {
-                        return const HomeScreen();
-                      } else {
-                        return Container();
-                      }
-                    },
-                  ),
-                ],
-              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    } else if (state is LoadingHotelState) {
+                      return const HomeScreen();
+                    } else {
+                      return Container();
+                    }
+                  },
+                ),
+              ],
             ),
           ),
         ),
