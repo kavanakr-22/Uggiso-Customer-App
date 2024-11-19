@@ -840,6 +840,7 @@ class _CreateOrderState extends State<CreateOrder> {
   }
 
   void loadOrderData() {
+    menuList.clear();
     print('this  is order list : ${widget.orderlist}');
     clearBillDetails();
     for (int i = 0; i < widget.orderlist.length; i++) {
