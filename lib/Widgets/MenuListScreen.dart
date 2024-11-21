@@ -66,7 +66,7 @@ class _MenuListScreenState extends State<MenuListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.textFieldBg,
+      backgroundColor: AppColors.white,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       appBar: AppBar(
         elevation: 0.0,
@@ -124,14 +124,22 @@ class _MenuListScreenState extends State<MenuListScreen> {
           child: Column(
             children: [
               Container(
-                height: MediaQuery.of(context).size.height * 0.3,
+
                 width: double.infinity,
-                decoration: const BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('assets/ic_gradiant_bg.png'),
-                    // Replace 'assets/background_image.png' with your image path
-                    fit: BoxFit.cover, // Adjust the BoxFit property as needed
+                decoration: BoxDecoration(
+                  color: AppColors.textGrey.withOpacity(0.7),
+                  gradient: LinearGradient(
+                    colors: [
+                      AppColors.textGrey.withOpacity(0.4), // First color
+                      Colors.blueGrey.withOpacity(0.5)
+                    ],
+                    begin: Alignment.topCenter, // Gradient starts from top-left
+                    end: Alignment.bottomCenter, // Gradient ends at bottom-right
                   ),
+                  // image: DecorationImage(
+                  //   image: AssetImage('assets/ic_gradiant_bg.png'),
+                  //   fit: BoxFit.cover, // Adjust the BoxFit property as needed
+                  // ),
                 ),
                 child: Column(
                   children: [
@@ -217,26 +225,27 @@ class _MenuListScreenState extends State<MenuListScreen> {
                               '${widget.landmark!} | ',
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: AppFonts.subHeader,
+                              style: AppFonts.title.copyWith(fontWeight: FontWeight.w600),
                             ),
                           ),
                           Flexible(
                             flex: 1,
                             child: Text(
                               '${widget.distance!} | ',
-                              style: AppFonts.subHeader,
+                              style: AppFonts.title,
                             ),
                           ),
                           Flexible(
                             flex: 1,
                             child: Text(
                               widget.duration!,
-                              style: AppFonts.subHeader,
+                              style: AppFonts.title,
                             ),
                           ),
                         ],
                       ),
-                    )
+                    ),
+                    Gap(18)
                   ],
                 ),
               ),
@@ -249,6 +258,7 @@ class _MenuListScreenState extends State<MenuListScreen> {
                   ),
                 ),
                 child: Column(
+                  mainAxisSize: MainAxisSize.max,
                   children: [
                     const Gap(18),
                     Row(
@@ -421,10 +431,14 @@ class _MenuListScreenState extends State<MenuListScreen> {
                                 )));
                           } else if (state is FetchedListsState) {
                             return state.data?.length == 0
-                                ? Expanded(child: Center(child: Text('No Items Found')))
+                                ? Center(child: Text('No Items Found'))
                                 : MenuItemCardDisplay(_isVeg?vegMenu:_isNonVeg?nonVegMenu:state.data);
                           }
+                          else if (state is ErrorState){
+                            return Center(child: Text(state.message!));
+                          }
                           return Container();
+
                         },
                       ),
                     )

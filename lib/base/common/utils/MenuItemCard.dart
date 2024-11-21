@@ -47,261 +47,303 @@ class _MenuItemCardState extends State<MenuItemCard> {
           Divider(
             color: AppColors.borderColor,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  widget.listData.bestSeller!
-                      ? Container(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 8.0, vertical: 4.0),
-                          decoration: BoxDecoration(
-                            color: AppColors.appSecondaryColor,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Text(
-                            Strings.bestseller,
-                            style: AppFonts.smallText,
-                          ))
-                      : Container(),
-                  Gap(8),
-                  Row(
-                    children: [
-                      widget.listData.restaurantMenuType == 'VEG'
-                          ? Image.asset(
-                              'assets/ic_veg.png',
-                              height: 12,
-                              width: 12,
-                            )
-                          : Image.asset(
-                              'assets/ic_non_veg.png',
-                              height: 12,
-                              width: 12,
-                            ),
-                      Gap(4),
-                      Text(
-                        '${widget.listData.menuName}',
-                        style: AppFonts.title,
-                      ),
-                    ],
-                  ),
-                  const Gap(4),
-                  Text(
-                    '₹ ${widget.listData.price.toString()}',
-                    style: AppFonts.smallText,
-                  ),
-                  const Gap(4),
-                  Row(
-                    children: [
-                      widget.listData.ratings == null
-                          ? Container()
-                          : Row(
-                              children: [
-                                Image.asset(
-                                  'assets/ic_star.png',
-                                  width: 12,
-                                  height: 12,
-                                ),
-                                const Gap(4),
-                                Text('${widget.listData.ratings.toString()}',
-                                    style: AppFonts.smallText
-                                        .copyWith(fontWeight: FontWeight.w500)),
-                              ],
-                            ),
-                    ],
-                  ),
-                  BlocBuilder<MenuListBloc, MenuListState>(
-                      builder: (BuildContext context, MenuListState state) {
-                    if (state is FetchingState) {
-                      return Container(
-                          child: CircularProgressIndicator(
-                              color: AppColors.appPrimaryColor,
-                              strokeAlign: -4));
-                    } else if (state is onFavMenuAddedState) {
-                      return InkWell(
-                          onTap: () {
-                            _menuListBloc.add(OnDeleteFavMenu(
-                                userId: widget.userId,
-                                menuId: widget.listData.menuId));
-                          },
-                          child: Image.asset(
-                            'assets/ic_heart_fill.png',
-                            width: 22,
-                            height: 22,
-                          ));
-                    } else {
-                      return widget.listData.favourite==true?InkWell(
-                        onTap: () {
-                          _menuListBloc.add(OnDeleteFavMenu(
-                              userId: widget.userId,
-                              menuId: widget.listData.menuId));
-                        },
-                        child: Image.asset(
-                          'assets/ic_heart_fill.png',
-                          width: 20,
-                          height: 20,
-                          color: AppColors.appPrimaryColor,
-                        ),
-                      ):InkWell(
-                          onTap: () {
-                            _menuListBloc.add(OnAddFavMenu(
-                                userId: widget.userId,
-                                menuId: widget.listData.menuId,restaurantId: widget.listData.restaurantId));
-                          },
-                          child: Image.asset(
-                            'assets/ic_heart.png',
-                            width: 20,
-                            height: 20,
-                            color: AppColors.appPrimaryColor,
-                          ));
-                    }
-                  }),
-                ],
-              ),
-              Container(
-                height: MediaQuery.of(context).size.height * 0.12,
-                child: Stack(
+          RoundedContainer(
+            width: MediaQuery.of(context).size.width,
+            color: widget.listData.menuAvailable == 'AVAILABLE'
+                ? AppColors.white
+                : AppColors.bottomTabInactiveColor.withOpacity(0.3),
+            cornerRadius: 10,
+            borderColor: widget.listData.menuAvailable == 'AVAILABLE'
+                ? AppColors.white
+                : AppColors.bottomTabInactiveColor.withOpacity(0.3),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    widget.listData.photo == null
-                        ? RoundedContainer(
-                            width: MediaQuery.of(context).size.width * 0.25,
-                            height: MediaQuery.of(context).size.height * 0.1,
-                            cornerRadius: 12,
-                            borderColor: AppColors.appPrimaryColor,
-                            child: Center(
-                                child: Image.asset(
-                              'assets/ic_no_image.png',
-                              fit: BoxFit.fill,
-                            )))
-                        : RoundedContainer(
-                            width: MediaQuery.of(context).size.width * 0.25,
-                            height: MediaQuery.of(context).size.height * 0.1,
-                            cornerRadius: 12,
-                            borderColor: AppColors.appPrimaryColor,
-                            padding: 0,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(12),
-                              child: Image.network(
-                                widget.listData.photo.toString(),
-                                fit: BoxFit.cover,
-                                errorBuilder: (BuildContext context,
-                                    Object exception, StackTrace? stackTrace) {
-                                  // Display a placeholder image or alternative content
-                                  return SizedBox(
-                                    width:
-                                        MediaQuery.of(context).size.width * 0.2,
-                                    height: MediaQuery.of(context).size.height *
-                                        0.08,
-                                    child: Center(
-                                      child: Image.asset(
-                                        'assets/ic_no_image.png',
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            )),
-                    Positioned(
-                      top: MediaQuery.of(context).size.height *
-                          0.08, // Adjust this value as needed
-                      left: 8,
-                      right: 8,// Adjust this value as needed
-                      child: RoundedContainer(
-                          width: MediaQuery.of(context).size.width * 0.2,
-                          height: MediaQuery.of(context).size.height * 0.04,
-                          cornerRadius: 10,
-                          padding: 0,
-                          color: AppColors.white,
-                          child: _orderCount == 0
-                              ? Center(
-                                child: InkWell(
-                                    onTap: () {
-                                      setState(() {
-                                        _orderCount = 1;
-                                      });
-
-                                      widget.onItemAdded();
-                                      /* cart.addItem(AddMenuItemToCart(
-                                          menuId: widget.listData.menuId.toString(),
-                                          menuName: widget.listData.menuName.toString(),
-                                          menuType: widget.listData.menuType.toString(),
-                                          price: widget.listData.price!));*/
-                                    },
-                                    child: Text(
-                                      Strings.add,
-                                      style: AppFonts.title.copyWith(
-                                          color: AppColors.appPrimaryColor),
-                                    )),
+                    widget.listData.bestSeller!
+                        ? Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 8.0, vertical: 4.0),
+                            decoration: BoxDecoration(
+                              color: AppColors.appSecondaryColor,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(
+                              Strings.bestseller,
+                              style: AppFonts.smallText,
+                            ))
+                        : Container(),
+                    Gap(8),
+                    Row(
+                      children: [
+                        widget.listData.restaurantMenuType == 'VEG'
+                            ? Image.asset(
+                                'assets/ic_veg.png',
+                                height: 12,
+                                width: 12,
                               )
-                              : Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Gap(6),
-                                    InkWell(
-                                      onTap: () {
-                                        setState(() {
-                                          _orderCount--;
-                                        });
-                                        if (_orderCount == 0) {
-                                          widget.onEmptyCart(widget
-                                              .listData.menuId
-                                              .toString());
-                                          cart.removeItem(AddMenuItemToCart(
-                                              menuId: widget.listData.menuId
-                                                  .toString(),
-                                              menuName: widget.listData.menuName
-                                                  .toString(),
-                                              menuType: widget.listData.menuType
-                                                  .toString(),
-                                              price: widget.listData.price!));
-                                        } else {
-                                          widget.onQuantityChanged(_orderCount);
-                                        }
-                                      },
-                                      child: Icon(
-                                        Icons.remove,
-                                        color: AppColors.appPrimaryColor,
-                                        size: 20,
-                                      ),
-                                    ),
-                                    Gap(6),
-
-                                    Text(
-                                      '${_orderCount.toString()}',
+                            : Image.asset(
+                                'assets/ic_non_veg.png',
+                                height: 12,
+                                width: 12,
+                              ),
+                        Gap(4),
+                        Text(
+                          '${widget.listData.menuName}',
+                          style: AppFonts.title,
+                        ),
+                      ],
+                    ),
+                    const Gap(4),
+                    Text(
+                      '₹ ${widget.listData.price.toString()}',
+                      style: AppFonts.smallText,
+                    ),
+                    const Gap(4),
+                    Row(
+                      children: [
+                        widget.listData.ratings == null
+                            ? Container()
+                            : Row(
+                                children: [
+                                  Image.asset(
+                                    'assets/ic_star.png',
+                                    width: 12,
+                                    height: 12,
+                                  ),
+                                  const Gap(4),
+                                  Text('${widget.listData.ratings.toString()}',
                                       style: AppFonts.smallText.copyWith(
-                                          color: AppColors.appPrimaryColor,fontSize: 16),
-                                    ),
-                                    Gap(6),
-                                    InkWell(
-                                      onTap: () {
-                                        setState(() {
-                                          _orderCount++;
-                                        });
-                                        widget.onQuantityChanged(_orderCount);
-                                        /* cart.addItem(AddMenuItemToCart(
+                                          fontWeight: FontWeight.w500)),
+                                ],
+                              ),
+                      ],
+                    ),
+                    BlocBuilder<MenuListBloc, MenuListState>(
+                        builder: (BuildContext context, MenuListState state) {
+                      if (state is FetchingState) {
+                        return Container(
+                            child: CircularProgressIndicator(
+                                color: AppColors.appPrimaryColor,
+                                strokeAlign: -4));
+                      } else if (state is onFavMenuAddedState) {
+                        return InkWell(
+                            onTap: () {
+                              _menuListBloc.add(OnDeleteFavMenu(
+                                  userId: widget.userId,
+                                  menuId: widget.listData.menuId));
+                            },
+                            child: Image.asset(
+                              'assets/ic_heart_fill.png',
+                              width: 22,
+                              height: 22,
+                            ));
+                      } else {
+                        return widget.listData.favourite == true
+                            ? InkWell(
+                                onTap: () {
+                                  _menuListBloc.add(OnDeleteFavMenu(
+                                      userId: widget.userId,
+                                      menuId: widget.listData.menuId));
+                                },
+                                child: Image.asset(
+                                  'assets/ic_heart_fill.png',
+                                  width: 20,
+                                  height: 20,
+                                  color: AppColors.appPrimaryColor,
+                                ),
+                              )
+                            : InkWell(
+                                onTap: () {
+                                  _menuListBloc.add(OnAddFavMenu(
+                                      userId: widget.userId,
+                                      menuId: widget.listData.menuId,
+                                      restaurantId:
+                                          widget.listData.restaurantId));
+                                },
+                                child: Image.asset(
+                                  'assets/ic_heart.png',
+                                  width: 20,
+                                  height: 20,
+                                  color: AppColors.appPrimaryColor,
+                                ));
+                      }
+                    }),
+                  ],
+                ),
+                widget.listData.menuAvailable == 'AVAILABLE'
+                    ? Container(
+                        height: MediaQuery.of(context).size.height * 0.12,
+                        child: Stack(
+                          children: [
+                            widget.listData.photo == null
+                                ? RoundedContainer(
+                                    width: MediaQuery.of(context).size.width *
+                                        0.25,
+                                    height: MediaQuery.of(context).size.height *
+                                        0.1,
+                                    cornerRadius: 12,
+                                    borderColor: AppColors.appPrimaryColor,
+                                    child: Center(
+                                        child: Image.asset(
+                                      'assets/ic_no_image.png',
+                                      fit: BoxFit.fill,
+                                    )))
+                                : RoundedContainer(
+                                    width: MediaQuery.of(context).size.width *
+                                        0.25,
+                                    height: MediaQuery.of(context).size.height *
+                                        0.1,
+                                    cornerRadius: 12,
+                                    borderColor: AppColors.appPrimaryColor,
+                                    padding: 0,
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(12),
+                                      child: Image.network(
+                                        widget.listData.photo.toString(),
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (BuildContext context,
+                                            Object exception,
+                                            StackTrace? stackTrace) {
+                                          // Display a placeholder image or alternative content
+                                          return SizedBox(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.2,
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.08,
+                                            child: Center(
+                                              child: Image.asset(
+                                                'assets/ic_no_image.png',
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    )),
+                            Positioned(
+                              top: MediaQuery.of(context).size.height *
+                                  0.08, // Adjust this value as needed
+                              left: 8,
+                              right: 8, // Adjust this value as needed
+                              child: RoundedContainer(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.2,
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.04,
+                                  cornerRadius: 10,
+                                  padding: 0,
+                                  color: AppColors.white,
+                                  child: _orderCount == 0
+                                      ? Center(
+                                          child: InkWell(
+                                              onTap: () {
+                                                setState(() {
+                                                  _orderCount = 1;
+                                                });
+
+                                                widget.onItemAdded();
+                                                /* cart.addItem(AddMenuItemToCart(
                                             menuId: widget.listData.menuId.toString(),
                                             menuName: widget.listData.menuName.toString(),
                                             menuType: widget.listData.menuType.toString(),
                                             price: widget.listData.price!));*/
-                                      },
-                                      child: Icon(
-                                        Icons.add,
-                                        color: AppColors.appPrimaryColor,
-                                        size: 20,
-                                      ),
-                                    ),
-                                    Gap(6),
-
-                                  ],
-                                )),
-                    ),
-                  ],
-                ),
-              )
-            ],
+                                              },
+                                              child: Text(
+                                                Strings.add,
+                                                style: AppFonts.title.copyWith(
+                                                    color: AppColors
+                                                        .appPrimaryColor),
+                                              )),
+                                        )
+                                      : Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Gap(6),
+                                            InkWell(
+                                              onTap: () {
+                                                setState(() {
+                                                  _orderCount--;
+                                                });
+                                                if (_orderCount == 0) {
+                                                  widget.onEmptyCart(widget
+                                                      .listData.menuId
+                                                      .toString());
+                                                  cart.removeItem(
+                                                      AddMenuItemToCart(
+                                                          menuId: widget.listData
+                                                              .menuId
+                                                              .toString(),
+                                                          menuName: widget
+                                                              .listData.menuName
+                                                              .toString(),
+                                                          menuType: widget
+                                                              .listData.menuType
+                                                              .toString(),
+                                                          price: widget.listData
+                                                              .price!));
+                                                } else {
+                                                  widget.onQuantityChanged(
+                                                      _orderCount);
+                                                }
+                                              },
+                                              child: Icon(
+                                                Icons.remove,
+                                                color:
+                                                    AppColors.appPrimaryColor,
+                                                size: 20,
+                                              ),
+                                            ),
+                                            Gap(6),
+                                            Text(
+                                              '${_orderCount.toString()}',
+                                              style: AppFonts.smallText
+                                                  .copyWith(
+                                                      color: AppColors
+                                                          .appPrimaryColor,
+                                                      fontSize: 16),
+                                            ),
+                                            Gap(6),
+                                            InkWell(
+                                              onTap: () {
+                                                setState(() {
+                                                  _orderCount++;
+                                                });
+                                                widget.onQuantityChanged(
+                                                    _orderCount);
+                                                /* cart.addItem(AddMenuItemToCart(
+                                              menuId: widget.listData.menuId.toString(),
+                                              menuName: widget.listData.menuName.toString(),
+                                              menuType: widget.listData.menuType.toString(),
+                                              price: widget.listData.price!));*/
+                                              },
+                                              child: Icon(
+                                                Icons.add,
+                                                color:
+                                                    AppColors.appPrimaryColor,
+                                                size: 20,
+                                              ),
+                                            ),
+                                            Gap(6),
+                                          ],
+                                        )),
+                            ),
+                          ],
+                        ),
+                      )
+                    : Text(
+                        'Currently unavailable',
+                        style: AppFonts.title.copyWith(
+                            color: Colors.redAccent),
+                      )
+              ],
+            ),
           ),
           const Gap(12),
         ],
