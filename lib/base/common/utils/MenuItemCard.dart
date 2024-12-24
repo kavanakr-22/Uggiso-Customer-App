@@ -90,9 +90,14 @@ class _MenuItemCardState extends State<MenuItemCard> {
                                 width: 12,
                               ),
                         Gap(4),
-                        Text(
-                          '${widget.listData.menuName}',
-                          style: AppFonts.title,
+                        Container(
+                          width: MediaQuery.of(context).size.width*0.6,
+                          child: Text(
+                            '${widget.listData.menuName}',
+                            style: AppFonts.title,
+                            maxLines: 2,
+
+                          ),
                         ),
                       ],
                     ),
