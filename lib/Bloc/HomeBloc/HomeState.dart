@@ -31,7 +31,7 @@ class onFavHotelDeleteState extends HomeState {
 }
 
 class RestaurantsLocationFound extends HomeState {
-  final GetRouteModel result;
+  final GetNearByRestaurantModel result;
   RestaurantsLocationFound(this.result);
 }
 

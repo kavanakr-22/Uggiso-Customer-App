@@ -131,66 +131,67 @@ class _HomeTabState extends State<HomeTab> {
                 ),
               ),
             ),
-            body: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                HomeHeaderContainer(),
-                BlocBuilder<HomeBloc, HomeState>(
-                  builder: (BuildContext context, HomeState state) {
-                    if (state is onLoadedHotelState) {
-                      print('this is state data : ${state.data.payload}');
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Gap(24),
-                            const Text(
-                              Strings.near_by_restaurants,
-                              style: AppFonts.subHeader,
-                            ),
-                            const Gap(12),
-                            _isShowMaps ? Container(
-                              height: MediaQuery.of(context).size.height*0.7,
-                              child: HotelListGrid(
-                                  state.data.payload,userId,latitude,longitude,selectedMode,selectedDistance),
-                            ):GetHotelListinMap(state.data.payload,userId) ,
-                          ],
-                        ),
-                      );
-                      // Navigator.pushNamed(context, AppRoutes.verifyOtp);
-                    } else if (state is ErrorState) {
-                      // isInvalidCredentials =
-
-                      return Expanded(
-                        child: Column(
-                          children: [
-                            Gap(MediaQuery
-                                .of(context)
-                                .size
-                                .height * 0.2),
-                            Icon(Icons.no_food,color: AppColors.rewardsText,size: 86),
-                            const Gap(20),
-                            Container(
-                              child: Center(
-                                child: Text(
-                                  '${state.message}',
-                                  style: AppFonts.title,
+            body: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  HomeHeaderContainer(),
+                  BlocBuilder<HomeBloc, HomeState>(
+                    builder: (BuildContext context, HomeState state) {
+                      if (state is onLoadedHotelState) {
+                        print('this is state data : ${state.data.payload}');
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Gap(24),
+                              const Text(
+                                Strings.near_by_restaurants,
+                                style: AppFonts.subHeader,
+                              ),
+                              const Gap(12),
+                              _isShowMaps ? Container(
+                                child: HotelListGrid(
+                                    state.data.payload,userId,latitude,longitude,selectedMode,selectedDistance),
+                              ):GetHotelListinMap(state.data.payload,userId) ,
+                            ],
+                          ),
+                        );
+                        // Navigator.pushNamed(context, AppRoutes.verifyOtp);
+                      } else if (state is ErrorState) {
+                        // isInvalidCredentials =
+              
+                        return Expanded(
+                          child: Column(
+                            children: [
+                              Gap(MediaQuery
+                                  .of(context)
+                                  .size
+                                  .height * 0.2),
+                              Icon(Icons.no_food,color: AppColors.rewardsText,size: 86),
+                              const Gap(20),
+                              Container(
+                                child: Center(
+                                  child: Text(
+                                    '${state.message}',
+                                    style: AppFonts.title,
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                      );
-                    } else if (state is LoadingHotelState) {
-                      return const HomeScreen();
-                    } else {
-                      return Container();
-                    }
-                  },
-                ),
-              ],
+                            ],
+                          ),
+                        );
+                      } else if (state is LoadingHotelState) {
+                        return const HomeScreen();
+                      } else {
+                        return Container();
+                      }
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -200,14 +201,6 @@ class _HomeTabState extends State<HomeTab> {
 
   Widget HomeHeaderContainer() =>
       Container(
-        height: MediaQuery
-            .of(context)
-            .size
-            .height * 0.14,
-        width: MediaQuery
-            .of(context)
-            .size
-            .width,
         decoration: const BoxDecoration(
           color: AppColors.appPrimaryColor,
           borderRadius: BorderRadius.only(
@@ -216,7 +209,7 @@ class _HomeTabState extends State<HomeTab> {
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24.0,vertical: 4.0),
           child: Column(
             children: [
               const Gap(12),

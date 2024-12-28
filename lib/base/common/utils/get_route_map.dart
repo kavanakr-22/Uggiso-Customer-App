@@ -8,7 +8,7 @@ import 'package:google_search_place/google_search_place.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uggiso/Bloc/HomeBloc/HomeBloc.dart';
 import 'package:uggiso/Bloc/HomeBloc/HomeState.dart';
-import 'package:uggiso/Model/GetRouteModel.dart';
+import 'package:uggiso/Model/GetNearByResaturantModel.dart';
 import 'package:uggiso/Widgets/ui-kit/RoundedContainer.dart';
 import 'package:uggiso/app_routes.dart';
 import 'package:uggiso/base/common/utils/MenuListArgs.dart';
@@ -76,7 +76,7 @@ class _GetRouteMapState extends State<GetRouteMap> {
           listener: (BuildContext context, HomeState state) {
             if (state is RestaurantsLocationFound) {
               print(
-                  'this is result payload length : ${state.result.payload?.length}');
+                  'this is result payload length from my route: ${state.result.payload?.length}');
               print(
                   'this is result payload lat lng : ${state.result.payload?.first.lat} and ${state.result.payload?.first.lng}');
 
@@ -151,20 +151,22 @@ class _GetRouteMapState extends State<GetRouteMap> {
       position: position,
       onTap: () => print('this is on marker tap with marker id : ${markerId}'),
       infoWindow: InfoWindow(
+        snippet: markerId.value,
           title: markerId.value,
           onTap: () => {
-                // if(payload!=null){
-                //   Navigator.pushNamed(context, AppRoutes.menuList,
-                //       arguments: MenuListArgs(
-                //           restaurantId: payload.restaurantId,
-                //           name: payload.restaurantName,
-                //           foodType: payload.restaurantMenuType,
-                //           ratings: payload.ratings,
-                //           landmark: payload.landmark,
-                //           distance: payload.distance,
-                //           duration: payload.duration,
-                //           payload: payload))
-                // }
+            print('this is on marker tap inside info window'),
+                if(payload!=null){
+                  Navigator.pushNamed(context, AppRoutes.menuList,
+                      arguments: MenuListArgs(
+                          restaurantId: payload.restaurantId,
+                          name: payload.restaurantName,
+                          foodType: payload.restaurantMenuType,
+                          ratings: payload.ratings,
+                          landmark: payload.landmark,
+                          distance: payload.distance,
+                          duration: payload.duration,
+                          payload: payload))
+                }
               }),
     );
     markers[markerId] = marker;

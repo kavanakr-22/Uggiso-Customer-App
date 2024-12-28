@@ -164,7 +164,7 @@ class _VerifyOtpState extends State<VerifyOtp> {
 
   Widget mainWidget() => Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: ListView(
+        child: Column(
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 36.0),
@@ -259,10 +259,9 @@ class _VerifyOtpState extends State<VerifyOtp> {
                             style: AppFonts.subHeader
                                 .copyWith(color: AppColors.textColor)),
                       )),
-            Container(
-              height: MediaQuery.of(context).size.height * 0.35,
-              alignment: Alignment.bottomCenter,
-              padding: const EdgeInsets.only(bottom: 30),
+            Spacer(),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 24.0,horizontal: 8.0),
               child: RoundedElevatedButton(
                   width: MediaQuery.of(context).size.width,
                   height: 40.0,

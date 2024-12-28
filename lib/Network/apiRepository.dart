@@ -97,7 +97,7 @@ class ApiRepository {
     return _provider.getMyOrders(userId);
   }
 
-  Future<GetRouteModel> getRestaurantOnway(String userId, String polylinePoints, double lat, double lng) {
+  Future<GetNearByRestaurantModel> getRestaurantOnway(String userId, String polylinePoints, double lat, double lng) {
     return _provider.getRestaurantOnway( userId,polylinePoints,lat,lng);
   }
 

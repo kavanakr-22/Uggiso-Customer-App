@@ -191,33 +191,30 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 20.0),
-                    Expanded(
-                      child: Container(
-                        alignment: Alignment.bottomCenter,
-                        padding: const EdgeInsets.only(bottom: 30),
-                        child: RoundedElevatedButton(
-                            width: MediaQuery.of(context).size.width,
-                            height: 40.0,
-                            text: Strings.get_otp,
-                            onPressed: () {
-                              if (isChecked) {
-                                setState(() {
-                                  showPrivacyPolicyError = false;
-                                });
-                                _signUpBloc.add(OnButtonClicked(
-                                    number: _mobileController.text));
-                              } else {
-                                setState(() {
-                                  showPrivacyPolicyError = true;
-                                });
-                              }
-                            },
-                            cornerRadius: 6.0,
-                            buttonColor: AppColors.appPrimaryColor,
-                            textStyle: AppFonts.header
-                                .copyWith(color: AppColors.black)),
-                      ),
+                    Spacer(),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 24.0,horizontal: 8.0),
+                      child: RoundedElevatedButton(
+                          width: MediaQuery.of(context).size.width,
+                          height: 40.0,
+                          text: Strings.get_otp,
+                          onPressed: () {
+                            if (isChecked) {
+                              setState(() {
+                                showPrivacyPolicyError = false;
+                              });
+                              _signUpBloc.add(OnButtonClicked(
+                                  number: _mobileController.text));
+                            } else {
+                              setState(() {
+                                showPrivacyPolicyError = true;
+                              });
+                            }
+                          },
+                          cornerRadius: 6.0,
+                          buttonColor: AppColors.appPrimaryColor,
+                          textStyle: AppFonts.header
+                              .copyWith(color: AppColors.black)),
                     ),
                   ],
                 ),

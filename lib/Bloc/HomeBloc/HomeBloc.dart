@@ -11,7 +11,7 @@ import '../../Model/GetNearByResaturantModel.dart';
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
    GetNearByRestaurantModel? data;
    RemoveFavRestaurantModel? delResult;
-   GetRouteModel? getRoutes;
+   GetNearByRestaurantModel? getRoutes;
   String? res;
 
   HomeBloc() : super(InitialState()) {

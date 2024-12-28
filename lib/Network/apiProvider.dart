@@ -323,7 +323,7 @@ class ApiProvider {
     }
   }
 
-  Future<GetRouteModel> getRestaurantOnway(
+  Future<GetNearByRestaurantModel> getRestaurantOnway(
       String userId, String polylinePoints, double lat, double lng) async {
     print('get roues request : "userId": $userId,"roadPolyline": $polylinePoints,'
         ' "originLat": $lat, "originLang": $lng, "mode": "DRIVE"');
@@ -338,10 +338,10 @@ class ApiProvider {
       });
       print("route response : ${response.data}");
 
-      return GetRouteModel.fromJson(response.data);
+      return GetNearByRestaurantModel.fromJson(response.data);
     } catch (error, stacktrace) {
       print("Exception occured: $error stackTrace: $stacktrace");
-      return GetRouteModel.withError("Data not found / Connection issue");
+      return GetNearByRestaurantModel.withError("Data not found / Connection issue");
     }
   }
 
