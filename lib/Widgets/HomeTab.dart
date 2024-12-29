@@ -10,6 +10,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uggiso/Bloc/HomeBloc/HomeBloc.dart';
 import 'package:uggiso/Bloc/HomeBloc/HomeEvent.dart';
 import 'package:uggiso/Bloc/HomeBloc/HomeState.dart';
+import 'package:uggiso/Widgets/OrdersTab.dart';
+import 'package:uggiso/Widgets/ProfileTab.dart';
 import 'package:uggiso/Widgets/Shimmer/HomeScreen.dart';
 import 'package:uggiso/Widgets/ui-kit/HotelListGrid.dart';
 import 'package:uggiso/Widgets/ui-kit/RoundedContainer.dart';
@@ -40,8 +42,13 @@ class _HomeTabState extends State<HomeTab> {
   TextEditingController userDistanceController = TextEditingController();
   TextEditingController _placeSearchEditingController = TextEditingController();
   String txnId = '';
-
-
+  // int _selectedIndex = 0;
+  //
+  // final List<Widget> _pages = [
+  //   const HomeTab(), // Home tab content
+  //   const OrdersTab(), // Orders tab content
+  //   const ProfileTab(), // Profile tab content
+  // ];
 
   @override
   void initState() {
@@ -102,6 +109,26 @@ class _HomeTabState extends State<HomeTab> {
                 ),
               ],
             ),
+            // bottomNavigationBar: BottomNavigationBar(
+            //   currentIndex: _selectedIndex,
+            //   // onTap: _onItemTapped,
+            //   selectedItemColor: AppColors.appPrimaryColor,
+            //   unselectedItemColor: Colors.grey,
+            //   items: const [
+            //     BottomNavigationBarItem(
+            //       icon: Icon(Icons.home),
+            //       label: 'Home',
+            //     ),
+            //     BottomNavigationBarItem(
+            //       icon: Icon(Icons.receipt_long),
+            //       label: 'Orders',
+            //     ),
+            //     BottomNavigationBarItem(
+            //       icon: Icon(Icons.person),
+            //       label: 'Profile',
+            //     ),
+            //   ],
+            // ),
 
             floatingActionButton: Padding(
               padding: const EdgeInsets.symmetric(vertical: 20.0,horizontal: 8.0),
