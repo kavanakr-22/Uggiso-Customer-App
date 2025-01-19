@@ -1,5 +1,5 @@
+import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,8 +10,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uggiso/Bloc/HomeBloc/HomeBloc.dart';
 import 'package:uggiso/Bloc/HomeBloc/HomeEvent.dart';
 import 'package:uggiso/Bloc/HomeBloc/HomeState.dart';
-import 'package:uggiso/Widgets/OrdersTab.dart';
-import 'package:uggiso/Widgets/ProfileTab.dart';
 import 'package:uggiso/Widgets/Shimmer/HomeScreen.dart';
 import 'package:uggiso/Widgets/ui-kit/HotelListGrid.dart';
 import 'package:uggiso/Widgets/ui-kit/RoundedContainer.dart';
@@ -20,6 +18,8 @@ import 'package:uggiso/base/common/utils/colors.dart';
 import '../app_routes.dart';
 import '../base/common/utils/fonts.dart';
 import '../base/common/utils/strings.dart';
+import 'package:http/http.dart' as http;
+
 
 class HomeTab extends StatefulWidget {
   const HomeTab({super.key});
@@ -42,6 +42,7 @@ class _HomeTabState extends State<HomeTab> {
   TextEditingController userDistanceController = TextEditingController();
   TextEditingController _placeSearchEditingController = TextEditingController();
   String txnId = '';
+  final String apiKey = 'AIzaSyB8UoTxemF5no_Va1aJn4x8s10VsFlLQHA';
   // int _selectedIndex = 0;
   //
   // final List<Widget> _pages = [
@@ -55,6 +56,28 @@ class _HomeTabState extends State<HomeTab> {
     // TODO: implement initState
     super.initState();
     getUserCurrentLocation();
+  }
+
+  Future<void> _getAddressFromLatLng(double latitude, double longitude) async {
+    final url =
+        "https://maps.googleapis.com/maps/api/geocode/json?latlng=$latitude,$longitude&key=$apiKey";
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        if (data['results'].isNotEmpty) {
+          setState(() {
+            currentLocation = data['results'][0]['formatted_address'];
+          });
+        } else {
+          print("No address found for the coordinates.");
+        }
+      } else {
+        print("Error fetching address: ${response.body}");
+      }
+    } catch (e) {
+      print("Error: $e");
+    }
   }
 
   @override
@@ -80,37 +103,77 @@ class _HomeTabState extends State<HomeTab> {
           onWillPop: ()=>exit(0),
           child: Scaffold(
             backgroundColor: AppColors.textFieldBg,
-            appBar: AppBar(
-              backgroundColor: AppColors.appPrimaryColor,
-              leading: IconButton(
-                onPressed:(){
-                  Navigator.pushNamed(context, AppRoutes.profileScreen);
-          
-                },
-                icon:Image.asset(
-                  'assets/ic_person.png',
-                  width: 24, // Adjust width as needed
-                  height: 24,
-                  color: AppColors.white,// Adjust height as needed
-                ),
-              ),
-              elevation: 0,
-              actions: [
-                IconButton(
-                  onPressed: () {
-                    // Add your action here, e.g., navigate to notifications or settings
-                    Navigator.pushNamed(context, AppRoutes.myOrders);
-                  },
-                  icon: Icon(
-                    Icons.receipt_long, // Replace with your preferred icon
-                    color: AppColors.white,
-                    size: 24, // Adjust size as needed
+            appBar: PreferredSize(
+              preferredSize: Size.fromHeight(60),
+              child: AppBar(
+                backgroundColor: AppColors.appPrimaryColor,
+                elevation: 0,
+                centerTitle: false,
+                title:  Padding(
+                  padding: const EdgeInsets.only(top:10.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      locationHeader(),
+                      Gap(4),
+                      RoundedContainer(
+                          width: MediaQuery
+                              .of(context)
+                              .size
+                              .width*0.2,
+                          height: 40,
+                          color: AppColors.white,
+                          cornerRadius: 8,
+                          padding: 0,
+                          child: DropdownButtonFormField(
+                            decoration: const InputDecoration(
+                              contentPadding: EdgeInsets.symmetric(horizontal: 0),
+                              border: InputBorder.none,
+                            ),
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            value: selectedDistance,
+
+                            menuMaxHeight: MediaQuery
+                                .of(context)
+                                .size
+                                .height * 0.4,
+                            icon:Icon(Icons.keyboard_arrow_down,size: 20,),
+                            items: Strings.distance_type.map((double value) {
+                              return DropdownMenuItem(
+                                value: value,
+                                child: Text('${value} KM',style: AppFonts.smallText.copyWith(fontWeight: FontWeight.bold),),
+                              );
+                            }).toList(),
+                            onChanged: (double? newValue) {
+                              setState(() {
+                                selectedDistance = newValue!;
+                                print('lat lng after change distance : $latitude and $longitude');
+                                getNearByRestaurants(userId,
+                                    latitude, longitude, selectedDistance,selectedMode);
+                              });
+                            },
+                          )),
+                    ],
                   ),
                 ),
-              ],
+                // actions: [
+                //   IconButton(
+                //     onPressed: () {
+                //       // Add your action here, e.g., navigate to notifications or settings
+                //       Navigator.pushNamed(context, AppRoutes.myOrders);
+                //     },
+                //     icon: Icon(
+                //       Icons.receipt_long, // Replace with your preferred icon
+                //       color: AppColors.white,
+                //       size: 24, // Adjust size as needed
+                //     ),
+                //   ),
+                // ],
+              ),
             ),
             // bottomNavigationBar: BottomNavigationBar(
-            //   currentIndex: _selectedIndex,
+            //   currentIndex: 1,
             //   // onTap: _onItemTapped,
             //   selectedItemColor: AppColors.appPrimaryColor,
             //   unselectedItemColor: Colors.grey,
@@ -143,7 +206,6 @@ class _HomeTabState extends State<HomeTab> {
                     }
                   });
                 },
-                tooltip: 'Increment',
                 elevation: 8.0,
                 child: _isShowMaps
                     ? const Icon(
@@ -163,7 +225,7 @@ class _HomeTabState extends State<HomeTab> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  HomeHeaderContainer(),
+                  // locationHeader(),
                   BlocBuilder<HomeBloc, HomeState>(
                     builder: (BuildContext context, HomeState state) {
                       if (state is onLoadedHotelState) {
@@ -189,7 +251,7 @@ class _HomeTabState extends State<HomeTab> {
                         // Navigator.pushNamed(context, AppRoutes.verifyOtp);
                       } else if (state is ErrorState) {
                         // isInvalidCredentials =
-              
+
                         return Expanded(
                           child: Column(
                             children: [
@@ -225,6 +287,23 @@ class _HomeTabState extends State<HomeTab> {
       ),
     );
   }
+
+  Widget locationHeader()=>
+  RoundedContainer(
+    width: MediaQuery.of(context).size.width*0.7,
+    cornerRadius: 5,
+    color: AppColors.white,
+    child: InkWell(
+      onTap: ()=>Navigator.pushNamed(context, AppRoutes.google_place_search),
+      child: Row(
+        children: [
+         Icon(Icons.location_on_outlined,color: AppColors.black,),
+          Expanded(child: Text('$currentLocation',style: AppFonts.smallText,maxLines: 1,overflow: TextOverflow.ellipsis,)),
+          Icon(Icons.keyboard_arrow_right,color: AppColors.appPrimaryColor,),
+        ],
+      ),
+    ),
+  );
 
   Widget HomeHeaderContainer() =>
       Container(
@@ -326,70 +405,70 @@ class _HomeTabState extends State<HomeTab> {
                         )),
                   ),
                   SizedBox(width: 8,),
-
-                  Flexible(
-                    flex:2,
-                    child: RoundedContainer(
-                        width: MediaQuery
-                            .of(context)
-                            .size
-                            .width,
-                        height: MediaQuery
-                            .of(context)
-                            .size
-                            .height * 0.05,
-                        color: AppColors.white,
-                        cornerRadius: 8,
-                        padding: 0,
-                        child: DropdownButtonFormField(
-                          decoration: const InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(horizontal: 0),
-                            border: InputBorder.none,
-                          ),
-                          padding: const EdgeInsets.symmetric(horizontal: 12),
-                          value: selectedMode,
-                          menuMaxHeight: MediaQuery
-                              .of(context)
-                              .size
-                              .height * 0.4,
-                          icon:Icon(Icons.keyboard_arrow_down,size: 20,),
-                          items: Strings.travel_mode.map((String value) {
-                            return DropdownMenuItem(
-                              value: value,
-                              child: Text('${value}',style: AppFonts.title,),
-                            );
-                          }).toList(),
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              selectedMode = newValue!;
-                              getNearByRestaurants(userId,
-                                  latitude, longitude, selectedDistance,selectedMode);
-                            });
-                          },
-                        )),
-                  ),
-                  SizedBox(width: 8,),
-                  Flexible(
-                    flex: 2,
-                    child: InkWell(
-                      onTap: (){
-                        Navigator.pushNamed(context, AppRoutes.getRouteMap);
-                      },
-                      child: RoundedContainer(
-                          width: MediaQuery
-                              .of(context)
-                              .size
-                              .width,
-                          height: MediaQuery
-                              .of(context)
-                              .size
-                              .height * 0.05,
-                          color: AppColors.white,
-                          cornerRadius: 8,
-                          padding: 0,
-                          child:Center(child: const Text('My Route', style: AppFonts.title,))),
-                    ),
-                  ),
+                  //
+                  // Flexible(
+                  //   flex:2,
+                  //   child: RoundedContainer(
+                  //       width: MediaQuery
+                  //           .of(context)
+                  //           .size
+                  //           .width,
+                  //       height: MediaQuery
+                  //           .of(context)
+                  //           .size
+                  //           .height * 0.05,
+                  //       color: AppColors.white,
+                  //       cornerRadius: 8,
+                  //       padding: 0,
+                  //       child: DropdownButtonFormField(
+                  //         decoration: const InputDecoration(
+                  //           contentPadding: EdgeInsets.symmetric(horizontal: 0),
+                  //           border: InputBorder.none,
+                  //         ),
+                  //         padding: const EdgeInsets.symmetric(horizontal: 12),
+                  //         value: selectedMode,
+                  //         menuMaxHeight: MediaQuery
+                  //             .of(context)
+                  //             .size
+                  //             .height * 0.4,
+                  //         icon:Icon(Icons.keyboard_arrow_down,size: 20,),
+                  //         items: Strings.travel_mode.map((String value) {
+                  //           return DropdownMenuItem(
+                  //             value: value,
+                  //             child: Text('${value}',style: AppFonts.title,),
+                  //           );
+                  //         }).toList(),
+                  //         onChanged: (String? newValue) {
+                  //           setState(() {
+                  //             selectedMode = newValue!;
+                  //             getNearByRestaurants(userId,
+                  //                 latitude, longitude, selectedDistance,selectedMode);
+                  //           });
+                  //         },
+                  //       )),
+                  // ),
+                  // SizedBox(width: 8,),
+                  // Flexible(
+                  //   flex: 2,
+                  //   child: InkWell(
+                  //     onTap: (){
+                  //       Navigator.pushNamed(context, AppRoutes.getRouteMap);
+                  //     },
+                  //     child: RoundedContainer(
+                  //         width: MediaQuery
+                  //             .of(context)
+                  //             .size
+                  //             .width,
+                  //         height: MediaQuery
+                  //             .of(context)
+                  //             .size
+                  //             .height * 0.05,
+                  //         color: AppColors.white,
+                  //         cornerRadius: 8,
+                  //         padding: 0,
+                  //         child:Center(child: const Text('My Route', style: AppFonts.title,))),
+                  //   ),
+                  // ),
                 ],
               ),
             ],
@@ -413,8 +492,10 @@ class _HomeTabState extends State<HomeTab> {
       latitude = prefs.getDouble('user_latitude') ?? 0.0;
       longitude = prefs.getDouble('user_longitude') ?? 0.0;
       userId = prefs.getString('userId') ?? '';
+      print('received user lat lng :$latitude and $longitude');
 
     });
+    _getAddressFromLatLng(latitude,longitude);
     getNearByRestaurants(userId,latitude, longitude, selectedDistance,selectedMode);
   }
 
@@ -444,7 +525,7 @@ class _HomeTabState extends State<HomeTab> {
             Flexible(
               flex: 3,
               child: SearchPlaceAutoCompletedTextField(
-                  googleAPIKey: 'AIzaSyB8UoTxemF5no_Va1aJn4x8s10VsFlLQHA',
+                  googleAPIKey: apiKey,
                   textStyle: AppFonts.title,
                   countries: ['in'],
                   isLatLngRequired: true,

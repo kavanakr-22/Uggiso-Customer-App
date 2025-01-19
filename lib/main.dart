@@ -10,6 +10,8 @@ import 'package:uggiso/app_routes.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:io' show Platform;
 
+import 'package:uggiso/base/common/utils/colors.dart';
+
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 FlutterLocalNotificationsPlugin();
@@ -115,6 +117,10 @@ void main() async {
     SystemUiMode.immersiveSticky,
     overlays: [SystemUiOverlay.bottom],
   );
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    statusBarColor: AppColors.appPrimaryColor, // Your app's primary color
+    statusBarIconBrightness: Brightness.light, // Adjust for icon visibility
+  ));
 
   runApp(MultiBlocProvider(providers: [
     BlocProvider<SignUpBloc>(

@@ -27,6 +27,7 @@ import 'Widgets/OrderSuccessScreen.dart';
 import 'Widgets/OrdersTab.dart';
 import 'Widgets/PaymentOptionsScreen.dart';
 import 'Widgets/ReferralScreen.dart';
+import 'Widgets/ui-kit/place_search.dart';
 import 'base/common/utils/MenuListArgs.dart';
 
 class AppRoutes {
@@ -77,6 +78,10 @@ class AppRoutes {
   static const String privacy_policy = '/privacy_policy';
 
   static const String terms_and_conditions = '/terms_and_conditions';
+
+  static const String google_place_search = '/google_place_search';
+
+  static const String home_landing_screen = '/home_landing_screen';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -156,6 +161,12 @@ class AppRoutes {
 
       case terms_and_conditions:
         return MaterialPageRoute(builder: (_) => TermsAndConditions());
+
+      case google_place_search:
+        return MaterialPageRoute(builder: (_) => PlaceSearchScreen());
+
+      case home_landing_screen:
+        return MaterialPageRoute(builder: (_) => HomeLandingScreen());
 
       default:
         // If there is no such named route in the switch statement, e.g. /randomRoute
