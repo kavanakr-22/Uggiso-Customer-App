@@ -8,6 +8,7 @@ import 'package:uggiso/Widgets/PaymentSuccessScreen.dart';
 import 'package:uggiso/Widgets/ProfileTab.dart';
 import 'package:uggiso/Widgets/ReferralHistory.dart';
 import 'package:uggiso/Widgets/RegisterUserScreen.dart';
+import 'package:uggiso/Widgets/RestaurantSearchScreen.dart';
 import 'package:uggiso/Widgets/RewardsScreen.dart';
 import 'package:uggiso/Widgets/RouteMapScreen.dart';
 import 'package:uggiso/Widgets/SettingsScreen.dart';
@@ -82,6 +83,8 @@ class AppRoutes {
   static const String google_place_search = '/google_place_search';
 
   static const String home_landing_screen = '/home_landing_screen';
+
+  static const String search_screen = '/search_screen';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -167,6 +170,9 @@ class AppRoutes {
 
       case home_landing_screen:
         return MaterialPageRoute(builder: (_) => HomeLandingScreen());
+
+      case search_screen:
+        return MaterialPageRoute(builder: (_) => Restaurantsearchscreen());
 
       default:
         // If there is no such named route in the switch statement, e.g. /randomRoute

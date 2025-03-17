@@ -43,6 +43,7 @@ class _HomeTabState extends State<HomeTab> {
   TextEditingController _placeSearchEditingController = TextEditingController();
   String txnId = '';
   final String apiKey = 'AIzaSyB8UoTxemF5no_Va1aJn4x8s10VsFlLQHA';
+  double _position = 0;
   // int _selectedIndex = 0;
   //
   // final List<Widget> _pages = [
@@ -56,6 +57,13 @@ class _HomeTabState extends State<HomeTab> {
     // TODO: implement initState
     super.initState();
     getUserCurrentLocation();
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (mounted) {
+        setState(() {
+          _position = 100; // Move text to the right
+        });
+      }
+    });
   }
 
   Future<void> _getAddressFromLatLng(double latitude, double longitude) async {
@@ -112,48 +120,51 @@ class _HomeTabState extends State<HomeTab> {
                 title:  Padding(
                   padding: const EdgeInsets.only(top:10.0),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      locationHeader(),
-                      Gap(4),
-                      RoundedContainer(
-                          width: MediaQuery
-                              .of(context)
-                              .size
-                              .width*0.2,
-                          height: 40,
-                          color: AppColors.white,
-                          cornerRadius: 8,
-                          padding: 0,
-                          child: DropdownButtonFormField(
-                            decoration: const InputDecoration(
-                              contentPadding: EdgeInsets.symmetric(horizontal: 0),
-                              border: InputBorder.none,
-                            ),
-                            padding: const EdgeInsets.symmetric(horizontal: 8),
-                            value: selectedDistance,
-
-                            menuMaxHeight: MediaQuery
+                      Flexible(
+                          flex:3,child: locationHeader()),
+                      Flexible(
+                        flex: 1,
+                        child: RoundedContainer(
+                            width: MediaQuery
                                 .of(context)
                                 .size
-                                .height * 0.4,
-                            icon:Icon(Icons.keyboard_arrow_down,size: 20,),
-                            items: Strings.distance_type.map((double value) {
-                              return DropdownMenuItem(
-                                value: value,
-                                child: Text('${value} KM',style: AppFonts.smallText.copyWith(fontWeight: FontWeight.bold),),
-                              );
-                            }).toList(),
-                            onChanged: (double? newValue) {
-                              setState(() {
-                                selectedDistance = newValue!;
-                                print('lat lng after change distance : $latitude and $longitude');
-                                getNearByRestaurants(userId,
-                                    latitude, longitude, selectedDistance,selectedMode);
-                              });
-                            },
-                          )),
+                                .width*0.25,
+                            height: 40,
+                            color: AppColors.white,
+                            cornerRadius: 8,
+                            padding: 0,
+                            child: DropdownButtonFormField(
+                              decoration: const InputDecoration(
+                                contentPadding: EdgeInsets.symmetric(horizontal: 0),
+                                border: InputBorder.none,
+                              ),
+                              padding: const EdgeInsets.symmetric(horizontal: 8),
+                              value: selectedDistance,
+
+                              menuMaxHeight: MediaQuery
+                                  .of(context)
+                                  .size
+                                  .height * 0.4,
+                              icon:Icon(Icons.keyboard_arrow_down,size: 20,),
+                              items: Strings.distance_type.map((double value) {
+                                return DropdownMenuItem(
+                                  value: value,
+                                  child: Text('${value} KM',style: AppFonts.smallText.copyWith(fontWeight: FontWeight.bold),),
+                                );
+                              }).toList(),
+                              onChanged: (double? newValue) {
+                                setState(() {
+                                  selectedDistance = newValue!;
+                                  print('lat lng after change distance : $latitude and $longitude');
+                                  getNearByRestaurants(userId,
+                                      latitude, longitude, selectedDistance,selectedMode);
+                                });
+                              },
+                            )),
+                      ),
                     ],
                   ),
                 ),
@@ -220,67 +231,64 @@ class _HomeTabState extends State<HomeTab> {
                 ),
               ),
             ),
-            body: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // locationHeader(),
-                  BlocBuilder<HomeBloc, HomeState>(
-                    builder: (BuildContext context, HomeState state) {
-                      if (state is onLoadedHotelState) {
-                        print('this is state data : ${state.data.payload}');
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Gap(24),
-                              const Text(
-                                Strings.near_by_restaurants,
-                                style: AppFonts.subHeader,
-                              ),
-                              const Gap(12),
-                              _isShowMaps ? Container(
-                                child: HotelListGrid(
-                                    state.data.payload,userId,latitude,longitude,selectedMode,selectedDistance),
-                              ):GetHotelListinMap(state.data.payload,userId) ,
-                            ],
-                          ),
-                        );
-                        // Navigator.pushNamed(context, AppRoutes.verifyOtp);
-                      } else if (state is ErrorState) {
-                        // isInvalidCredentials =
+            body: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                searchWidget(),
+                BlocBuilder<HomeBloc, HomeState>(
+                  builder: (BuildContext context, HomeState state) {
+                    if (state is onLoadedHotelState) {
+                      print('this is state data : ${state.data.payload}');
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Gap(24),
+                            const Text(
+                              Strings.near_by_restaurants,
+                              style: AppFonts.subHeader,
+                            ),
+                            const Gap(12),
+                            _isShowMaps ? Container(
+                              child: HotelListGrid(
+                                  state.data.payload,userId,latitude,longitude,selectedMode,selectedDistance),
+                            ):GetHotelListinMap(state.data.payload,userId) ,
+                          ],
+                        ),
+                      );
+                      // Navigator.pushNamed(context, AppRoutes.verifyOtp);
+                    } else if (state is ErrorState) {
 
-                        return Expanded(
-                          child: Column(
-                            children: [
-                              Gap(MediaQuery
-                                  .of(context)
-                                  .size
-                                  .height * 0.2),
-                              Icon(Icons.no_food,color: AppColors.rewardsText,size: 86),
-                              const Gap(20),
-                              Container(
-                                child: Center(
-                                  child: Text(
-                                    '${state.message}',
-                                    style: AppFonts.title,
-                                  ),
+                      return Expanded(
+                        child: Column(
+                          children: [
+                            Gap(MediaQuery
+                                .of(context)
+                                .size
+                                .height * 0.2),
+                            Icon(Icons.no_food,color: AppColors.rewardsText,size: 86),
+                            const Gap(20),
+                            Container(
+                              child: Center(
+                                child: Text(
+                                  '${state.message}',
+                                  style: AppFonts.title,
                                 ),
                               ),
-                            ],
-                          ),
-                        );
-                      } else if (state is LoadingHotelState) {
-                        return const HomeScreen();
-                      } else {
-                        return Container();
-                      }
-                    },
-                  ),
-                ],
-              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    } else if (state is LoadingHotelState) {
+                      return const HomeScreen();
+                    } else {
+                      return Container();
+                    }
+                  },
+                ),
+              ],
             ),
           ),
         ),
@@ -290,7 +298,7 @@ class _HomeTabState extends State<HomeTab> {
 
   Widget locationHeader()=>
   RoundedContainer(
-    width: MediaQuery.of(context).size.width*0.7,
+    width: MediaQuery.of(context).size.width*0.65,
     cornerRadius: 5,
     color: AppColors.white,
     child: InkWell(
@@ -304,6 +312,40 @@ class _HomeTabState extends State<HomeTab> {
       ),
     ),
   );
+
+  Widget searchWidget()=>
+      Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height*0.07,
+        decoration: BoxDecoration(
+          color: AppColors.appPrimaryColor,
+          borderRadius: const BorderRadius.only(
+            bottomLeft: Radius.circular(10),
+            bottomRight: Radius.circular(10),
+          ),
+        ),
+        child: InkWell(
+          onTap: ()=>Navigator.pushNamed(context, AppRoutes.search_screen),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: RoundedContainer(
+                width: MediaQuery.of(context).size.width*0.9,
+                height: MediaQuery.of(context).size.height*0.04,
+                color: AppColors.white,
+                padding: 10,
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: AnimatedPositioned(
+                    duration: const Duration(seconds: 1),
+                    left: _position,
+                    child: Text('Search Restaurant',
+                      style: AppFonts.smallText.copyWith(color: AppColors.grey,),
+                      textAlign: TextAlign.center,),
+                  ),
+                ), cornerRadius: 5),
+          )
+        ),
+      );
 
   Widget HomeHeaderContainer() =>
       Container(

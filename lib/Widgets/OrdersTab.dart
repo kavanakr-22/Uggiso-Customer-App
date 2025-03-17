@@ -14,7 +14,8 @@ import '../base/common/utils/fonts.dart';
 import '../base/common/utils/strings.dart';
 
 class OrdersTab extends StatefulWidget {
-  const OrdersTab({super.key});
+  final String from;
+  const OrdersTab({super.key, this.from=''});
 
   @override
   State<OrdersTab> createState() => _OrdersTabState();
@@ -37,15 +38,15 @@ class _OrdersTabState extends State<OrdersTab> {
         backgroundColor: AppColors.textFieldBg,
         appBar: AppBar(
           elevation: 0,
-          leading: Padding(
+          leading: widget.from==''?Container():Padding(
             padding: const EdgeInsets.symmetric(vertical: 10.0),
             child: IconButton(
               iconSize: 18,
               icon: Image.asset('assets/ic_back_arrow.png'),
               color: AppColors.white,
               onPressed: () {
-                Navigator.popAndPushNamed(context, AppRoutes.homeScreen);
 
+                Navigator.pop(context);
               },
             ),
           ),

@@ -70,78 +70,88 @@ class _VerifyOtpState extends State<VerifyOtp> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-        create: (context) => _verifyOtpBloc,
-        child: BlocListener<VerifyOtpBloc, VerifyOtpState>(
-          child: Scaffold(
-              backgroundColor: AppColors.white,
-              resizeToAvoidBottomInset: true,
-              appBar: AppBar(
-                leading: Container(),
+    return GestureDetector(
+      onTap: (){
+        FocusScope.of(context).unfocus();
+      },
+      child: BlocProvider(
+          create: (context) => _verifyOtpBloc,
+          child: BlocListener<VerifyOtpBloc, VerifyOtpState>(
+            child: Scaffold(
                 backgroundColor: AppColors.white,
-                elevation: 0.0,
-              ),
-              body: bodyWidget(context)),
-          listener: (BuildContext context, VerifyOtpState state) {
-            if (state is onLoadedState) {
-              // Navigate to the next screen when NavigationState is emitted
-              Navigator.popAndPushNamed(context, AppRoutes.registerUser);
-            } else if (state is ErrorState) {
-              // clearData();
-              Fluttertoast.showToast(
-                  msg: state.message.toString(),
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.BOTTOM,
-                  timeInSecForIosWeb: 1,
-                  backgroundColor: AppColors.textGrey,
-                  textColor: Colors.white,
-                  fontSize: 16.0);
-            } else if (state is onResendOTPSuccessState) {
-              otpController_1.clear();
-              otpController_2.clear();
-              otpController_3.clear();
-              otpController_4.clear();
-            } else if (state is userAlreadyRegistered) {
-              Fluttertoast.showToast(
-                  msg: state.data!.message.toString(),
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.BOTTOM,
-                  timeInSecForIosWeb: 1,
-                  backgroundColor: AppColors.textGrey,
-                  textColor: Colors.white,
-                  fontSize: 16.0);
-              saveUserDetails(state.data!.payload!.name!,state.data!.payload!.userId!);
-              _verifyOtpBloc.add(OnUserAlreadyRegistered(
-                  userId: state.data!.payload?.userId,deviceData: device_id,fcmToken: fcmToken
-              ));
-              // Navigator.pushReplacementNamed(context, AppRoutes.homeScreen);
-
-              // Navigator.popUntil(context, ModalRoute.withName('/home_screen'));
-
-            }
-            else if(state is deviceDataUpdated){
-              print('device data updated : ${state.props}');
-              Navigator.popAndPushNamed(context, AppRoutes.homeScreen);
-            }
-            else if(state is onUserRegisteredState){
-              _verifyOtpBloc.add(OnUserAlreadyRegistered(
-                  userId: state.id,deviceData: device_id,fcmToken: fcmToken
-              ));
-              if(state.id==''){
-
-                saveUserDetails(state.name!,state.id!);
+                resizeToAvoidBottomInset: true,
+                appBar: AppBar(
+                  leading: Container(),
+                  backgroundColor: AppColors.white,
+                  elevation: 0.0,
+                ),
+                body: bodyWidget(context)),
+            listener: (BuildContext context, VerifyOtpState state) {
+              if (state is onLoadedState) {
+                // Navigate to the next screen when NavigationState is emitted
                 Navigator.popAndPushNamed(context, AppRoutes.registerUser);
-              }
-              else{
-                print('device data not updated');
-                saveUserDetails(state.name!,state.id!);
-                Navigator.popAndPushNamed(context, AppRoutes.homeScreen);
+              } else if (state is ErrorState) {
+                // clearData();
+                Fluttertoast.showToast(
+                    msg: state.message.toString(),
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                    timeInSecForIosWeb: 1,
+                    backgroundColor: AppColors.textGrey,
+                    textColor: Colors.white,
+                    fontSize: 16.0);
+              } else if (state is onResendOTPSuccessState) {
+                otpController_1.clear();
+                otpController_2.clear();
+                otpController_3.clear();
+                otpController_4.clear();
+              } else if (state is userAlreadyRegistered) {
+                Fluttertoast.showToast(
+                    msg: state.data!.message.toString(),
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                    timeInSecForIosWeb: 1,
+                    backgroundColor: AppColors.textGrey,
+                    textColor: Colors.white,
+                    fontSize: 16.0);
+                saveUserDetails(state.data!.payload!.name!,state.data!.payload!.userId!);
+                _verifyOtpBloc.add(OnUserAlreadyRegistered(
+                    userId: state.data!.payload?.userId,deviceData: device_id,fcmToken: fcmToken
+                ));
+                // Navigator.pushReplacementNamed(context, AppRoutes.homeScreen);
+
+                // Navigator.popUntil(context, ModalRoute.withName('/home_screen'));
 
               }
+              else if(state is deviceDataUpdated){
+                print('device data updated : ${state.props}');
+                // Navigator.popAndPushNamed(context, AppRoutes.homeScreen);
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  AppRoutes.homeScreen, // The new route
+                      (Route<dynamic> route) => false, // Condition to remove all routes
+                );
+              }
+              else if(state is onUserRegisteredState){
+                _verifyOtpBloc.add(OnUserAlreadyRegistered(
+                    userId: state.id,deviceData: device_id,fcmToken: fcmToken
+                ));
+                if(state.id==''){
 
-            }
-          },
-        ));
+                  saveUserDetails(state.name!,state.id!);
+                  Navigator.popAndPushNamed(context, AppRoutes.registerUser);
+                }
+                else{
+                  print('device data not updated');
+                  saveUserDetails(state.name!,state.id!);
+                  Navigator.popAndPushNamed(context, AppRoutes.home_landing_screen);
+
+                }
+
+              }
+            },
+          )),
+    );
   }
 
   Widget bodyWidget(BuildContext context) =>

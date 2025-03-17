@@ -10,9 +10,11 @@ import 'package:uggiso/Model/MyOrdersModel.dart';
 import 'package:uggiso/Model/PaymentDetailsModel.dart';
 import 'package:uggiso/Model/RegisterUserModel.dart';
 import 'package:uggiso/Model/RestaurantDetailsModel.dart';
+import 'package:uggiso/Model/RestaurantSearchModel.dart';
 import 'package:uggiso/Model/UpdateOrderModel.dart';
 import 'package:uggiso/Model/VerifyOtpModel.dart';
 import 'package:uggiso/Model/otpModel.dart';
+import 'package:uggiso/Model/remove_user_model.dart';
 import 'package:uggiso/Network/apiProvider.dart';
 
 import '../Model/GetFavMenuModel.dart';
@@ -27,7 +29,6 @@ import '../Model/WalletDetailsModel.dart';
 class ApiRepository {
   final _provider = ApiProvider();
 
-  String userUrl = 'https://reqres.in/api/users?page=2';
 
   Future<OtpModel> getOtp(String number) {
     return _provider.getOtp(number);
@@ -133,6 +134,14 @@ class ApiRepository {
   }
   Future<AppVersionModel> getAppVersion() {
     return _provider.getAppVersion();
+  }
+
+  Future<RemoveUserModel> removeUserData(String userId) {
+    return _provider.removeUserData(userId);
+  }
+
+  Future<ResaturantSearchModel> searchRestaurant(String querry) {
+    return _provider.searchRestaurant(querry);
   }
 
 }

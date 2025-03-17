@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uggiso/Widgets/FavoriteTab.dart';
 import 'package:uggiso/Widgets/HomeTab.dart';
 import 'package:uggiso/Widgets/OrdersTab.dart';
 import 'package:uggiso/Widgets/ProfileTab.dart';
+import 'package:uggiso/Widgets/ui-kit/RoundedElevatedButton.dart';
+import 'package:uggiso/app_routes.dart';
 import 'package:uggiso/base/common/utils/colors.dart';
+import 'package:uggiso/base/common/utils/fonts.dart';
 import 'package:uggiso/base/common/utils/strings.dart';
 
 class HomeLandingScreen extends StatefulWidget {
@@ -64,7 +68,17 @@ class _HomeLandingScreenState extends State<HomeLandingScreen> {
 
   Widget buildNavBarItem(int index) {
     return InkWell(
-      onTap: () => _onItemTapped(index),
+      onTap: () async{
+        final prefs = await SharedPreferences.getInstance();
+        var userId = prefs.getString('userId') ?? '';
+        if(userId==''){
+          requestSignInDialog(context);
+        }
+        else{
+          _onItemTapped(index);
+        }
+
+      },
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
@@ -85,6 +99,37 @@ class _HomeLandingScreenState extends State<HomeLandingScreen> {
           ),
         ],
       ),
+    );
+  }
+  void requestSignInDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10), // Reduced corner radius
+          ),
+          title: Text("You are not logged in. Please sign in to continue with creating your order.",style: AppFonts.title,
+            textAlign: TextAlign.center,),
+          actions: [
+            RoundedElevatedButton(width: MediaQuery.of(context).size.width*0.3, height: 40, text: 'Cancel',
+                onPressed: (){
+                  Navigator.pop(context);
+                }, cornerRadius: 8, buttonColor: AppColors.grey,
+                textStyle: AppFonts.title.copyWith(color: AppColors.appPrimaryColor)),
+            RoundedElevatedButton(width: MediaQuery.of(context).size.width*0.3, height: 40, text: 'Sign In',
+                onPressed: (){
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    AppRoutes.signupScreen, // The new route
+                        (Route<dynamic> route) => false, // Condition to remove all routes
+                  );
+                }, cornerRadius: 8, buttonColor: AppColors.appPrimaryColor,
+                textStyle: AppFonts.title.copyWith(color: AppColors.white))
+          ],
+        );
+      },
     );
   }
 }

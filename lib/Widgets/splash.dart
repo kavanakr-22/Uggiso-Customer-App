@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:device_uuid/device_uuid.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -93,6 +95,7 @@ class _SplashScreenState extends State<SplashScreen> {
     // WidgetsBinding.instance.addPostFrameCallback((_) {});
     showDialog(
         context: context,
+        barrierDismissible: false,
         builder: (ctx) {
           return AlertDialog(
             title: Column(
@@ -117,7 +120,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   getUserCurrentLocation(false);
                   Navigator.of(ctx).pop();
                 },
-                child: Text(
+                child:Platform.isIOS?Container(): Text(
                   'Deny',
                   style:
                       AppFonts.title.copyWith(color: Colors.red),
@@ -131,7 +134,11 @@ class _SplashScreenState extends State<SplashScreen> {
                   getUserCurrentLocation(true);
                   Navigator.of(ctx).pop();
                 },
-                child: Text(
+                child: Platform.isIOS?Text(
+                  'Continue',
+                  style:
+                  AppFonts.title.copyWith(color: AppColors.alertColor),
+                ):Text(
                   'Allow',
                   style:
                   AppFonts.title.copyWith(color: AppColors.alertColor),

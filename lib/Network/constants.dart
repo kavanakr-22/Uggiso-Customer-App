@@ -1,9 +1,9 @@
 class Constants{
 
-  // static String baseUrl = 'http://34.93.59.219:80/'; // test url
-  static String baseUrl = 'http://uggiso.co.in/'; //prod url
-  // static String mode = 'test';
-  static String mode = 'production';
+  static String baseUrl = 'http://34.93.236.51:80/'; // test url
+  // static String baseUrl = 'http://uggiso.co.in/'; //prod url
+  static String mode = 'test';
+  // static String mode = 'production';
   static String getOtp = 'user/otp';
   static String verifyOtp = 'user/otp/verify';
   static String registerUser = 'user/register';
@@ -30,4 +30,6 @@ class Constants{
   static String getAcceptors = 'referer/acceptors/';
   static String initiate_payment = 'payment/initiate';
   static String check_app_version = 'user/appversion';
+  static String remove_user_data = 'user/removedata';
+  static String restaurant_search = 'restaurant/search/';
 }

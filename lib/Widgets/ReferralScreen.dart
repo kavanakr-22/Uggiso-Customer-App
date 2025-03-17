@@ -64,7 +64,10 @@ class _ReferralScreenState extends State<ReferralScreen> {
                     alignment: Alignment.centerRight,
                     child: InkWell(
                       onTap: () {
-                        Navigator.pushReplacementNamed(context, AppRoutes.homeScreen);
+                        Navigator.pushNamedAndRemoveUntil(
+                            context,
+                            AppRoutes.home_landing_screen,
+                                (Route<dynamic> route) => false);
                       },
                       child:  Padding(
                         padding: EdgeInsets.all(16.0),

@@ -44,6 +44,7 @@ class Strings {
   static const settings = 'Settings';
   static const sign_out = 'Sign out';
   static const help_center = 'Help Center';
+  static const delete_account = 'Delete Account';
   static const edit_profile = 'Edit Profile';
   static const terms_conditions = 'Terms And Conditions';
   static const about_us = 'About Us';
@@ -142,8 +143,9 @@ class Strings {
     {'image': 'assets/ic_history.png', 'title': my_referrals},
     {'image': 'assets/ic_settings.png', 'title': terms_and_conditions},
     {'image': 'assets/ic_settings.png', 'title': privacy_policy},
-    {'image': 'assets/ic_log-out.png', 'title': sign_out},
     {'image': 'assets/ic_help_center.png', 'title': help_center},
+    {'image': 'assets/ic_log-out.png', 'title': sign_out},
+
   ];
 
   static const List<Map<String, dynamic>> settingsItemList = [

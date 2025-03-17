@@ -27,3 +27,15 @@ class OnGetAcceptors extends ProfileEvent {
   @override
   String toString() => 'OnButtonClicked { number: $userId }';
 }
+
+class OnDeleteUserData extends ProfileEvent {
+  final String userId;
+
+  const OnDeleteUserData({required this.userId});
+
+  @override
+  List<Object> get props => [userId];
+
+  @override
+  String toString() => 'OnButtonClicked { number: $userId }';
+}

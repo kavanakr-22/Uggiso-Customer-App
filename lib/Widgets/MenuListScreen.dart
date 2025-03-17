@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
@@ -5,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uggiso/Bloc/MenuListBloc/MenuListBloc.dart';
 import 'package:uggiso/Bloc/MenuListBloc/MenuListState.dart';
 import 'package:uggiso/Model/GetNearByResaturantModel.dart';
+import 'package:uggiso/Widgets/ui-kit/RoundedElevatedButton.dart';
 import '../../Model/MenuListModel.dart' as menuListPayload;
 import 'package:uggiso/Widgets/ui-kit/RoundedContainer.dart';
 import 'package:uggiso/base/common/utils/CreateOrderArgs.dart';
@@ -89,7 +92,9 @@ class _MenuListScreenState extends State<MenuListScreen> {
       floatingActionButton: _showButton
           ? FloatingActionButton.extended(
               backgroundColor: AppColors.appPrimaryColor,
-              onPressed: () {
+              onPressed: () async{
+                final prefs = await SharedPreferences.getInstance();
+                var  _isUserLoggedIn = prefs.getBool('is_user_logged_in')?? false;
                 List<Map<String, dynamic>> uniqueMenuList = [];
                 uniqueMenuMap.clear();
                 for (var menu in cartItems) {
@@ -100,14 +105,35 @@ class _MenuListScreenState extends State<MenuListScreen> {
                   }
                 }
                 uniqueMenuList = uniqueMenuMap.values.toList();
-                Navigator.pushNamed(context, AppRoutes.createOrder,
-                    arguments: CreateOrderArgs(
-                        orderlist: uniqueMenuList,
-                        restaurantId: widget.restaurantId,
-                        restaurantName: widget.restaurantName!,
-                    restaurantLat: widget.payload?.lat,
-                    restaurantLng: widget.payload?.lng,
-                    gstPercent: widget.payload?.gstPercent));
+                if(Platform.isIOS){
+                  if(_isUserLoggedIn){
+
+                    Navigator.pushNamed(context, AppRoutes.createOrder,
+                        arguments: CreateOrderArgs(
+                            orderlist: uniqueMenuList,
+                            restaurantId: widget.restaurantId,
+                            restaurantName: widget.restaurantName!,
+                            restaurantLat: widget.payload?.lat,
+                            restaurantLng: widget.payload?.lng,
+                            gstPercent: widget.payload?.gstPercent));
+                  }
+                  else{
+                    requestSignInDialog(context);
+                  }
+
+                }
+                else if(Platform.isAndroid){
+                    Navigator.pushNamed(context, AppRoutes.createOrder,
+                        arguments: CreateOrderArgs(
+                            orderlist: uniqueMenuList,
+                            restaurantId: widget.restaurantId,
+                            restaurantName: widget.restaurantName!,
+                            restaurantLat: widget.payload?.lat,
+                            restaurantLng: widget.payload?.lng,
+                            gstPercent: widget.payload?.gstPercent));
+
+
+                }
               },
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10.0),
@@ -526,4 +552,37 @@ class _MenuListScreenState extends State<MenuListScreen> {
           }),
     );
   }
+
+  void requestSignInDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10), // Reduced corner radius
+          ),
+          title: Text("You are not logged in. Please sign in to continue with creating your order.",style: AppFonts.title,
+          textAlign: TextAlign.center,),
+          actions: [
+            RoundedElevatedButton(width: MediaQuery.of(context).size.width*0.3, height: 40, text: 'Cancel',
+                onPressed: (){
+              Navigator.pop(context);
+                }, cornerRadius: 8, buttonColor: AppColors.grey,
+                textStyle: AppFonts.title.copyWith(color: AppColors.appPrimaryColor)),
+          RoundedElevatedButton(width: MediaQuery.of(context).size.width*0.3, height: 40, text: 'Sign In',
+              onPressed: (){
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  AppRoutes.signupScreen, // The new route
+                      (Route<dynamic> route) => false, // Condition to remove all routes
+                );
+              }, cornerRadius: 8, buttonColor: AppColors.appPrimaryColor,
+              textStyle: AppFonts.title.copyWith(color: AppColors.white))
+          ],
+        );
+      },
+    );
+  }
+
 }

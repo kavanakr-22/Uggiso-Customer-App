@@ -13,9 +13,11 @@ import 'package:uggiso/Model/PaymentDetailsModel.dart';
 import 'package:uggiso/Model/RegisterUserModel.dart';
 import 'package:uggiso/Model/RestaurantByMenuTypeModel.dart';
 import 'package:uggiso/Model/RestaurantDetailsModel.dart';
+import 'package:uggiso/Model/RestaurantSearchModel.dart';
 import 'package:uggiso/Model/UpdateOrderModel.dart';
 import 'package:uggiso/Model/VerifyOtpModel.dart';
 import 'package:uggiso/Model/otpModel.dart';
+import 'package:uggiso/Model/remove_user_model.dart';
 import 'package:uggiso/Network/constants.dart';
 
 import '../Model/GetFavMenuModel.dart';
@@ -581,6 +583,35 @@ class ApiProvider {
     } catch (error, stacktrace) {
       print("Exception occured: $error stackTrace: $stacktrace");
       return AppVersionModel.withError("Data not found / Connection issue");
+    }
+  }
+
+  Future<RemoveUserModel> removeUserData(
+      String userId) async {
+    try {
+      Response response =
+      await _dio.post('${_url}${Constants.remove_user_data}', data: {
+        "userId":userId
+      });
+      print("${response.data}");
+
+      return RemoveUserModel.fromJson(response.data);
+    } catch (error, stacktrace) {
+      print("Exception occured: $error stackTrace: $stacktrace");
+      return RemoveUserModel.withError(
+          "Data not found / Connection issue");
+    }
+  }
+
+  Future<ResaturantSearchModel> searchRestaurant(String querry) async {
+    try {
+      Response response = await _dio.get('${_url}${Constants.restaurant_search}$querry');
+      print("${response.data}");
+
+      return ResaturantSearchModel.fromJson(response.data);
+    } catch (error, stacktrace) {
+      print("Exception occured: $error stackTrace: $stacktrace");
+      return ResaturantSearchModel.withError("Data not found / Connection issue");
     }
   }
 }

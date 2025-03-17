@@ -24,6 +24,7 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
   String userContactNumber = '';
   String userDeviceId = '';
   String fcmToken = '';
+  String error_msg = '';
 
 
   @override
@@ -35,78 +36,88 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => _registerUserBloc,
+    return GestureDetector(
+      onTap: (){
+        FocusScope.of(context).unfocus();
+      },
+      child: BlocProvider(
+        create: (context) => _registerUserBloc,
 
-      child: BlocListener<RegisterUserBloc,RegisterUserState>(
+        child: BlocListener<RegisterUserBloc,RegisterUserState>(
 
-        listener: (BuildContext context, RegisterUserState state) {
-          if (state is onLoadedState) {
-            // Navigate to the next screen when NavigationState is emitted
-            saveUserDetails(_nameController.text,userDeviceId,fcmToken,state.userId);
-            Navigator.popAndPushNamed(context, AppRoutes.referenceScreen);
-          } else if (state is ErrorState) {
+          listener: (BuildContext context, RegisterUserState state) {
+            if (state is onLoadedState) {
+              // Navigate to the next screen when NavigationState is emitted
+              saveUserDetails(_nameController.text,userDeviceId,fcmToken,state.userId);
+              Navigator.popAndPushNamed(context, AppRoutes.referenceScreen);
+            } else if (state is ErrorState) {
 
-          }
-        },
-        child: Scaffold(
-          backgroundColor: AppColors.white,
-          appBar: AppBar(
-            leading: Container(),
+              setState(() {
+                error_msg = state.message!;
+              });
+
+            }
+          },
+          child: Scaffold(
             backgroundColor: AppColors.white,
-            elevation: 0.0,
-          ),
-          body: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(Strings.welcome,
-                    style: AppFonts.header1
-                        .copyWith(color: AppColors.appPrimaryColor)),
-                const SizedBox(height: 20.0),
-                Text(Strings.world_of_flavor,
-                    style:
-                    AppFonts.subHeader.copyWith(color: AppColors.textColor)),
-                Text(Strings.appName,
-                    style:
-                    AppFonts.subHeader.copyWith(color: AppColors.appPrimaryColor)),
-                const SizedBox(height: 30.0),
+            appBar: AppBar(
+              leading: Container(),
+              backgroundColor: AppColors.white,
+              elevation: 0.0,
+            ),
+            body: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(Strings.welcome,
+                      style: AppFonts.header1
+                          .copyWith(color: AppColors.appPrimaryColor)),
+                  const SizedBox(height: 20.0),
+                  Text(Strings.world_of_flavor,
+                      style:
+                      AppFonts.subHeader.copyWith(color: AppColors.textColor)),
+                  Text(Strings.appName,
+                      style:
+                      AppFonts.subHeader.copyWith(color: AppColors.appPrimaryColor)),
+                  const SizedBox(height: 30.0),
 
-                Text(Strings.enter_your_name,
-                    style:
-                    AppFonts.title.copyWith(color: AppColors.textColor)),
-                const SizedBox(height: 30.0),
-                TextFieldCurvedEdges(
-                  controller: _nameController,
-                  backgroundColor: AppColors.textFieldBg,
-                  keyboardType: TextInputType.name,
-                  borderColor: AppColors.textFieldBorderColor,
-                  borderRadius: 6
-                ),
-
-                const SizedBox(height: 20.0),
-
-                Expanded(
-                  child: Container(
-                    alignment: Alignment.bottomCenter,
-                    padding: const EdgeInsets.only(bottom: 30),
-                    child: RoundedElevatedButton(
-                        width: MediaQuery.of(context).size.width,
-                        height: 40.0,
-                        text: Strings.submit,
-                        onPressed: () {
-                          _registerUserBloc.add(
-                              OnRegisterButtonClicked(name:_nameController.text,number:userContactNumber,
-                              deviceId:userDeviceId,token: fcmToken,status: "ACTIVE"));
-                        },
-                        cornerRadius: 6.0,
-                        buttonColor: AppColors.appPrimaryColor,
-                        textStyle:
-                        AppFonts.header.copyWith(color: AppColors.black)),
+                  Text(Strings.enter_your_name,
+                      style:
+                      AppFonts.title.copyWith(color: AppColors.textColor)),
+                  const SizedBox(height: 30.0),
+                  TextFieldCurvedEdges(
+                    controller: _nameController,
+                    backgroundColor: AppColors.textFieldBg,
+                    keyboardType: TextInputType.name,
+                    borderColor: AppColors.textFieldBorderColor,
+                    borderRadius: 6
                   ),
-                ),
-              ],
+                  Text('$error_msg',style: AppFonts.smallText.copyWith(color: Colors.red),),
+
+                  const SizedBox(height: 20.0),
+
+                  Expanded(
+                    child: Container(
+                      alignment: Alignment.bottomCenter,
+                      padding: const EdgeInsets.only(bottom: 30),
+                      child: RoundedElevatedButton(
+                          width: MediaQuery.of(context).size.width,
+                          height: 40.0,
+                          text: Strings.submit,
+                          onPressed: () {
+                            _registerUserBloc.add(
+                                OnRegisterButtonClicked(name:_nameController.text,number:userContactNumber,
+                                deviceId:userDeviceId,token: fcmToken,status: "ACTIVE"));
+                          },
+                          cornerRadius: 6.0,
+                          buttonColor: AppColors.appPrimaryColor,
+                          textStyle:
+                          AppFonts.header.copyWith(color: AppColors.black)),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -120,7 +131,6 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
       userContactNumber = prefs.getString('mobile_number') ?? '';
       userDeviceId = prefs.getString('device_id') ?? '';
       fcmToken = prefs.getString('fcm_token')??'';
-
 
     });
   }

@@ -13,6 +13,7 @@ class TextFieldCurvedEdges extends StatelessWidget {
   final int length;
   final FocusNode? focusNode;
   final ValueChanged<String>? onSubmitted;
+  final ValueChanged<String>? onChanged;
   final String? inputFormatter;
   final String? validatorType;
 
@@ -28,7 +29,8 @@ class TextFieldCurvedEdges extends StatelessWidget {
     this.focusNode,
     this.onSubmitted,
     this.inputFormatter = '',
-    this.validatorType = ''
+    this.validatorType = '',
+    this.onChanged
 
   }): super(key: key);
 
@@ -49,6 +51,7 @@ class TextFieldCurvedEdges extends StatelessWidget {
           keyboardType: keyboardType,
           textAlign: textAlign,
           maxLength: length,
+          onChanged: onChanged,
           maxLines: 1,
           focusNode: focusNode,
           onFieldSubmitted: onSubmitted,
