@@ -8,6 +8,7 @@ import 'package:uggiso/Widgets/ui-kit/RoundedElevatedButton.dart';
 import 'package:uggiso/app_routes.dart';
 import 'package:uggiso/base/common/utils/colors.dart';
 import 'package:uggiso/base/common/utils/fonts.dart';
+import 'package:uggiso/base/common/utils/get_route_map.dart';
 import 'package:uggiso/base/common/utils/strings.dart';
 
 class HomeLandingScreen extends StatefulWidget {
@@ -24,12 +25,14 @@ class _HomeLandingScreenState extends State<HomeLandingScreen> {
     'assets/ic_home.png',
     'assets/ic_orders.png',
     'assets/ic_person.png',
+    ''
   ];
 
   final List<String> text = [
     Strings.home,
     Strings.orders,
-    Strings.profile
+    Strings.profile,
+    Strings.by_route
   ];
 
   static List<Widget> _widgetOptions = <Widget>[
@@ -37,6 +40,7 @@ class _HomeLandingScreenState extends State<HomeLandingScreen> {
     // FavoriteTab(),
     OrdersTab(),
     ProfileTab(),
+    GetRouteMap()
 
   ];
 
@@ -82,7 +86,7 @@ class _HomeLandingScreenState extends State<HomeLandingScreen> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          Image.asset(_imagePaths[index],height: 18,width: 18,
+          index == 3?Icon(Icons.assistant_navigation,color: _selectedIndex == index ? AppColors.appPrimaryColor : AppColors.bottomTabInactiveColor,):Image.asset(_imagePaths[index],height: 18,width: 18,
             color: _selectedIndex == index ? AppColors.appPrimaryColor : AppColors.bottomTabInactiveColor,
           ),
           SizedBox(height: 4.0,),
