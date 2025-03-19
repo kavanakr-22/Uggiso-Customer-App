@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:uggiso/Widgets/FavoriteTab.dart';
 import 'package:uggiso/Widgets/HomeTab.dart';
 import 'package:uggiso/Widgets/OrdersTab.dart';
 import 'package:uggiso/Widgets/ProfileTab.dart';
@@ -37,11 +36,9 @@ class _HomeLandingScreenState extends State<HomeLandingScreen> {
 
   static List<Widget> _widgetOptions = <Widget>[
     HomeTab(),
-    // FavoriteTab(),
     OrdersTab(),
     ProfileTab(),
     GetRouteMap()
-
   ];
 
   void _onItemTapped(int index) {
@@ -54,17 +51,24 @@ class _HomeLandingScreenState extends State<HomeLandingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.white,
-      body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: _widgetOptions.elementAt(_selectedIndex),
+            ),
+          ],
+        ),
       ),
       bottomNavigationBar: BottomAppBar(
-        height: MediaQuery.of(context).size.height*0.08,
         color: AppColors.white,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: List.generate(_imagePaths.length, (index) {
-            return buildNavBarItem(index);
-          }),
+        child: SafeArea(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: List.generate(_imagePaths.length, (index) {
+              return buildNavBarItem(index);
+            }),
+          ),
         ),
       ),
     );
@@ -72,39 +76,37 @@ class _HomeLandingScreenState extends State<HomeLandingScreen> {
 
   Widget buildNavBarItem(int index) {
     return InkWell(
-      onTap: () async{
+      onTap: () async {
         final prefs = await SharedPreferences.getInstance();
         var userId = prefs.getString('userId') ?? '';
-        if(userId==''){
+        if (userId == '') {
           requestSignInDialog(context);
-        }
-        else{
+        } else {
           _onItemTapped(index);
         }
-
       },
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           index == 3?Icon(Icons.assistant_navigation,color: _selectedIndex == index ? AppColors.appPrimaryColor : AppColors.bottomTabInactiveColor,):Image.asset(_imagePaths[index],height: 18,width: 18,
             color: _selectedIndex == index ? AppColors.appPrimaryColor : AppColors.bottomTabInactiveColor,
+
           ),
-          SizedBox(height: 4.0,),
-          /*Icon(
-            icons[index],
-            color: _selectedIndex == index ? AppColors.appPrimaryColor : AppColors.bottomTabInactiveColor,
-          ),*/
+          SizedBox(height: 4.0),
           Text(
             text[index],
             style: TextStyle(
               fontSize: 12,
-              color: _selectedIndex == index ? AppColors.appPrimaryColor : AppColors.bottomTabInactiveColor,
+              color: _selectedIndex == index
+                  ? AppColors.appPrimaryColor
+                  : AppColors.bottomTabInactiveColor,
             ),
           ),
         ],
       ),
     );
   }
+
   void requestSignInDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -112,25 +114,41 @@ class _HomeLandingScreenState extends State<HomeLandingScreen> {
       builder: (BuildContext context) {
         return AlertDialog(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10), // Reduced corner radius
+            borderRadius: BorderRadius.circular(10),
           ),
-          title: Text("You are not logged in. Please sign in to continue with creating your order.",style: AppFonts.title,
-            textAlign: TextAlign.center,),
+          title: Text(
+            "You are not logged in. Please sign in to continue with creating your order.",
+            style: AppFonts.title,
+            textAlign: TextAlign.center,
+          ),
           actions: [
-            RoundedElevatedButton(width: MediaQuery.of(context).size.width*0.3, height: 40, text: 'Cancel',
-                onPressed: (){
-                  Navigator.pop(context);
-                }, cornerRadius: 8, buttonColor: AppColors.grey,
-                textStyle: AppFonts.title.copyWith(color: AppColors.appPrimaryColor)),
-            RoundedElevatedButton(width: MediaQuery.of(context).size.width*0.3, height: 40, text: 'Sign In',
-                onPressed: (){
-                  Navigator.pushNamedAndRemoveUntil(
-                    context,
-                    AppRoutes.signupScreen, // The new route
-                        (Route<dynamic> route) => false, // Condition to remove all routes
-                  );
-                }, cornerRadius: 8, buttonColor: AppColors.appPrimaryColor,
-                textStyle: AppFonts.title.copyWith(color: AppColors.white))
+            RoundedElevatedButton(
+              width: MediaQuery.of(context).size.width * 0.3,
+              height: 40,
+              text: 'Cancel',
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              cornerRadius: 8,
+              buttonColor: AppColors.grey,
+              textStyle:
+              AppFonts.title.copyWith(color: AppColors.appPrimaryColor),
+            ),
+            RoundedElevatedButton(
+              width: MediaQuery.of(context).size.width * 0.3,
+              height: 40,
+              text: 'Sign In',
+              onPressed: () {
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  AppRoutes.signupScreen,
+                      (Route<dynamic> route) => false,
+                );
+              },
+              cornerRadius: 8,
+              buttonColor: AppColors.appPrimaryColor,
+              textStyle: AppFonts.title.copyWith(color: AppColors.white),
+            )
           ],
         );
       },

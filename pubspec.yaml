@@ -51,7 +51,7 @@ dependencies:
   google_maps_flutter: ^2.9.0
   google_places_flutter: ^2.0.8
   google_search_place: ^0.0.4
-  device_uuid: ^0.0.4
+#  device_uuid: ^0.0.4
   geolocator: ^11.1.0
   geocoding: ^3.0.0
   permission_handler: ^11.3.1

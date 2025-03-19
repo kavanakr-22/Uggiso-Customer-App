@@ -124,7 +124,7 @@ class _HomeTabState extends State<HomeTab> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Flexible(
-                          flex:3,child: locationHeader()),
+                          flex:2,child: locationHeader()),
                       Flexible(
                         flex: 1,
                         child: RoundedContainer(

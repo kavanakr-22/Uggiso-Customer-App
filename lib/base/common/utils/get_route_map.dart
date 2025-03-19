@@ -94,32 +94,32 @@ class _GetRouteMapState extends State<GetRouteMap> {
           },
           child: BlocBuilder<HomeBloc, HomeState>(
               builder: (context, HomeState state) {
-            if (state is LoadingHotelState) {
-              return Center(
-                child: CircularProgressIndicator(
-                  color: AppColors.appPrimaryColor,
-                ),
-              );
-            }
-            return Stack(
-              children: [
-                GoogleMap(
-                  initialCameraPosition: CameraPosition(
-                      target: LatLng(latitude, longitude), zoom: 8),
-                  myLocationEnabled: true,
-                  myLocationButtonEnabled: true,
-                  tiltGesturesEnabled: true,
-                  compassEnabled: true,
-                  scrollGesturesEnabled: true,
-                  zoomGesturesEnabled: true,
-                  onMapCreated: _onMapCreated,
-                  markers: Set<Marker>.of(markers.values),
-                  polylines: Set<Polyline>.of(polylines.values),
-                ),
-                HomeHeaderContainer(),
-              ],
-            );
-          }),
+                if (state is LoadingHotelState) {
+                  return Center(
+                    child: CircularProgressIndicator(
+                      color: AppColors.appPrimaryColor,
+                    ),
+                  );
+                }
+                return Stack(
+                  children: [
+                    GoogleMap(
+                      initialCameraPosition: CameraPosition(
+                          target: LatLng(latitude, longitude), zoom: 8),
+                      myLocationEnabled: true,
+                      myLocationButtonEnabled: true,
+                      tiltGesturesEnabled: true,
+                      compassEnabled: true,
+                      scrollGesturesEnabled: true,
+                      zoomGesturesEnabled: true,
+                      onMapCreated: _onMapCreated,
+                      markers: Set<Marker>.of(markers.values),
+                      polylines: Set<Polyline>.of(polylines.values),
+                    ),
+                    HomeHeaderContainer(),
+                  ],
+                );
+              }),
         ),
       ),
     );
@@ -151,35 +151,97 @@ class _GetRouteMapState extends State<GetRouteMap> {
       position: position,
       onTap: () => print('this is on marker tap with marker id : ${markerId}'),
       infoWindow: InfoWindow(
-        snippet: markerId.value,
+          snippet: markerId.value,
           title: markerId.value,
           onTap: () => {
             print('this is on marker tap inside info window'),
-                if(payload!=null){
-                  Navigator.pushNamed(context, AppRoutes.menuList,
-                      arguments: MenuListArgs(
-                          restaurantId: payload.restaurantId,
-                          name: payload.restaurantName,
-                          foodType: payload.restaurantMenuType,
-                          ratings: payload.ratings,
-                          landmark: payload.landmark,
-                          distance: payload.distance,
-                          duration: payload.duration,
-                          payload: payload))
-                }
-              }),
+            if(payload!=null){
+              Navigator.pushNamed(context, AppRoutes.menuList,
+                  arguments: MenuListArgs(
+
+                      restaurantId: payload.restaurantId,
+                      name: payload.restaurantName,
+                      foodType: payload.restaurantMenuType,
+                      ratings: payload.ratings,
+                      landmark: payload.landmark,
+                      distance: payload.distance,
+                      duration: payload.duration,
+                      payload: payload))
+            }
+          }),
     );
     markers[markerId] = marker;
   }
 
+  // _getPolylines(double lat, double lng, double destLat, double destLng) async {
+  //   print('this is getPolylines lat lng : $lat and $lng');
+  //   print('this is getPolylines destinationlat lng : $destLat and $destLng');
+  //
+  //   final String url =
+  //       'https://maps.googleapis.com/maps/api/directions/json?origin=$lat,$lng&destination=$destLat,$destLng&alternatives=true&key=$googleApiKey&polylineQuality=highQuality&polylineEncoding=encoded';
+  //
+  //   print('this is direction api url : $url');
+  //
+  //   final response = await http.get(Uri.parse(url));
+  //
+  //   if (response.statusCode == 200) {
+  //     final data = json.decode(response.body);
+  //
+  //     if (data['status'] == 'OK') {
+  //       double shortestDistance = double.infinity;
+  //       int shortestIndex = 0;
+  //       List<LatLng> shortestRoute = [];
+  //       int index = 0;
+  //       for (var route in data['routes']) {
+  //         List<LatLng> polylineCoordinates = [];
+  //         var points = PolylinePoints()
+  //             .decodePolyline(route['overview_polyline']['points']);
+  //         points.forEach((point) {
+  //           polylineCoordinates.add(LatLng(point.latitude, point.longitude));
+  //         });
+  //
+  //         // Calculate distance
+  //         double distance = _calculateDistance(polylineCoordinates);
+  //
+  //         // Determine if this route is the shortest
+  //         if (distance < shortestDistance) {
+  //           shortestDistance = distance;
+  //           shortestRoute = polylineCoordinates;
+  //           shortestIndex = index;
+  //         }
+  //         //
+  //         // if (data['routes'].length > 0) {
+  //         //   bool isShortest = index == data['routes'].length - 1;
+  //         //   _addPolyLine(
+  //         //       polylineCoordinates, index, isShortest, destLat, destLng);
+  //         // }
+  //         index++;
+  //       }
+  //       // Add only the shortest route to the map
+  //       if (shortestRoute.isNotEmpty) {
+  //         _addPolyLine(shortestRoute, shortestIndex, true, destLat, destLng);
+  //       }
+  //       print('calling api resp :');
+  //       _homeBloc.add(OnGetRestaurantByRoute(
+  //           userId: userId,
+  //           polylinePoints: data['routes'][0]['overview_polyline']['points']
+  //               .toString()
+  //               .replaceAll(r'\', r'\\'),
+  //           originLat: lat,
+  //           originLng: lng));
+  //     } else {
+  //       print('Error: ${data['status']} - ${data['error_message']}');
+  //     }
+  //   } else {
+  //     print('Request failed with status: ${response.statusCode}');
+  //   }
+  // }
+
   _getPolylines(double lat, double lng, double destLat, double destLng) async {
-    print('this is getPolylines lat lng : $lat and $lng');
-    print('this is getPolylines destinationlat lng : $destLat and $destLng');
+    print('Fetching routes from lat: $lat, lng: $lng to destLat: $destLat, destLng: $destLng');
 
     final String url =
-        'https://maps.googleapis.com/maps/api/directions/json?origin=$lat,$lng&destination=$destLat,$destLng&alternatives=true&key=$googleApiKey&polylineQuality=highQuality&polylineEncoding=encoded';
-
-    print('this is direction api url : $url');
+        'https://maps.googleapis.com/maps/api/directions/json?origin=$lat,$lng&destination=$destLat,$destLng&alternatives=true&key=$googleApiKey';
 
     final response = await http.get(Uri.parse(url));
 
@@ -187,47 +249,47 @@ class _GetRouteMapState extends State<GetRouteMap> {
       final data = json.decode(response.body);
 
       if (data['status'] == 'OK') {
+        polylines.clear();
+
+        int index = 0;
         double shortestDistance = double.infinity;
         int shortestIndex = 0;
         List<LatLng> shortestRoute = [];
-        int index = 0;
+
         for (var route in data['routes']) {
           List<LatLng> polylineCoordinates = [];
-          var points = PolylinePoints()
-              .decodePolyline(route['overview_polyline']['points']);
-          points.forEach((point) {
+          var points = PolylinePoints().decodePolyline(route['overview_polyline']['points']);
+
+          for (var point in points) {
             polylineCoordinates.add(LatLng(point.latitude, point.longitude));
-          });
+          }
 
-          // Calculate distance
           double distance = _calculateDistance(polylineCoordinates);
-
-          // Determine if this route is the shortest
           if (distance < shortestDistance) {
             shortestDistance = distance;
             shortestRoute = polylineCoordinates;
             shortestIndex = index;
           }
-          //
-          // if (data['routes'].length > 0) {
-          //   bool isShortest = index == data['routes'].length - 1;
-          //   _addPolyLine(
-          //       polylineCoordinates, index, isShortest, destLat, destLng);
-          // }
+
           index++;
         }
-        // Add only the shortest route to the map
-        if (shortestRoute.isNotEmpty) {
-          _addPolyLine(shortestRoute, shortestIndex, true, destLat, destLng);
+
+        // Now add polylines with the shortest one highlighted
+        index = 0;
+        for (var route in data['routes']) {
+          List<LatLng> polylineCoordinates = [];
+          var points = PolylinePoints().decodePolyline(route['overview_polyline']['points']);
+
+          for (var point in points) {
+            polylineCoordinates.add(LatLng(point.latitude, point.longitude));
+          }
+
+          bool isShortest = index == shortestIndex;
+          _addPolyLine(polylineCoordinates, index, isShortest);
+          index++;
         }
-        print('calling api resp :');
-        _homeBloc.add(OnGetRestaurantByRoute(
-            userId: userId,
-            polylinePoints: data['routes'][0]['overview_polyline']['points']
-                .toString()
-                .replaceAll(r'\', r'\\'),
-            originLat: lat,
-            originLng: lng));
+
+        setState(() {});
       } else {
         print('Error: ${data['status']} - ${data['error_message']}');
       }
@@ -235,6 +297,7 @@ class _GetRouteMapState extends State<GetRouteMap> {
       print('Request failed with status: ${response.statusCode}');
     }
   }
+
 
   List<LatLng> _offsetCoordinates(List<LatLng> coordinates) {
     const double offsetDistance = 0.00005; // Small offset value (~5 meters)
@@ -259,28 +322,53 @@ class _GetRouteMapState extends State<GetRouteMap> {
     return offsetCoordinates;
   }
 
-  _addPolyLine(List<LatLng> polylineCoordinates, int index, bool isShortest,
-      double destLat, double destLng) {
-    // Ensure polyline starts and ends at origin and destination
-    if (!isShortest) {
-      polylineCoordinates = _offsetCoordinates(polylineCoordinates);
-    }
-    // polylineCoordinates.insert(0, LatLng(latitude, longitude));
-    polylineCoordinates.add(LatLng(destLat, destLng));
-
+  _addPolyLine(List<LatLng> polylineCoordinates, int index, bool isShortest) {
     PolylineId id = PolylineId("polyline_$index");
+
+    Color routeColor = isShortest ? Colors.blue : Colors.grey;
+
     Polyline polyline = Polyline(
-        polylineId: id,
-        color: isShortest ? Colors.blue : Colors.grey,
-        points: polylineCoordinates,
-        width: 5,
-        onTap: () {
-          _onPolylineTapped(id);
-        },
-        consumeTapEvents: true);
+      polylineId: id,
+      color: routeColor,
+      points: polylineCoordinates,
+      width: 5,
+      onTap: () => _onPolylineTapped(id),
+      consumeTapEvents: true,
+    );
+
     polylines[id] = polyline;
+
+    if (isShortest) {
+      selectedPolylineId = id; // Store the shortest route initially
+    }
+
     setState(() {});
   }
+
+
+
+  // _addPolyLine(List<LatLng> polylineCoordinates, int index, bool isShortest,
+  //     double destLat, double destLng) {
+  //   // Ensure polyline starts and ends at origin and destination
+  //   if (!isShortest) {
+  //     polylineCoordinates = _offsetCoordinates(polylineCoordinates);
+  //   }
+  //   // polylineCoordinates.insert(0, LatLng(latitude, longitude));
+  //   polylineCoordinates.add(LatLng(destLat, destLng));
+  //
+  //   PolylineId id = PolylineId("polyline_$index");
+  //   Polyline polyline = Polyline(
+  //       polylineId: id,
+  //       color: isShortest ? Colors.blue : Colors.grey,
+  //       points: polylineCoordinates,
+  //       width: 5,
+  //       onTap: () {
+  //         _onPolylineTapped(id);
+  //       },
+  //       consumeTapEvents: true);
+  //   polylines[id] = polyline;
+  //   setState(() {});
+  // }
 
   double _calculateDistance(List<LatLng> coordinates) {
     double distance = 0.0;
@@ -310,160 +398,185 @@ class _GetRouteMapState extends State<GetRouteMap> {
   }
 
   void _onPolylineTapped(PolylineId polylineId) {
-    print('Polyline tapped: $polylineId');
+    if (selectedPolylineId == polylineId) return; // No change if already selected
 
-    // If the tapped polyline is already the selected one, return
-    if (selectedPolylineId == polylineId) return;
-
-    // Change the previous selected polyline (blue) to grey
-    if (selectedPolylineId != null) {
-      setState(() {
-        polylines[selectedPolylineId!] =
-            polylines[selectedPolylineId!]!.copyWith(
-          colorParam: Colors.grey,
-        );
-      });
-    }
-
-    // Set the tapped polyline to blue
     setState(() {
-      polylines[polylineId] = polylines[polylineId]!.copyWith(
-        colorParam: Colors.blue,
-      );
-      selectedPolylineId = polylineId; // Update the selected polyline
+      // Reset all polylines to grey
+      polylines.updateAll((id, polyline) {
+        return polyline.copyWith(colorParam: Colors.grey);
+      });
+
+      // Extract the route index from the polyline ID
+      String tappedRouteIndex = polylineId.value.split("_")[1];
+
+      // Highlight all polylines belonging to the same route
+      polylines.forEach((id, polyline) {
+        if (id.value.split("_")[1] == tappedRouteIndex) {
+          polylines[id] = polyline.copyWith(colorParam: Colors.blue);
+        }
+      });
+
+      selectedPolylineId = polylineId; // Store the selected route ID
     });
   }
 
-  Widget HomeHeaderContainer() => Container(
-        height: MediaQuery.of(context).size.height * 0.16,
-        width: MediaQuery.of(context).size.width,
-        decoration: const BoxDecoration(
-          color: AppColors.appPrimaryColor,
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(30),
-            bottomRight: Radius.circular(30),
-          ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0),
-          child: Column(
-            children: [
-              const Gap(12),
-              RoundedContainer(
-                  color: AppColors.white,
-                  borderColor: AppColors.white,
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height * 0.05,
-                  cornerRadius: 8,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Flexible(
-                        flex: 3,
-                        child: Text(
-                          '$currentLocation',
-                          style: AppFonts.title,
-                        ),
-                      ),
-                    ],
-                  )),
-              Gap(8),
-              PlaceSearchWidget()
-            ],
-          ),
-        ),
-      );
 
-  Widget PlaceSearchWidget() => RoundedContainer(
-        color: AppColors.white,
-        borderColor: AppColors.white,
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height * 0.06,
-        cornerRadius: 8,
-        padding: 0,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 8.0),
-              child: Icon(
-                Icons.search,
-                size: 18,
-                color: AppColors.textGrey,
-              ),
-            ),
-            Container(
-              width: MediaQuery.of(context).size.width * 0.69,
-              padding: EdgeInsets.zero,
-              child: SearchPlaceAutoCompletedTextField(
-                  googleAPIKey: googleApiKey,
-                  textStyle: AppFonts.title,
-                  countries: ['in'],
-                  isLatLngRequired: true,
-                  inputDecoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide.none, // No border
-                      borderRadius: BorderRadius.circular(10.0),
+
+  // void _onPolylineTapped(PolylineId polylineId) {
+  //   print('Polyline tapped: $polylineId');
+  //
+  //   // If the tapped polyline is already the selected one, return
+  //   if (selectedPolylineId == polylineId) return;
+  //
+  //   // Change the previous selected polyline (blue) to grey
+  //   if (selectedPolylineId != null) {
+  //     setState(() {
+  //       polylines[selectedPolylineId!] =
+  //           polylines[selectedPolylineId!]!.copyWith(
+  //             colorParam: Colors.grey,
+  //           );
+  //     });
+  //   }
+  //
+  //   // Set the tapped polyline to blue
+  //   setState(() {
+  //     polylines[polylineId] = polylines[polylineId]!.copyWith(
+  //       colorParam: Colors.blue,
+  //     );
+  //     selectedPolylineId = polylineId; // Update the selected polyline
+  //   });
+  // }
+
+  Widget HomeHeaderContainer() => Container(
+    height: MediaQuery.of(context).size.height * 0.16,
+    width: MediaQuery.of(context).size.width,
+    decoration: const BoxDecoration(
+      color: AppColors.appPrimaryColor,
+      borderRadius: BorderRadius.only(
+        bottomLeft: Radius.circular(30),
+        bottomRight: Radius.circular(30),
+      ),
+    ),
+    child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      child: Column(
+        children: [
+          const Gap(12),
+          RoundedContainer(
+              color: AppColors.white,
+              borderColor: AppColors.white,
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height * 0.05,
+              cornerRadius: 8,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Flexible(
+                    flex: 3,
+                    child: Text(
+                      '$currentLocation',
+                      style: AppFonts.title,
                     ),
                   ),
-                  controller: _placeSearchEditingController,
-                  itmOnTap: (Prediction prediction) {
-                    setState(() {
-                      _placeSearchEditingController.text =
-                          prediction.description!;
+                ],
+              )),
+          Gap(8),
+          PlaceSearchWidget()
+        ],
+      ),
+    ),
+  );
 
-                      // currentLocation = _placeSearchEditingController.text;
-                      _showPlaceSearchWidget = false;
-                    });
-
-                    _placeSearchEditingController.selection =
-                        TextSelection.fromPosition(TextPosition(
-                            offset: prediction.description?.length ?? 0));
-                  },
-                  getPlaceDetailWithLatLng: (Prediction prediction) {
-                    _placeSearchEditingController.text =
-                        prediction.description ?? "";
-
-                    _placeSearchEditingController.selection =
-                        TextSelection.fromPosition(TextPosition(
-                            offset: prediction.description?.length ?? 0));
-                    addDestinationMarker(double.parse(prediction.lat!),
-                        double.parse(prediction.lng!));
-                    _getPolylines(
-                        latitude,
-                        longitude,
-                        double.parse(prediction.lat!),
-                        double.parse(prediction.lng!));
-                  }),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: InkWell(
-                onTap: () {
-                  setState(() {
-                    _showPlaceSearchWidget = false;
-                    _placeSearchEditingController.clear();
-                  });
-                },
-                child: Icon(
-                  Icons.close,
-                  size: 18,
-                  color: AppColors.textGrey,
+  Widget PlaceSearchWidget() => RoundedContainer(
+    color: AppColors.white,
+    borderColor: AppColors.white,
+    width: MediaQuery.of(context).size.width,
+    height: MediaQuery.of(context).size.height * 0.06,
+    cornerRadius: 8,
+    padding: 0,
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 8.0),
+          child: Icon(
+            Icons.search,
+            size: 18,
+            color: AppColors.textGrey,
+          ),
+        ),
+        Container(
+          width: MediaQuery.of(context).size.width * 0.69,
+          padding: EdgeInsets.zero,
+          child: SearchPlaceAutoCompletedTextField(
+              googleAPIKey: googleApiKey,
+              textStyle: AppFonts.title,
+              countries: ['in'],
+              isLatLngRequired: true,
+              inputDecoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderSide: BorderSide.none, // No border
+                  borderRadius: BorderRadius.circular(10.0),
                 ),
               ),
-            ),
-            // IconButton(
-            //   padding: EdgeInsets.zero,
-            //   icon: const
-            //   onPressed: () {
-            //
-            //   },
-            // )
-          ],
+              controller: _placeSearchEditingController,
+              itmOnTap: (Prediction prediction) {
+                setState(() {
+                  _placeSearchEditingController.text =
+                  prediction.description!;
+
+                  // currentLocation = _placeSearchEditingController.text;
+                  _showPlaceSearchWidget = false;
+                });
+
+                _placeSearchEditingController.selection =
+                    TextSelection.fromPosition(TextPosition(
+                        offset: prediction.description?.length ?? 0));
+              },
+              getPlaceDetailWithLatLng: (Prediction prediction) {
+                _placeSearchEditingController.text =
+                    prediction.description ?? "";
+
+                _placeSearchEditingController.selection =
+                    TextSelection.fromPosition(TextPosition(
+                        offset: prediction.description?.length ?? 0));
+                addDestinationMarker(double.parse(prediction.lat!),
+                    double.parse(prediction.lng!));
+                _getPolylines(
+                    latitude,
+                    longitude,
+                    double.parse(prediction.lat!),
+                    double.parse(prediction.lng!));
+              }),
         ),
-      );
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: InkWell(
+            onTap: () {
+              setState(() {
+                _showPlaceSearchWidget = false;
+                _placeSearchEditingController.clear();
+              });
+            },
+            child: Icon(
+              Icons.close,
+              size: 18,
+              color: AppColors.textGrey,
+            ),
+          ),
+        ),
+        // IconButton(
+        //   padding: EdgeInsets.zero,
+        //   icon: const
+        //   onPressed: () {
+        //
+        //   },
+        // )
+      ],
+    ),
+  );
 
   getUserCurrentLocation() async {
     final prefs = await SharedPreferences.getInstance();
@@ -503,17 +616,17 @@ class _GetRouteMapState extends State<GetRouteMap> {
             infoWindow: InfoWindow(
                 title: restaurant.restaurantName!,
                 onTap: () => print('info window clicked')
-                // Navigator.pushNamed(context, AppRoutes.menuList,
-                //     arguments: MenuListArgs(
-                //         restaurantId: restaurant.restaurantId,
-                //         name: restaurant.restaurantName,
-                //         foodType: restaurant.restaurantMenuType,
-                //         ratings: restaurant.ratings,
-                //         landmark: restaurant.landmark,
-                //         distance: restaurant.distance,
-                //         duration: restaurant.duration,
-                //         payload: restaurant))
-                ),
+              // Navigator.pushNamed(context, AppRoutes.menuList,
+              //     arguments: MenuListArgs(
+              //         restaurantId: restaurant.restaurantId,
+              //         name: restaurant.restaurantName,
+              //         foodType: restaurant.restaurantMenuType,
+              //         ratings: restaurant.ratings,
+              //         landmark: restaurant.landmark,
+              //         distance: restaurant.distance,
+              //         duration: restaurant.duration,
+              //         payload: restaurant))
+            ),
           );
         }).toSet();
       });
