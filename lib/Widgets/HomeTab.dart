@@ -320,14 +320,14 @@ class _HomeTabState extends State<HomeTab> {
         decoration: BoxDecoration(
           color: AppColors.appPrimaryColor,
           borderRadius: const BorderRadius.only(
-            bottomLeft: Radius.circular(10),
-            bottomRight: Radius.circular(10),
+            bottomLeft: Radius.circular(20),
+            bottomRight: Radius.circular(20),
           ),
         ),
         child: InkWell(
           onTap: ()=>Navigator.pushNamed(context, AppRoutes.search_screen),
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0,vertical: 8.0),
             child: RoundedContainer(
                 width: MediaQuery.of(context).size.width*0.9,
                 height: MediaQuery.of(context).size.height*0.04,

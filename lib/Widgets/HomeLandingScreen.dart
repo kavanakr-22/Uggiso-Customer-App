@@ -24,7 +24,7 @@ class _HomeLandingScreenState extends State<HomeLandingScreen> {
     'assets/ic_home.png',
     'assets/ic_orders.png',
     'assets/ic_person.png',
-    '' // Route map icon replaced with an icon
+    ''
   ];
 
   final List<String> text = [
@@ -88,20 +88,9 @@ class _HomeLandingScreenState extends State<HomeLandingScreen> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          index == 3
-              ? Icon(
-            Icons.assistant_navigation,
-            color: _selectedIndex == index
-                ? AppColors.appPrimaryColor
-                : AppColors.bottomTabInactiveColor,
-          )
-              : Image.asset(
-            _imagePaths[index],
-            height: 18,
-            width: 18,
-            color: _selectedIndex == index
-                ? AppColors.appPrimaryColor
-                : AppColors.bottomTabInactiveColor,
+          index == 3?Icon(Icons.assistant_navigation,color: _selectedIndex == index ? AppColors.appPrimaryColor : AppColors.bottomTabInactiveColor,):Image.asset(_imagePaths[index],height: 18,width: 18,
+            color: _selectedIndex == index ? AppColors.appPrimaryColor : AppColors.bottomTabInactiveColor,
+
           ),
           SizedBox(height: 4.0),
           Text(

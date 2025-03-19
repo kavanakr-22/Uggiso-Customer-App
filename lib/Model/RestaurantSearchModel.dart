@@ -83,7 +83,7 @@ class Restaurants {
   String? upiData;
   Null? imageUrl;
   String? gstNumber;
-  int? gstPercent;
+  double? gstPercent;
   Null? openTime;
   Null? closeTime;
   String? userStatus;
@@ -232,8 +232,8 @@ class Menus {
   String? menuStatus;
   String? menuAvailable;
   String? restaurantMenuType;
-  int? price;
-  int? parcelCharges;
+  double? price;
+  double? parcelCharges;
   bool? bestSeller;
   Null? ratings;
 
