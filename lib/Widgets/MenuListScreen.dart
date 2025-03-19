@@ -479,7 +479,6 @@ class _MenuListScreenState extends State<MenuListScreen> {
   }
 
   void loadData(String? restId) async{
-    print('this is gst charges : ${widget.payload!.gstPercent}');
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       userId = prefs.getString('userId') ?? '';
