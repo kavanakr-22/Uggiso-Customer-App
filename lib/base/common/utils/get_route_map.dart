@@ -283,9 +283,9 @@ class _GetRouteMapState extends State<GetRouteMap> {
           for (var point in points) {
             polylineCoordinates.add(LatLng(point.latitude, point.longitude));
           }
-
-          bool isShortest = index == shortestIndex;
-          _addPolyLine(polylineCoordinates, index, isShortest);
+          bool hasNext = (index + 1) < data['routes'].length;
+          // bool isShortest = index == shortestIndex;
+          _addPolyLine(polylineCoordinates, index, hasNext);
           index++;
         }
 
@@ -299,50 +299,46 @@ class _GetRouteMapState extends State<GetRouteMap> {
   }
 
 
-  List<LatLng> _offsetCoordinates(List<LatLng> coordinates) {
-    const double offsetDistance = 0.00005; // Small offset value (~5 meters)
+  List<LatLng> _offsetCoordinates(List<LatLng> coordinates, double offset) {
+    List<LatLng> offsetCoordinates = [];
 
-    List<LatLng> offsetCoordinates = List.from(coordinates);
+    for (int i = 0; i < coordinates.length; i++) {
+      double latOffset = (i.isEven ? offset : -offset);
+      double lngOffset = (i.isOdd ? offset : -offset);
 
-    if (coordinates.isNotEmpty) {
-      // Apply offset to the first (origin) and last (destination) coordinates
-      LatLng origin = coordinates.first;
-      LatLng destination = coordinates.last;
-
-      // Offset origin by increasing both latitude and longitude
-      offsetCoordinates[0] = LatLng(
-          origin.latitude + offsetDistance, origin.longitude + offsetDistance);
-
-      // Offset destination by decreasing both latitude and longitude
-      offsetCoordinates[coordinates.length - 1] = LatLng(
-          destination.latitude - offsetDistance,
-          destination.longitude - offsetDistance);
+      offsetCoordinates.add(
+        LatLng(
+          coordinates[i].latitude + latOffset,
+          coordinates[i].longitude + lngOffset,
+        ),
+      );
     }
-
     return offsetCoordinates;
   }
 
-  _addPolyLine(List<LatLng> polylineCoordinates, int index, bool isShortest) {
+  _addPolyLine(List<LatLng> polylineCoordinates, int index, bool hasNext) {
     PolylineId id = PolylineId("polyline_$index");
 
-    Color routeColor = isShortest ? Colors.blue : Colors.grey;
+    Color routeColor = hasNext? Colors.grey : Colors.blue;
 
     Polyline polyline = Polyline(
       polylineId: id,
       color: routeColor,
       points: polylineCoordinates,
       width: 5,
-      onTap: () => _onPolylineTapped(id),
+      startCap: Cap.roundCap,
+      endCap: Cap.roundCap,
       consumeTapEvents: true,
+      onTap: () => _onPolylineTapped(id),
     );
 
     polylines[id] = polyline;
 
-    if (isShortest) {
-      selectedPolylineId = id; // Store the shortest route initially
-    }
+    // Ensure the last polyline is always blue
+    selectedPolylineId = id;
 
-    setState(() {});
+    setState(() {
+    });
   }
 
 
@@ -398,25 +394,38 @@ class _GetRouteMapState extends State<GetRouteMap> {
   }
 
   void _onPolylineTapped(PolylineId polylineId) {
-    if (selectedPolylineId == polylineId) return; // No change if already selected
+    if (selectedPolylineId == polylineId) return;
 
     setState(() {
-      // Reset all polylines to grey
-      polylines.updateAll((id, polyline) {
-        return polyline.copyWith(colorParam: Colors.grey);
-      });
+      // Change all to grey first
+      polylines.updateAll((id, polyline) => polyline.copyWith(
+        colorParam: Colors.grey,
+        widthParam: 5,
+        zIndexParam: 1,
+      ));
 
-      // Extract the route index from the polyline ID
-      String tappedRouteIndex = polylineId.value.split("_")[1];
+      // Move the tapped polyline to the last index by recreating the list
+      if (polylines.containsKey(polylineId)) {
+        final tappedPolyline = polylines[polylineId]!;
+        polylines.remove(polylineId);
+        polylines[polylineId] = tappedPolyline.copyWith(
+          colorParam: Colors.blue,
+          widthParam: 5,
+          zIndexParam: 2,
+        );
+      }
 
-      // Highlight all polylines belonging to the same route
-      polylines.forEach((id, polyline) {
-        if (id.value.split("_")[1] == tappedRouteIndex) {
-          polylines[id] = polyline.copyWith(colorParam: Colors.blue);
-        }
-      });
+      // Highlight the last one as blue
+      final lastPolylineId = polylines.keys.last;
+      if (polylines.containsKey(lastPolylineId)) {
+        polylines[lastPolylineId] = polylines[lastPolylineId]!.copyWith(
+          colorParam: Colors.blue,
+          widthParam: 5,
+          zIndexParam: 2,
+        );
+      }
 
-      selectedPolylineId = polylineId; // Store the selected route ID
+      selectedPolylineId = polylineId;
     });
   }
 
