@@ -1,7 +1,7 @@
 class Constants{
 
-  static String baseUrl = 'http://34.93.236.51:80/'; // test url
-  // static String baseUrl = 'http://uggiso.co.in/'; //prod url
+  // static String baseUrl = 'http://34.93.236.51:80/'; // test url
+  static String baseUrl = 'http://uggiso.co.in/'; //prod url
   static String mode = 'test';
   // static String mode = 'production';
   static String getOtp = 'user/otp';

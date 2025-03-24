@@ -173,16 +173,14 @@ class ApiProvider {
   }
 
   Future<GetNearByRestaurantModel> getNearByRestaurant(String userId,
-      double lat, double lag, double distance, String mode) async {
+      double lat, double lag) async {
     print('calling api : $lat and $lag');
     try {
       Response response = await _dio
           .post('${_url}${Constants.restaurantNearBy}', data: {
         "userId": userId,
         "lat": lat,
-        "lng": lag,
-        "distance": distance,
-        "mode": mode
+        "lng": lag
       });
       print("${response.data}");
 
@@ -603,9 +601,18 @@ class ApiProvider {
     }
   }
 
-  Future<ResaturantSearchModel> searchRestaurant(String querry) async {
+  Future<ResaturantSearchModel> searchRestaurant(String querry,double lat, double lag, String userId) async {
     try {
-      Response response = await _dio.get('${_url}${Constants.restaurant_search}$querry');
+
+      Response response =
+      await _dio.post('${_url}${Constants.restaurant_search}', data: {
+        "userId": userId,
+        "lat": lat,
+        "lng": lag,
+        "letters":querry
+
+      });
+      // Response response = await _dio.get('${_url}${Constants.restaurant_search}$querry');
       print("${response.data}");
 
       return ResaturantSearchModel.fromJson(response.data);

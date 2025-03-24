@@ -69,9 +69,9 @@ class Restaurants {
   String? restaurantId;
   String? ownerId;
   String? restaurantName;
-  Null? ownerName;
+  String? ownerName;
   String? phoneNumber;
-  Null? contactNumber;
+  String? contactNumber;
   String? address;
   String? landmark;
   double? lat;
@@ -81,7 +81,7 @@ class Restaurants {
   String? accountNumber;
   String? ifscCode;
   String? upiData;
-  Null? imageUrl;
+  String? imageUrl;
   String? gstNumber;
   double? gstPercent;
   Null? openTime;
@@ -89,18 +89,18 @@ class Restaurants {
   String? userStatus;
   String? restaurantMenuType;
   String? restaurantSize;
-  Null? ratings;
-  Null? subscriptionAmount;
-  Null? platformpercentage;
-  Null? subsriptionDate;
+  double? ratings;
+  double? subscriptionAmount;
+  double? platformpercentage;
+  String? subsriptionDate;
   String? fssai;
   String? panImage;
-  Null? menucard;
+  List<dynamic>? menucard;
   String? chequePhoto;
   Null? onboardDoc;
   Null? agreementDoc;
   bool? referAdded;
-  Null? ownerPhone;
+  String? ownerPhone;
   String? createdDate;
 
   Restaurants(

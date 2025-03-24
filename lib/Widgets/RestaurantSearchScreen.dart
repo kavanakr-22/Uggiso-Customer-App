@@ -1,19 +1,24 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/gap.dart';
 import 'package:uggiso/Bloc/SearchBloc/search_bloc.dart';
 import 'package:uggiso/Bloc/SearchBloc/search_event.dart';
 import 'package:uggiso/Bloc/SearchBloc/search_state.dart';
 import 'package:uggiso/Model/RestaurantSearchModel.dart';
 import 'package:uggiso/Widgets/ui-kit/RoundedContainer.dart';
-import 'package:uggiso/app_routes.dart';
-import 'package:uggiso/base/common/utils/MenuListArgs.dart';
 import 'package:uggiso/base/common/utils/colors.dart';
 import 'package:uggiso/base/common/utils/fonts.dart';
 import 'package:uggiso/base/common/utils/strings.dart';
 
 class Restaurantsearchscreen extends StatefulWidget {
-  const Restaurantsearchscreen({super.key});
+  final double? lat;
+  final double? lag;
+  final String? userId;
+
+  const Restaurantsearchscreen({super.key, required this.lat,
+    required this.lag,
+    required this.userId,});
 
   @override
   State<Restaurantsearchscreen> createState() => _RestaurantsearchscreenState();
@@ -60,7 +65,7 @@ class _RestaurantsearchscreenState extends State<Restaurantsearchscreen> {
 
     _debounce = Timer(Duration(milliseconds: 500), () {
       if (query.length > 2) {
-        _searchBloc.add(OnSearchInitiated(querry: query));
+        _searchBloc.add(OnSearchInitiated(querry: query,lat:widget.lat!,lag:widget.lag!,userId: widget.userId!));
       }
     });
   }
@@ -256,45 +261,129 @@ class _RestaurantsearchscreenState extends State<Restaurantsearchscreen> {
 
   Widget _restaurantCard(Restaurants restaurant) {
     return Container(
-      child: ListTile(
-        title: Text(
-          restaurant.restaurantName!,
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text("Phone: ${restaurant.phoneNumber}"),
-            Text("Address: ${restaurant.address}, ${restaurant.city}"),
-            Text("Menu Type: ${restaurant.restaurantMenuType}"),
-          ],
-        ),
+      padding: EdgeInsets.all(8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Image on the left side
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.network(
+              restaurant.imageUrl ?? '',
+              height: MediaQuery.of(context).size.height*0.08,
+              width: MediaQuery.of(context).size.width*0.2,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) =>
+                  Image.asset('assets/placeholder.png', height: 80, width: 80, fit: BoxFit.cover),  // Fallback image
+            ),
+          ),
+          SizedBox(width: 12),  // Spacing between image and content
+          Expanded(              // To prevent overflow and ensure content takes remaining space
+            child: ListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(
+                restaurant.restaurantName!,
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Gap(4),
+                  Text("${restaurant.address}, ${restaurant.city}"),
+                  Gap(4),
+                  Row(
+                    children: [
+                      restaurant.restaurantMenuType == 'VEG'
+                          ? Image.asset(
+                        'assets/ic_veg.png',
+                        height: 12,
+                        width: 12,
+                      )
+                          : Image.asset(
+                        'assets/ic_non_veg.png',
+                        height: 12,
+                        width: 12,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Text("${restaurant.restaurantMenuType}"),
+                      ),
+
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 
+
+
   Widget _menuCard(Menus menu) {
     return Container(
-      child: ListTile(
-        title: Text(
-          menu.menuName!,
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text("Type: ${menu.menuType}"),
-            Text("Description: ${menu.description}"),
-            Text("Price: ₹${menu.price}"),
-            Text("Parcel Charges: ₹${menu.parcelCharges}"),
-            if (menu.bestSeller!)
-              Text(
-                "⭐ Best Seller",
-                style: TextStyle(color: Colors.orange, fontWeight: FontWeight.bold),
+      padding: EdgeInsets.all(8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Image on the left side
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.network(
+              menu.photo ?? '',
+              height: MediaQuery.of(context).size.height*0.08,
+              width: MediaQuery.of(context).size.width*0.2,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) =>
+                  Image.asset('assets/placeholder.png', height: 80, width: 80, fit: BoxFit.cover),  // Fallback image
+            ),
+          ),
+          SizedBox(width: 12),  // Spacing between image and content
+          Expanded(              // Ensure the content takes remaining space
+            child: ListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(
+                menu.menuName!,
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-          ],
-        ),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      menu.restaurantMenuType == 'VEG'
+                          ? Image.asset(
+                        'assets/ic_veg.png',
+                        height: 12,
+                        width: 12,
+                      )
+                          : Image.asset(
+                        'assets/ic_non_veg.png',
+                        height: 12,
+                        width: 12,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Text("${menu.restaurantMenuType}"),
+                      ),
+
+                    ],
+                  ),
+                  Text("Price: ₹${menu.price}"),
+                  if (menu.bestSeller ?? false)
+                    Text(
+                      "⭐ Best Seller",
+                      style: TextStyle(color: Colors.orange, fontWeight: FontWeight.bold),
+                    ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
+
 }

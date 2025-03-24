@@ -14,6 +14,7 @@ import 'package:uggiso/Widgets/Shimmer/HomeScreen.dart';
 import 'package:uggiso/Widgets/ui-kit/HotelListGrid.dart';
 import 'package:uggiso/Widgets/ui-kit/RoundedContainer.dart';
 import 'package:uggiso/base/common/utils/GetHotelListinMap.dart';
+import 'package:uggiso/base/common/utils/MenuListArgs.dart';
 import 'package:uggiso/base/common/utils/colors.dart';
 import '../app_routes.dart';
 import '../base/common/utils/fonts.dart';
@@ -231,64 +232,66 @@ class _HomeTabState extends State<HomeTab> {
                 ),
               ),
             ),
-            body: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                searchWidget(),
-                BlocBuilder<HomeBloc, HomeState>(
-                  builder: (BuildContext context, HomeState state) {
-                    if (state is onLoadedHotelState) {
-                      print('this is state data : ${state.data.payload}');
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Gap(24),
-                            const Text(
-                              Strings.near_by_restaurants,
-                              style: AppFonts.subHeader,
-                            ),
-                            const Gap(12),
-                            _isShowMaps ? Container(
-                              child: HotelListGrid(
-                                  state.data.payload,userId,latitude,longitude,selectedMode,selectedDistance),
-                            ):GetHotelListinMap(state.data.payload,userId) ,
-                          ],
-                        ),
-                      );
-                      // Navigator.pushNamed(context, AppRoutes.verifyOtp);
-                    } else if (state is ErrorState) {
-
-                      return Expanded(
-                        child: Column(
-                          children: [
-                            Gap(MediaQuery
-                                .of(context)
-                                .size
-                                .height * 0.2),
-                            Icon(Icons.no_food,color: AppColors.rewardsText,size: 86),
-                            const Gap(20),
-                            Container(
-                              child: Center(
-                                child: Text(
-                                  '${state.message}',
-                                  style: AppFonts.title,
+            body: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  searchWidget(),
+                  BlocBuilder<HomeBloc, HomeState>(
+                    builder: (BuildContext context, HomeState state) {
+                      if (state is onLoadedHotelState) {
+                        print('this is state data : ${state.data.payload}');
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Gap(24),
+                              const Text(
+                                Strings.near_by_restaurants,
+                                style: AppFonts.subHeader,
+                              ),
+                              const Gap(12),
+                              _isShowMaps ? Container(
+                                child: HotelListGrid(
+                                    state.data.payload,userId,latitude,longitude,selectedMode,selectedDistance),
+                              ):GetHotelListinMap(state.data.payload,userId) ,
+                            ],
+                          ),
+                        );
+                        // Navigator.pushNamed(context, AppRoutes.verifyOtp);
+                      } else if (state is ErrorState) {
+              
+                        return Expanded(
+                          child: Column(
+                            children: [
+                              Gap(MediaQuery
+                                  .of(context)
+                                  .size
+                                  .height * 0.2),
+                              Icon(Icons.no_food,color: AppColors.rewardsText,size: 86),
+                              const Gap(20),
+                              Container(
+                                child: Center(
+                                  child: Text(
+                                    '${state.message}',
+                                    style: AppFonts.title,
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                      );
-                    } else if (state is LoadingHotelState) {
-                      return const HomeScreen();
-                    } else {
-                      return Container();
-                    }
-                  },
-                ),
-              ],
+                            ],
+                          ),
+                        );
+                      } else if (state is LoadingHotelState) {
+                        return const HomeScreen();
+                      } else {
+                        return Container();
+                      }
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -325,7 +328,8 @@ class _HomeTabState extends State<HomeTab> {
           ),
         ),
         child: InkWell(
-          onTap: ()=>Navigator.pushNamed(context, AppRoutes.search_screen),
+          onTap: ()=>Navigator.pushNamed(context, AppRoutes.search_screen,arguments: RestaurantSearchArgs(
+            lat: latitude, lag: longitude, userId: userId)),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0,vertical: 8.0),
             child: RoundedContainer(
@@ -447,70 +451,6 @@ class _HomeTabState extends State<HomeTab> {
                         )),
                   ),
                   SizedBox(width: 8,),
-                  //
-                  // Flexible(
-                  //   flex:2,
-                  //   child: RoundedContainer(
-                  //       width: MediaQuery
-                  //           .of(context)
-                  //           .size
-                  //           .width,
-                  //       height: MediaQuery
-                  //           .of(context)
-                  //           .size
-                  //           .height * 0.05,
-                  //       color: AppColors.white,
-                  //       cornerRadius: 8,
-                  //       padding: 0,
-                  //       child: DropdownButtonFormField(
-                  //         decoration: const InputDecoration(
-                  //           contentPadding: EdgeInsets.symmetric(horizontal: 0),
-                  //           border: InputBorder.none,
-                  //         ),
-                  //         padding: const EdgeInsets.symmetric(horizontal: 12),
-                  //         value: selectedMode,
-                  //         menuMaxHeight: MediaQuery
-                  //             .of(context)
-                  //             .size
-                  //             .height * 0.4,
-                  //         icon:Icon(Icons.keyboard_arrow_down,size: 20,),
-                  //         items: Strings.travel_mode.map((String value) {
-                  //           return DropdownMenuItem(
-                  //             value: value,
-                  //             child: Text('${value}',style: AppFonts.title,),
-                  //           );
-                  //         }).toList(),
-                  //         onChanged: (String? newValue) {
-                  //           setState(() {
-                  //             selectedMode = newValue!;
-                  //             getNearByRestaurants(userId,
-                  //                 latitude, longitude, selectedDistance,selectedMode);
-                  //           });
-                  //         },
-                  //       )),
-                  // ),
-                  // SizedBox(width: 8,),
-                  // Flexible(
-                  //   flex: 2,
-                  //   child: InkWell(
-                  //     onTap: (){
-                  //       Navigator.pushNamed(context, AppRoutes.getRouteMap);
-                  //     },
-                  //     child: RoundedContainer(
-                  //         width: MediaQuery
-                  //             .of(context)
-                  //             .size
-                  //             .width,
-                  //         height: MediaQuery
-                  //             .of(context)
-                  //             .size
-                  //             .height * 0.05,
-                  //         color: AppColors.white,
-                  //         cornerRadius: 8,
-                  //         padding: 0,
-                  //         child:Center(child: const Text('My Route', style: AppFonts.title,))),
-                  //   ),
-                  // ),
                 ],
               ),
             ],
@@ -520,16 +460,7 @@ class _HomeTabState extends State<HomeTab> {
 
   getUserCurrentLocation() async {
     final prefs = await SharedPreferences.getInstance();
-    // final List<Object?> result = await platform.invokeMethod('callSabPaisaSdk',
-    //     ['TIlak', "", "", '9964367047', '100']);
-    // print('this is the transaction result : $result');
-    // print('this is the transaction result status: ${result[0].toString()}');
-    // print('this is the transaction result txnId: ${result[1].toString()}');
-    //
-    // String txnStatus = result[0].toString();
-    // setState(() {
-    //   txnId = result[1].toString();
-    // });
+
     setState(() {
       latitude = prefs.getDouble('user_latitude') ?? 0.0;
       longitude = prefs.getDouble('user_longitude') ?? 0.0;
