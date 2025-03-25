@@ -61,7 +61,7 @@ class _HomeLandingScreenState extends State<HomeLandingScreen> {
         ),
       ),
       bottomNavigationBar: BottomAppBar(
-        color: AppColors.white,
+        color: AppColors.appPrimaryColor,
         child: SafeArea(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -88,8 +88,8 @@ class _HomeLandingScreenState extends State<HomeLandingScreen> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          index == 3?Icon(Icons.assistant_navigation,color: _selectedIndex == index ? AppColors.appPrimaryColor : AppColors.bottomTabInactiveColor,):Image.asset(_imagePaths[index],height: 18,width: 18,
-            color: _selectedIndex == index ? AppColors.appPrimaryColor : AppColors.bottomTabInactiveColor,
+          index == 3?Icon(Icons.assistant_navigation,color: _selectedIndex == index ? AppColors.white : AppColors.bottomTabInactiveColor,):Image.asset(_imagePaths[index],height: 18,width: 18,
+            color: _selectedIndex == index ? AppColors.white : AppColors.bottomTabInactiveColor,
 
           ),
           SizedBox(height: 4.0),
@@ -98,7 +98,7 @@ class _HomeLandingScreenState extends State<HomeLandingScreen> {
             style: TextStyle(
               fontSize: 12,
               color: _selectedIndex == index
-                  ? AppColors.appPrimaryColor
+                  ? AppColors.white
                   : AppColors.bottomTabInactiveColor,
             ),
           ),

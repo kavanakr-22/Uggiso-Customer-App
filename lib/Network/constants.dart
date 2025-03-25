@@ -31,5 +31,5 @@ class Constants{
   static String initiate_payment = 'payment/initiate';
   static String check_app_version = 'user/appversion';
   static String remove_user_data = 'user/removedata';
-  static String restaurant_search = 'restaurant/search/';
+  static String restaurant_search = 'restaurant/search';
 }
