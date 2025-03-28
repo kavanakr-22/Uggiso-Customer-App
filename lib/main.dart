@@ -118,8 +118,8 @@ void main() async {
     overlays: [SystemUiOverlay.bottom],
   );
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-    statusBarColor: AppColors.appPrimaryColor, // Your app's primary color
-    statusBarIconBrightness: Brightness.light, // Adjust for icon visibility
+    statusBarColor: AppColors.appPrimaryColor,
+    statusBarIconBrightness: Brightness.light,
   ));
 
   runApp(MultiBlocProvider(providers: [

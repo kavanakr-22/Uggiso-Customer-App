@@ -51,24 +51,20 @@ class _HomeLandingScreenState extends State<HomeLandingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.white,
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: _widgetOptions.elementAt(_selectedIndex),
-            ),
-          ],
-        ),
+      body: Column(
+        children: [
+          Expanded(
+            child: _widgetOptions.elementAt(_selectedIndex),
+          ),
+        ],
       ),
       bottomNavigationBar: BottomAppBar(
         color: AppColors.appPrimaryColor,
-        child: SafeArea(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: List.generate(_imagePaths.length, (index) {
-              return buildNavBarItem(index);
-            }),
-          ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: List.generate(_imagePaths.length, (index) {
+            return buildNavBarItem(index);
+          }),
         ),
       ),
     );
@@ -88,7 +84,10 @@ class _HomeLandingScreenState extends State<HomeLandingScreen> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          index == 3?Icon(Icons.assistant_navigation,color: _selectedIndex == index ? AppColors.white : AppColors.bottomTabInactiveColor,):Image.asset(_imagePaths[index],height: 18,width: 18,
+          index == 0?Icon(Icons.home_rounded,color: _selectedIndex == index ? AppColors.white : AppColors.bottomTabInactiveColor,size: 26,):
+          index == 2?Icon(Icons.person,color: _selectedIndex == index ? AppColors.white : AppColors.bottomTabInactiveColor,size: 26,):
+          index == 1?Icon(Icons.list_alt_rounded,color: _selectedIndex == index ? AppColors.white : AppColors.bottomTabInactiveColor,size: 26,):
+          index == 3?Icon(Icons.assistant_navigation,color: _selectedIndex == index ? AppColors.white : AppColors.bottomTabInactiveColor,):Image.asset(_imagePaths[index],height: 20,width: 20,
             color: _selectedIndex == index ? AppColors.white : AppColors.bottomTabInactiveColor,
 
           ),
@@ -96,7 +95,7 @@ class _HomeLandingScreenState extends State<HomeLandingScreen> {
           Text(
             text[index],
             style: TextStyle(
-              fontSize: 12,
+              fontSize: 14,
               color: _selectedIndex == index
                   ? AppColors.white
                   : AppColors.bottomTabInactiveColor,

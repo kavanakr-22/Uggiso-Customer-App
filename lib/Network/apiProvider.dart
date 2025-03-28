@@ -602,6 +602,7 @@ class ApiProvider {
   }
 
   Future<ResaturantSearchModel> searchRestaurant(String querry,double lat, double lag, String userId) async {
+
     try {
 
       Response response =

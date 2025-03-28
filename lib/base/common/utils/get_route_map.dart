@@ -19,7 +19,8 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:uggiso/base/common/utils/strings.dart';
 import 'dart:math' as math;
 import 'package:http/http.dart' as http;
-
+import 'package:flutter/services.dart' show ByteData, Uint8List, rootBundle;
+import 'dart:ui' as ui;
 import '../../../Bloc/HomeBloc/HomeEvent.dart';
 
 class GetRouteMap extends StatefulWidget {
@@ -123,6 +124,17 @@ class _GetRouteMapState extends State<GetRouteMap> {
         ),
       ),
     );
+  }
+
+  Future<BitmapDescriptor> _getCustomIcon(String assetPath) async {
+    final ByteData data = await rootBundle.load(assetPath);
+    final ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(), targetWidth: 100);
+    final ui.FrameInfo fi = await codec.getNextFrame();
+
+    final ByteData? byteData = await fi.image.toByteData(format: ui.ImageByteFormat.png);
+    final Uint8List uint8List = byteData!.buffer.asUint8List();
+
+    return BitmapDescriptor.fromBytes(uint8List);
   }
 
   void _onMapCreated(GoogleMapController controller) async {
@@ -290,6 +302,14 @@ class _GetRouteMapState extends State<GetRouteMap> {
         }
 
         setState(() {});
+
+        _homeBloc.add(OnGetRestaurantByRoute(
+                      userId: userId,
+                      polylinePoints: data['routes'][0]['overview_polyline']['points']
+                          .toString()
+                          .replaceAll(r'\', r'\\'),
+                      originLat: lat,
+                      originLng: lng));
       } else {
         print('Error: ${data['status']} - ${data['error_message']}');
       }
@@ -325,7 +345,7 @@ class _GetRouteMapState extends State<GetRouteMap> {
       polylineId: id,
       color: routeColor,
       points: polylineCoordinates,
-      width: 5,
+      width: 8,
       startCap: Cap.roundCap,
       endCap: Cap.roundCap,
       consumeTapEvents: true,
@@ -607,7 +627,7 @@ class _GetRouteMapState extends State<GetRouteMap> {
     _addMarker(
         LatLng(hotel_lat!, hotel_lng!),
         restaurant_name!,
-        BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+        BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
         payload);
   }
 

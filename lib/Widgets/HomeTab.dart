@@ -124,48 +124,9 @@ class _HomeTabState extends State<HomeTab> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Flexible(
-                          flex:2,child: locationHeader()),
-                      Flexible(
-                        flex: 1,
-                        child: RoundedContainer(
-                            width: MediaQuery
-                                .of(context)
-                                .size
-                                .width*0.25,
-                            height: 40,
-                            color: AppColors.white,
-                            cornerRadius: 8,
-                            padding: 0,
-                            child: DropdownButtonFormField(
-                              decoration: const InputDecoration(
-                                contentPadding: EdgeInsets.symmetric(horizontal: 0),
-                                border: InputBorder.none,
-                              ),
-                              padding: const EdgeInsets.symmetric(horizontal: 8),
-                              value: selectedDistance,
-
-                              menuMaxHeight: MediaQuery
-                                  .of(context)
-                                  .size
-                                  .height * 0.4,
-                              icon:Icon(Icons.keyboard_arrow_down,size: 20,),
-                              items: Strings.distance_type.map((double value) {
-                                return DropdownMenuItem(
-                                  value: value,
-                                  child: Text('${value} KM',style: AppFonts.smallText.copyWith(fontWeight: FontWeight.bold),),
-                                );
-                              }).toList(),
-                              onChanged: (double? newValue) {
-                                setState(() {
-                                  selectedDistance = newValue!;
-                                  print('lat lng after change distance : $latitude and $longitude');
-                                  getNearByRestaurants(userId,
-                                      latitude, longitude, selectedDistance,selectedMode);
-                                });
-                              },
-                            )),
-                      ),
+                      locationHeader()
+                      // Flexible(
+                      //     flex:2,child: locationHeader()),
                     ],
                   ),
                 ),
@@ -247,11 +208,7 @@ class _HomeTabState extends State<HomeTab> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Gap(24),
-                              const Text(
-                                Strings.near_by_restaurants,
-                                style: AppFonts.subHeader,
-                              ),
+
                               const Gap(12),
                               _isShowMaps ? Container(
                                 child: HotelListGrid(
@@ -301,7 +258,7 @@ class _HomeTabState extends State<HomeTab> {
 
   Widget locationHeader()=>
   RoundedContainer(
-    width: MediaQuery.of(context).size.width*0.65,
+    width: MediaQuery.of(context).size.width*0.91,
     cornerRadius: 5,
     color: AppColors.white,
     child: InkWell(
@@ -339,13 +296,9 @@ class _HomeTabState extends State<HomeTab> {
                 padding: 10,
                 child: Align(
                   alignment: Alignment.centerLeft,
-                  child: AnimatedPositioned(
-                    duration: const Duration(seconds: 1),
-                    left: _position,
-                    child: Text('Search Restaurant',
-                      style: AppFonts.smallText.copyWith(color: AppColors.grey,),
-                      textAlign: TextAlign.center,),
-                  ),
+                  child: Text('Search Restaurant',
+                    style: AppFonts.smallText.copyWith(color: AppColors.grey,),
+                    textAlign: TextAlign.center,),
                 ), cornerRadius: 5),
           )
         ),

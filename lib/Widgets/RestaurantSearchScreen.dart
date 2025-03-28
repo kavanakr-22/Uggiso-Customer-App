@@ -7,6 +7,8 @@ import 'package:uggiso/Bloc/SearchBloc/search_event.dart';
 import 'package:uggiso/Bloc/SearchBloc/search_state.dart';
 import 'package:uggiso/Model/RestaurantSearchModel.dart';
 import 'package:uggiso/Widgets/ui-kit/RoundedContainer.dart';
+import 'package:uggiso/app_routes.dart';
+import 'package:uggiso/base/common/utils/MenuListArgs.dart';
 import 'package:uggiso/base/common/utils/colors.dart';
 import 'package:uggiso/base/common/utils/fonts.dart';
 import 'package:uggiso/base/common/utils/strings.dart';
@@ -180,20 +182,19 @@ class _RestaurantsearchscreenState extends State<Restaurantsearchscreen> {
                     return InkWell(
                       onTap: (){
                         print('this isrestaurant id  from restaurants: ${data.payload!.restaurants![index].restaurantId}');
-                        // Navigator.pushNamed(
-                        //   context,
-                        //   AppRoutes.menuList,
-                        //   arguments: MenuListArgs(
-                        //     restaurantId: data.payload!.restaurants![index].restaurantId,
-                        //     name: data.payload!.restaurants![index].restaurantName,
-                        //     foodType: data.payload!.restaurants![index].restaurantMenuType,
-                        //     ratings: data.payload!.restaurants![index].ratings,
-                        //     landmark: data.payload!.restaurants![index].landmark,
-                        //     distance: '',
-                        //     duration: '',
-                        //     payload: data.payload,
-                        //   ),
-                        // );
+                        Navigator.pushNamed(
+                          context,
+                          AppRoutes.menuList,
+                          arguments: MenuListArgs(
+                            restaurantId: data.payload!.restaurants![index].restaurantId,
+                            name: data.payload!.restaurants![index].restaurantName,
+                            foodType: data.payload!.restaurants![index].restaurantMenuType,
+                            ratings: data.payload!.restaurants![index].ratings,
+                            landmark: data.payload!.restaurants![index].landmark,
+                            distance: data.payload!.restaurants![index].distance,
+                            duration: data.payload!.restaurants![index].duration
+                          ),
+                        );
                       },
                         child: _restaurantCard(data.payload!.restaurants![index]));
                   },
@@ -274,7 +275,7 @@ class _RestaurantsearchscreenState extends State<Restaurantsearchscreen> {
               width: MediaQuery.of(context).size.width*0.2,
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) =>
-                  Image.asset('assets/placeholder.png', height: 80, width: 80, fit: BoxFit.cover),  // Fallback image
+                  Image.asset('assets/ic_no_image.png', height: 80, width: 80, fit: BoxFit.cover),  // Fallback image
             ),
           ),
           SizedBox(width: 12),  // Spacing between image and content
@@ -289,7 +290,7 @@ class _RestaurantsearchscreenState extends State<Restaurantsearchscreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Gap(4),
-                  Text("${restaurant.address}, ${restaurant.city}"),
+                  Text("${restaurant.address}"),
                   Gap(4),
                   Row(
                     children: [
@@ -337,7 +338,7 @@ class _RestaurantsearchscreenState extends State<Restaurantsearchscreen> {
               width: MediaQuery.of(context).size.width*0.2,
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) =>
-                  Image.asset('assets/placeholder.png', height: 80, width: 80, fit: BoxFit.cover),  // Fallback image
+                  Image.asset('assets/ic_no_image.png', height: 80, width: 80, fit: BoxFit.cover),  // Fallback image
             ),
           ),
           SizedBox(width: 12),  // Spacing between image and content
