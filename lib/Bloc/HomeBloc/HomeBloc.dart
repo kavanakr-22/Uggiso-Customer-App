@@ -22,7 +22,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         emit(LoadingHotelState());
         data = await _apiRepository.getNearbyRestaurant(
             event.userId,event.lat, event.lag, event.distance,event.mode);
-        if (data!.payload == null) {
+        if (data!.statusCode!=200) {
           emit(ErrorState(data!.message.toString()));
         } else {
           emit(onLoadedHotelState(data!));

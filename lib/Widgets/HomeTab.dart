@@ -220,25 +220,26 @@ class _HomeTabState extends State<HomeTab> {
                         // Navigator.pushNamed(context, AppRoutes.verifyOtp);
                       } else if (state is ErrorState) {
               
-                        return Expanded(
-                          child: Column(
-                            children: [
-                              Gap(MediaQuery
-                                  .of(context)
-                                  .size
-                                  .height * 0.2),
-                              Icon(Icons.no_food,color: AppColors.rewardsText,size: 86),
-                              const Gap(20),
-                              Container(
-                                child: Center(
-                                  child: Text(
-                                    '${state.message}',
-                                    style: AppFonts.title,
-                                  ),
+                        return Column(
+                          children: [
+                            Gap(MediaQuery
+                                .of(context)
+                                .size
+                                .height * 0.2),
+                            Icon(Icons.no_food,color: AppColors.rewardsText.withOpacity(0.4),size: 86),
+                            const Gap(20),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Center(
+                                child: Text(
+                                  'We\'re currently unavailable in your location, but we\'re expanding fast! Stay tuned—we\'ll be reaching your area very soon!',
+                                  style: AppFonts.header1.copyWith(color: AppColors.textGrey.withOpacity(0.4)),
+                                  textAlign: TextAlign.center,
+
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         );
                       } else if (state is LoadingHotelState) {
                         return const HomeScreen();
