@@ -208,46 +208,46 @@ class _RestaurantsearchscreenState extends State<Restaurantsearchscreen> {
             ]
           ),
           // Menus Expandable
-          data.payload!.menus!.isEmpty?Container():ExpansionTile(
-            initiallyExpanded: _isMenusExpanded,
-            onExpansionChanged: (expanded) {
-              setState(() => _isMenusExpanded = expanded);
-            },
-            tilePadding: EdgeInsets.zero,        // Removes padding around the tile
-            collapsedShape: RoundedRectangleBorder(
-              side: BorderSide.none,              // Removes the border line
-            ),
-            shape: RoundedRectangleBorder(
-              side: BorderSide.none,              // Removes border when expanded
-            ),
-            title: _sectionHeader('Menus'),
-            children: [
-              RoundedContainer(
-                width: double.infinity,
-                cornerRadius: 12,
-                color: Colors.white,
-                borderColor: AppColors.white,
-                child: ListView.separated(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: data.payload!.menus!.length,
-                  itemBuilder: (context, index) {
-                    return InkWell(
-                      onTap: (){
-                        print('this isrestaurant id  from restaurants: ${data.payload!.menus![index].restaurantId}');
-
-                      },
-                        child: _menuCard(data.payload!.menus![index]));
-                  },
-                  separatorBuilder: (context, index) => Divider(
-                    color: Colors.grey[300],   // Divider color
-                    thickness: 1,              // Line thickness
-                    height: 16,                // Space between items
-                  ),
-                ),
-              ),
-            ]
-          ),
+          // data.payload!.menus!.isEmpty?Container():ExpansionTile(
+          //   initiallyExpanded: _isMenusExpanded,
+          //   onExpansionChanged: (expanded) {
+          //     setState(() => _isMenusExpanded = expanded);
+          //   },
+          //   tilePadding: EdgeInsets.zero,        // Removes padding around the tile
+          //   collapsedShape: RoundedRectangleBorder(
+          //     side: BorderSide.none,              // Removes the border line
+          //   ),
+          //   shape: RoundedRectangleBorder(
+          //     side: BorderSide.none,              // Removes border when expanded
+          //   ),
+          //   title: _sectionHeader('Menus'),
+          //   children: [
+          //     RoundedContainer(
+          //       width: double.infinity,
+          //       cornerRadius: 12,
+          //       color: Colors.white,
+          //       borderColor: AppColors.white,
+          //       child: ListView.separated(
+          //         shrinkWrap: true,
+          //         physics: NeverScrollableScrollPhysics(),
+          //         itemCount: data.payload!.menus!.length,
+          //         itemBuilder: (context, index) {
+          //           return InkWell(
+          //             onTap: (){
+          //               print('this isrestaurant id  from restaurants: ${data.payload!.menus![index].restaurantId}');
+          //
+          //             },
+          //               child: _menuCard(data.payload!.menus![index]));
+          //         },
+          //         separatorBuilder: (context, index) => Divider(
+          //           color: Colors.grey[300],   // Divider color
+          //           thickness: 1,              // Line thickness
+          //           height: 16,                // Space between items
+          //         ),
+          //       ),
+          //     ),
+          //   ]
+          // ),
         ],
       ),
     );
