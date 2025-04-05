@@ -139,9 +139,14 @@ class _RestaurantsearchscreenState extends State<Restaurantsearchscreen> {
             );
           } else if (state is onLoadedState) {
             return showSearchResults(state.data);
-          } else {
+          } else if (state is ErrorState) {
+            return  Center(
+              child: Text('${state.message}',style: AppFonts.title,),
+            );
+          }
+          else {
             return Center(
-              child: Text(Strings.something_went_wrong),
+              child: Text('Search Restaurants Here',style: AppFonts.title,),
             );
           }
         }),
