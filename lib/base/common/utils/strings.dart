@@ -101,7 +101,7 @@ class Strings {
   static const payment_methods = 'Payment Methods';
   static const note = 'Note : ';
   static const note_desc =
-      'If you cancel the order within 60 Sec of placing your oreder, a 100% refund will be issued. No refund for cancellations made after 60 seconds.';
+      'If you cancel the order within 60 Sec of placing your order, a 100% refund will be issued. No refund for cancellations made after 60 seconds.';
   static const payment_successful = 'Payment successful';
   static const order_successful = 'Order Created Successfully';
   static const uggiso_points = 'Uggiso Points';

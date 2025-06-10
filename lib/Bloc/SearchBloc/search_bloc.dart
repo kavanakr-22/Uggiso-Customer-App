@@ -19,8 +19,11 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         emit(LoadingState()) ;
         if(event.querry.isNotEmpty) {
           data =  await _apiRepository.searchRestaurant(event.querry,event.lat,event.lag,event.userId);
-          print('search response payload: ${data.payload?.restaurants}');
+          print('search response payload: ${data.statusCode}');
 
+          if(data.statusCode==null){
+            emit(ErrorState('No Restaurants found in this region'));
+          }
           if(data.statusCode == 200){
             emit(onLoadedState(data));
           }

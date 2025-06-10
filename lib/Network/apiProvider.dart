@@ -603,6 +603,7 @@ class ApiProvider {
 
   Future<ResaturantSearchModel> searchRestaurant(String querry,double lat, double lag, String userId) async {
 
+    print('this is search params : userId :$userId, lat : $lat, lng : $lag, letters : $querry');
     try {
 
       Response response =
@@ -614,6 +615,7 @@ class ApiProvider {
 
       });
       // Response response = await _dio.get('${_url}${Constants.restaurant_search}$querry');
+      print("Status Code  : ${response.statusCode}");
       print("${response.data}");
 
       return ResaturantSearchModel.fromJson(response.data);
