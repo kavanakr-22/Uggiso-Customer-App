@@ -123,6 +123,7 @@ class _MenuListScreenState extends State<MenuListScreen> {
 
                 }
                 else if(Platform.isAndroid){
+                  print('this is gst percentage : ${widget.payload?.gstPercent}');
                     Navigator.pushNamed(context, AppRoutes.createOrder,
                         arguments: CreateOrderArgs(
                             orderlist: uniqueMenuList,
@@ -130,7 +131,7 @@ class _MenuListScreenState extends State<MenuListScreen> {
                             restaurantName: widget.restaurantName!,
                             restaurantLat: widget.payload?.lat,
                             restaurantLng: widget.payload?.lng,
-                            gstPercent: widget.payload?.gstPercent));
+                            gstPercent: widget.payload?.gstPercent??0.0));
 
 
                 }

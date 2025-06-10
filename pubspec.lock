@@ -153,14 +153,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.2"
-  easebuzz_flutter:
-    dependency: "direct main"
-    description:
-      name: easebuzz_flutter
-      sha256: f3ed01684d150190aacc7775eff78b580f5592b45e315824855fcd79b769f68a
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.2"
   equatable:
     dependency: "direct main"
     description:
@@ -1166,5 +1158,5 @@ packages:
     source: hosted
     version: "3.1.2"
 sdks:
-  dart: ">=3.5.4 <4.0.0"
+  dart: ">=3.5.0 <4.0.0"
   flutter: ">=3.24.0"
