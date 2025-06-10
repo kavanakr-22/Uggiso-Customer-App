@@ -120,11 +120,11 @@ class _CreateOrderState extends State<CreateOrder> {
                   paymentMode: state.data.payload!.paymentType!,
                   payerName: userName,
                   payerMobile: userNumber));
-              initializeService(widget.restLat!, widget.restLng!,
+              initializeService(widget.restLat??0.0, widget.restLng??0.0,
                   state.data.payload!.orderId!);
               Navigator.pushNamedAndRemoveUntil(
                   context,
-                  AppRoutes.orderSuccessScreen,arguments:OrderSuccessArgs(restLat:widget.restLat,restLng: widget.restLng) ,
+                  AppRoutes.orderSuccessScreen,arguments:OrderSuccessArgs(restLat:widget.restLat??0.0,restLng: widget.restLng??0.0) ,
                   (Route<dynamic> route) => false);
             }
             if (state is onCoinDetailsFetched) {
@@ -769,7 +769,7 @@ class _CreateOrderState extends State<CreateOrder> {
           transMode: 'BIKE',
           usedCoins: uggiso_point_count!.toInt(),
           paidAmount: item_sub_total,
-          lat:widget.restLat!,lng:widget.restLng!));
+          lat:widget.restLat??0.0,lng:widget.restLng??0.0));
     } else if (payment_response['result'] == 'payment_failed') {
       _showBottomSheet(context);
     }

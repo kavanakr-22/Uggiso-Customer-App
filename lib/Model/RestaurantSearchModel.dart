@@ -26,7 +26,6 @@ class ResaturantSearchModel {
     data['timeStamp'] = this.timeStamp;
     return data;
   }
-
   ResaturantSearchModel.withError(String errorMessage) {
     error = errorMessage;
   }
@@ -67,157 +66,73 @@ class Payload {
 
 class Restaurants {
   String? restaurantId;
-  String? ownerId;
   String? restaurantName;
-  Null? ownerName;
+  String? imageUrl;
+  String? restaurantMenuType;
   String? phoneNumber;
-  Null? contactNumber;
   String? address;
   String? landmark;
   double? lat;
   double? lng;
-  String? city;
-  String? state;
-  String? accountNumber;
-  String? ifscCode;
-  String? upiData;
-  Null? imageUrl;
-  String? gstNumber;
-  int? gstPercent;
-  Null? openTime;
-  Null? closeTime;
-  String? userStatus;
-  String? restaurantMenuType;
-  String? restaurantSize;
-  Null? ratings;
-  Null? subscriptionAmount;
-  Null? platformpercentage;
-  Null? subsriptionDate;
-  String? fssai;
-  String? panImage;
-  Null? menucard;
-  String? chequePhoto;
-  Null? onboardDoc;
-  Null? agreementDoc;
-  bool? referAdded;
-  Null? ownerPhone;
-  String? createdDate;
+  double? ratings;
+  String? duration;
+  String? distance;
+  bool? favourite;
+  double? gstPercent;
+  double? serviceCharges;
 
   Restaurants(
       {this.restaurantId,
-        this.ownerId,
         this.restaurantName,
-        this.ownerName,
+        this.imageUrl,
+        this.restaurantMenuType,
         this.phoneNumber,
-        this.contactNumber,
         this.address,
         this.landmark,
         this.lat,
         this.lng,
-        this.city,
-        this.state,
-        this.accountNumber,
-        this.ifscCode,
-        this.upiData,
-        this.imageUrl,
-        this.gstNumber,
-        this.gstPercent,
-        this.openTime,
-        this.closeTime,
-        this.userStatus,
-        this.restaurantMenuType,
-        this.restaurantSize,
         this.ratings,
-        this.subscriptionAmount,
-        this.platformpercentage,
-        this.subsriptionDate,
-        this.fssai,
-        this.panImage,
-        this.menucard,
-        this.chequePhoto,
-        this.onboardDoc,
-        this.agreementDoc,
-        this.referAdded,
-        this.ownerPhone,
-        this.createdDate});
+        this.duration,
+        this.distance,
+        this.favourite,
+        this.gstPercent,
+        this.serviceCharges});
 
   Restaurants.fromJson(Map<String, dynamic> json) {
     restaurantId = json['restaurantId'];
-    ownerId = json['ownerId'];
     restaurantName = json['restaurantName'];
-    ownerName = json['ownerName'];
+    imageUrl = json['imageUrl'];
+    restaurantMenuType = json['restaurantMenuType'];
     phoneNumber = json['phoneNumber'];
-    contactNumber = json['contactNumber'];
     address = json['address'];
     landmark = json['landmark'];
     lat = json['lat'];
     lng = json['lng'];
-    city = json['city'];
-    state = json['state'];
-    accountNumber = json['accountNumber'];
-    ifscCode = json['ifscCode'];
-    upiData = json['upiData'];
-    imageUrl = json['imageUrl'];
-    gstNumber = json['gstNumber'];
-    gstPercent = json['gstPercent'];
-    openTime = json['openTime'];
-    closeTime = json['closeTime'];
-    userStatus = json['userStatus'];
-    restaurantMenuType = json['restaurantMenuType'];
-    restaurantSize = json['restaurantSize'];
     ratings = json['ratings'];
-    subscriptionAmount = json['subscriptionAmount'];
-    platformpercentage = json['platformpercentage'];
-    subsriptionDate = json['subsriptionDate'];
-    fssai = json['fssai'];
-    panImage = json['panImage'];
-    menucard = json['menucard'];
-    chequePhoto = json['chequePhoto'];
-    onboardDoc = json['onboardDoc'];
-    agreementDoc = json['agreementDoc'];
-    referAdded = json['referAdded'];
-    ownerPhone = json['ownerPhone'];
-    createdDate = json['createdDate'];
+    duration = json['duration'];
+    distance = json['distance'];
+    favourite = json['favourite'];
+    gstPercent = json['gstPercent'];
+    serviceCharges = json['serviceCharges'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['restaurantId'] = this.restaurantId;
-    data['ownerId'] = this.ownerId;
     data['restaurantName'] = this.restaurantName;
-    data['ownerName'] = this.ownerName;
+    data['imageUrl'] = this.imageUrl;
+    data['restaurantMenuType'] = this.restaurantMenuType;
     data['phoneNumber'] = this.phoneNumber;
-    data['contactNumber'] = this.contactNumber;
     data['address'] = this.address;
     data['landmark'] = this.landmark;
     data['lat'] = this.lat;
     data['lng'] = this.lng;
-    data['city'] = this.city;
-    data['state'] = this.state;
-    data['accountNumber'] = this.accountNumber;
-    data['ifscCode'] = this.ifscCode;
-    data['upiData'] = this.upiData;
-    data['imageUrl'] = this.imageUrl;
-    data['gstNumber'] = this.gstNumber;
-    data['gstPercent'] = this.gstPercent;
-    data['openTime'] = this.openTime;
-    data['closeTime'] = this.closeTime;
-    data['userStatus'] = this.userStatus;
-    data['restaurantMenuType'] = this.restaurantMenuType;
-    data['restaurantSize'] = this.restaurantSize;
     data['ratings'] = this.ratings;
-    data['subscriptionAmount'] = this.subscriptionAmount;
-    data['platformpercentage'] = this.platformpercentage;
-    data['subsriptionDate'] = this.subsriptionDate;
-    data['fssai'] = this.fssai;
-    data['panImage'] = this.panImage;
-    data['menucard'] = this.menucard;
-    data['chequePhoto'] = this.chequePhoto;
-    data['onboardDoc'] = this.onboardDoc;
-    data['agreementDoc'] = this.agreementDoc;
-    data['referAdded'] = this.referAdded;
-    data['ownerPhone'] = this.ownerPhone;
-    data['createdDate'] = this.createdDate;
+    data['duration'] = this.duration;
+    data['distance'] = this.distance;
+    data['favourite'] = this.favourite;
+    data['gstPercent'] = this.gstPercent;
+    data['serviceCharges'] = this.serviceCharges;
     return data;
   }
 }
@@ -232,10 +147,10 @@ class Menus {
   String? menuStatus;
   String? menuAvailable;
   String? restaurantMenuType;
-  int? price;
-  int? parcelCharges;
+  double? price;
+  double? parcelCharges;
   bool? bestSeller;
-  Null? ratings;
+  double? ratings;
 
   Menus(
       {this.menuId,

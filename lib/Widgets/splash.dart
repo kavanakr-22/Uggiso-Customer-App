@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:device_uuid/device_uuid.dart';
+// import 'package:device_uuid/device_uuid.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -51,7 +51,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   void getDeviceId() async {
     final prefs = await SharedPreferences.getInstance();
-    deviceId = await DeviceUuid().getUUID();
+    // deviceId = await DeviceUuid().getUUID();
     prefs.setString('device_id', deviceId!);
     print('this is device id : $deviceId');
     initFirebaseMessaging();

@@ -13,3 +13,11 @@ class MenuListArgs{
   MenuListArgs({required this.restaurantId, required this.name, required this.foodType,
     required this.ratings, required this.landmark,required this.distance,required this.duration,this.payload});
 }
+
+
+class RestaurantSearchArgs{
+  final double? lat;
+  final double? lag;
+  final String? userId;
+  RestaurantSearchArgs({required this.lat, required this.lag, required this.userId});
+}

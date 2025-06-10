@@ -6,8 +6,11 @@ abstract class SearchEvent extends Equatable {
 
 class OnSearchInitiated extends SearchEvent {
   final String querry;
+  final double lat;
+  final double lag;
+  final String userId;
 
-  const OnSearchInitiated({required this.querry});
+  const OnSearchInitiated({required this.querry, required this.lat, required this.lag, required this.userId});
 
   @override
   List<Object> get props => [querry];

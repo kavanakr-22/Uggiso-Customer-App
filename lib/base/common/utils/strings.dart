@@ -26,7 +26,7 @@ class Strings {
   static const world_of_flavor = 'Step into a world of flavor with';
   static const enter_your_name = 'Enter your Name';
   static const submit = 'Submit';
-  static const by_route = 'My Route';
+  static const by_route = 'By Route';
   static const search_now = 'Search Now';
   static const view_all = 'View All';
   static const home = 'Home';
@@ -101,7 +101,7 @@ class Strings {
   static const payment_methods = 'Payment Methods';
   static const note = 'Note : ';
   static const note_desc =
-      'If you cancel the order within 60 Sec of placing your oreder, a 100% refund will be issued. No refund for cancellations made after 60 seconds.';
+      'If you cancel the order within 60 Sec of placing your order, a 100% refund will be issued. No refund for cancellations made after 60 seconds.';
   static const payment_successful = 'Payment successful';
   static const order_successful = 'Order Created Successfully';
   static const uggiso_points = 'Uggiso Points';

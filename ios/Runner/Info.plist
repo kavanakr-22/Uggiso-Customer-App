@@ -39,6 +39,12 @@
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSLocationAlwaysUsageDescription</key>
+    <string>We need your location to provide accurate services.</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Your location is used to enhance the app experience.</string>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>We need continuous location access to provide real-time services.</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>

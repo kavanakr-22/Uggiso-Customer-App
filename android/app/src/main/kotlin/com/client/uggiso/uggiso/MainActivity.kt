@@ -3,9 +3,6 @@ package com.uggiso.customer
 import android.util.Log
 import android.widget.Toast
 import androidx.annotation.NonNull
-import com.sabpaisa.gateway.android.sdk.SabPaisaGateway
-import com.sabpaisa.gateway.android.sdk.interfaces.IPaymentSuccessCallBack
-import com.sabpaisa.gateway.android.sdk.models.TransactionResponsesModel
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel

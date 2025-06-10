@@ -47,7 +47,7 @@ class ApiRepository {
   }
 
   Future<GetNearByRestaurantModel> getNearbyRestaurant(String userId,double lat, double lag, double distance,String mode) {
-    return _provider.getNearByRestaurant(userId,lat,lag,distance,mode);
+    return _provider.getNearByRestaurant(userId,lat,lag);
   }
 
   Future<MenuListModel> getMenuList(String? id,String? restId) {
@@ -140,8 +140,8 @@ class ApiRepository {
     return _provider.removeUserData(userId);
   }
 
-  Future<ResaturantSearchModel> searchRestaurant(String querry) {
-    return _provider.searchRestaurant(querry);
+  Future<ResaturantSearchModel> searchRestaurant(String querry,double lat, double lag, String userId) {
+    return _provider.searchRestaurant(querry,lat,lag,userId);
   }
 
 }

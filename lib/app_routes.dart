@@ -172,7 +172,12 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => HomeLandingScreen());
 
       case search_screen:
-        return MaterialPageRoute(builder: (_) => Restaurantsearchscreen());
+        final args = settings.arguments as RestaurantSearchArgs;
+        return MaterialPageRoute(builder: (_) => Restaurantsearchscreen(
+          lat: args.lat,
+          lag: args.lag,
+          userId: args.userId,
+        ));
 
       default:
         // If there is no such named route in the switch statement, e.g. /randomRoute
