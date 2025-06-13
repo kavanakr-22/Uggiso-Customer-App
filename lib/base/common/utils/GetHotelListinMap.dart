@@ -30,7 +30,7 @@ class _GetHotelListinMapState extends State<GetHotelListinMap> {
   }
   @override
   Widget build(BuildContext context) {
-    return  Container(height:MediaQuery.of(context).size.height*0.62,
+    return  Container(height:MediaQuery.of(context).size.height*0.72,
       child: GoogleMap(
         onMapCreated: (controller) {
           _controller = controller;

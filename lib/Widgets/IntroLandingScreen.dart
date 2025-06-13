@@ -157,14 +157,15 @@ class _IntroLandingScreenState extends State<IntroLandingScreen> {
                 ),
               ),
               RoundedElevatedButton(
-                  width: 150.0,
+                  width: MediaQuery.of(context).size.width*0.4,
                   height: 40.0,
                   text: Strings.next,
                   onPressed: nextPage,
                   cornerRadius: 43.0,
                   buttonColor: AppColors.appPrimaryColor,
                   textStyle:
-                  AppFonts.header.copyWith(color: AppColors.black))
+                  AppFonts.header.copyWith(color: AppColors.black)),
+              SizedBox(height: MediaQuery.of(context).size.height*0.02,)
 
             ],
           ),
