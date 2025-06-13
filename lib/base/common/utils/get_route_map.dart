@@ -345,7 +345,7 @@ class _GetRouteMapState extends State<GetRouteMap> {
       polylineId: id,
       color: routeColor,
       points: polylineCoordinates,
-      width: 8,
+      width: 4,
       startCap: Cap.roundCap,
       endCap: Cap.roundCap,
       consumeTapEvents: true,
