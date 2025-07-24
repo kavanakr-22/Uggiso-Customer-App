@@ -5,7 +5,6 @@ class WalletDetailsModel {
   String? timeStamp;
   String? error;
 
-
   WalletDetailsModel(
       {this.statusCode, this.message, this.payload, this.timeStamp});
 
@@ -13,7 +12,7 @@ class WalletDetailsModel {
     statusCode = json['statusCode'];
     message = json['message'];
     payload =
-    json['payload'] != null ? new Payload.fromJson(json['payload']) : null;
+        json['payload'] != null ? new Payload.fromJson(json['payload']) : null;
     timeStamp = json['timeStamp'];
   }
 
@@ -27,6 +26,7 @@ class WalletDetailsModel {
     data['timeStamp'] = this.timeStamp;
     return data;
   }
+
   WalletDetailsModel.withError(String errorMessage) {
     error = errorMessage;
   }

@@ -17,6 +17,30 @@ class OnInitilised extends HomeEvent {
   List<Object> get props => [lat,lag];
 
 }
+class OnFetchMoreRestaurants extends HomeEvent {
+  final String userId;
+  final double lat;
+  final double lag;
+  final double distance;
+  final String mode;
+  final int page;
+  final int size;
+
+  OnFetchMoreRestaurants({
+    required this.userId,
+    required this.lat,
+    required this.lag,
+    required this.distance,
+    required this.mode,
+    required this.page,
+    required this.size,
+  });
+  
+  @override
+  // TODO: implement props
+  List<Object?> get props => throw UnimplementedError();
+}
+
 
 class OnUpdateFavOrder extends HomeEvent {
   final double lat;

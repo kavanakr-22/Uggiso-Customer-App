@@ -109,8 +109,8 @@ class _MenuItemCardState extends State<MenuItemCard> {
                                 width: 12, height: 12),
                             Gap(4),
                             Text('${widget.listData.ratings}',
-                                style: AppFonts.smallText.copyWith(
-                                    fontWeight: FontWeight.w500)),
+                                style: AppFonts.smallText
+                                    .copyWith(fontWeight: FontWeight.w500)),
                           ],
                         ),
                       BlocBuilder<MenuListBloc, MenuListState>(
@@ -140,7 +140,7 @@ class _MenuItemCardState extends State<MenuItemCard> {
                                     userId: widget.userId,
                                     menuId: widget.listData.menuId,
                                     restaurantId:
-                                    widget.listData.restaurantId));
+                                        widget.listData.restaurantId));
                               },
                               child: Image.asset(
                                 'assets/ic_heart.png',
@@ -159,151 +159,152 @@ class _MenuItemCardState extends State<MenuItemCard> {
                 /// RIGHT SIDE IMAGE / UNAVAILABLE
                 widget.listData.menuAvailable == 'AVAILABLE'
                     ? Container(
-                  height: MediaQuery.of(context).size.height * 0.12,
-                  child: Stack(
-                    children: [
-                      widget.listData.photo == null
-                          ? RoundedContainer(
-                          width: MediaQuery.of(context).size.width *
-                              0.25,
-                          height: MediaQuery.of(context).size.height *
-                              0.1,
-                          cornerRadius: 12,
-                          borderColor: AppColors.appPrimaryColor,
-                          child: Center(
-                              child: Image.asset(
-                                'assets/ic_no_image.png',
-                                fit: BoxFit.fill,
-                              )))
-                          : RoundedContainer(
-                          width: MediaQuery.of(context).size.width *
-                              0.25,
-                          height: MediaQuery.of(context).size.height *
-                              0.1,
-                          cornerRadius: 12,
-                          borderColor: AppColors.appPrimaryColor,
-                          padding: 0,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: Image.network(
-                              widget.listData.photo.toString(),
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stack) =>
-                                  Center(
-                                    child: Image.asset(
-                                        'assets/ic_no_image.png'),
-                                  ),
-                            ),
-                          )),
-                      Positioned(
-                        top: MediaQuery.of(context).size.height * 0.08,
-                        left: 8,
-                        right: 8,
-                        child: RoundedContainer(
-                          width: MediaQuery.of(context).size.width,
-                          height:
-                          MediaQuery.of(context).size.height * 0.04,
-                          cornerRadius: 10,
-                          padding: 0,
-                          color: AppColors.white,
-                          child: _orderCount == 0
-                              ? Center(
-                            child: InkWell(
-                              onTap: () {
-                                setState(() {
-                                  _orderCount = 1;
-                                });
-                                widget.onItemAdded();
-                              },
-                              child: Text(
-                                Strings.add,
-                                style: AppFonts.title.copyWith(
-                                    color:
-                                    AppColors.appPrimaryColor),
+                        height: MediaQuery.of(context).size.height * 0.12,
+                        child: Stack(
+                          children: [
+                            widget.listData.photo == null
+                                ? RoundedContainer(
+                                    width: MediaQuery.of(context).size.width *
+                                        0.25,
+                                    height: MediaQuery.of(context).size.height *
+                                        0.1,
+                                    cornerRadius: 12,
+                                    borderColor: AppColors.appPrimaryColor,
+                                    child: Center(
+                                        child: Image.asset(
+                                      'assets/ic_no_image.png',
+                                      fit: BoxFit.fill,
+                                    )))
+                                : RoundedContainer(
+                                    width: MediaQuery.of(context).size.width *
+                                        0.25,
+                                    height: MediaQuery.of(context).size.height *
+                                        0.1,
+                                    cornerRadius: 12,
+                                    borderColor: AppColors.appPrimaryColor,
+                                    padding: 0,
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(12),
+                                      child: Image.network(
+                                        widget.listData.photo.toString(),
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (context, error, stack) =>
+                                            Center(
+                                          child: Image.asset(
+                                              'assets/ic_no_image.png'),
+                                        ),
+                                      ),
+                                    )),
+                            Positioned(
+                              top: MediaQuery.of(context).size.height * 0.08,
+                              left: 8,
+                              right: 8,
+                              child: RoundedContainer(
+                                width: MediaQuery.of(context).size.width,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.04,
+                                cornerRadius: 10,
+                                padding: 0,
+                                color: AppColors.white,
+                                child: _orderCount == 0
+                                    ? Center(
+                                        child: InkWell(
+                                          onTap: () {
+                                            setState(() {
+                                              _orderCount = 1;
+                                            });
+                                            widget.onItemAdded();
+                                          },
+                                          child: Text(
+                                            Strings.add,
+                                            style: AppFonts.title.copyWith(
+                                                color:
+                                                    AppColors.appPrimaryColor),
+                                          ),
+                                        ),
+                                      )
+                                    : Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Gap(4),
+                                          InkWell(
+                                            onTap: () {
+                                              setState(() {
+                                                _orderCount--;
+                                              });
+                                              if (_orderCount == 0) {
+                                                widget.onEmptyCart(widget
+                                                    .listData.menuId
+                                                    .toString());
+                                                cart.removeItem(
+                                                    AddMenuItemToCart(
+                                                        menuId: widget
+                                                            .listData.menuId
+                                                            .toString(),
+                                                        menuName: widget
+                                                            .listData.menuName
+                                                            .toString(),
+                                                        menuType:
+                                                            widget.listData
+                                                                .menuType
+                                                                .toString(),
+                                                        price: widget
+                                                            .listData.price!));
+                                              } else {
+                                                widget.onQuantityChanged(
+                                                    _orderCount);
+                                              }
+                                            },
+                                            child: Icon(Icons.remove,
+                                                color:
+                                                    AppColors.appPrimaryColor,
+                                                size: 20),
+                                          ),
+                                          Gap(6),
+                                          Text(
+                                            '$_orderCount',
+                                            style: AppFonts.smallText.copyWith(
+                                              color: AppColors.appPrimaryColor,
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                          Gap(6),
+                                          InkWell(
+                                            onTap: () {
+                                              setState(() {
+                                                _orderCount++;
+                                              });
+                                              widget.onQuantityChanged(
+                                                  _orderCount);
+                                            },
+                                            child: Icon(Icons.add,
+                                                color:
+                                                    AppColors.appPrimaryColor,
+                                                size: 20),
+                                          ),
+                                          Gap(6),
+                                        ],
+                                      ),
                               ),
                             ),
-                          )
-                              : Row(
-                            mainAxisAlignment:
-                            MainAxisAlignment.spaceBetween,
-                            children: [
-                              Gap(6),
-                              InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    _orderCount--;
-                                  });
-                                  if (_orderCount == 0) {
-                                    widget.onEmptyCart(widget
-                                        .listData.menuId
-                                        .toString());
-                                    cart.removeItem(
-                                        AddMenuItemToCart(
-                                            menuId: widget
-                                                .listData.menuId
-                                                .toString(),
-                                            menuName: widget
-                                                .listData.menuName
-                                                .toString(),
-                                            menuType: widget
-                                                .listData.menuType
-                                                .toString(),
-                                            price: widget
-                                                .listData.price!));
-                                  } else {
-                                    widget.onQuantityChanged(
-                                        _orderCount);
-                                  }
-                                },
-                                child: Icon(Icons.remove,
-                                    color:
-                                    AppColors.appPrimaryColor,
-                                    size: 20),
-                              ),
-                              Gap(6),
-                              Text(
-                                '$_orderCount',
-                                style: AppFonts.smallText.copyWith(
-                                  color: AppColors.appPrimaryColor,
-                                  fontSize: 16,
-                                ),
-                              ),
-                              Gap(6),
-                              InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    _orderCount++;
-                                  });
-                                  widget.onQuantityChanged(
-                                      _orderCount);
-                                },
-                                child: Icon(Icons.add,
-                                    color:
-                                    AppColors.appPrimaryColor,
-                                    size: 20),
-                              ),
-                              Gap(6),
-                            ],
+                          ],
+                        ),
+                      )
+                    : Expanded(
+                        flex: 1,
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 20.0),
+                          child: Text(
+                            'Currently unavailable',
+                            style: AppFonts.title
+                                .copyWith(color: Colors.redAccent),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.end,
                           ),
                         ),
                       ),
-                    ],
-                  ),
-                )
-                    : Expanded(
-                  flex: 1,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 20.0),
-                    child: Text(
-                      'Currently unavailable',
-                      style: AppFonts.title
-                          .copyWith(color: Colors.redAccent),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      textAlign: TextAlign.end,
-                    ),
-                  ),
-                ),
               ],
             ),
           ),

@@ -1,7 +1,6 @@
-class Constants{
-
-  // static String baseUrl = 'http://34.93.236.51:80/'; // test url
-  static String baseUrl = 'http://uggiso.co.in/'; //prod url
+class Constants {
+  static String baseUrl = 'http://34.93.236.51:90/'; // test url
+  // static String baseUrl = 'http://uggiso.co.in/'; //prod url
   // static String mode = 'test';
   static String mode = 'production';
   static String getOtp = 'user/otp';
@@ -13,6 +12,8 @@ class Constants{
   static String addFavMenu = 'favmenu/savefavmenu';
   static String addFavRestaurant = 'favrestaurant/savefavrestaurant';
   static String restaurantNearBy = 'restaurant/nearfoods';
+  static String nearRestaurantsListByPagination =
+      'restaurant/nearRestaurantsListByPagination';
   static String getFavMenu = 'favmenu/myfavmenus';
   static String getFavRestaurant = 'favrestaurant/';
   static String createOrder = 'order/create';

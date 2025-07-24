@@ -95,32 +95,32 @@ class _GetRouteMapState extends State<GetRouteMap> {
           },
           child: BlocBuilder<HomeBloc, HomeState>(
               builder: (context, HomeState state) {
-                if (state is LoadingHotelState) {
-                  return Center(
-                    child: CircularProgressIndicator(
-                      color: AppColors.appPrimaryColor,
-                    ),
-                  );
-                }
-                return Stack(
-                  children: [
-                    GoogleMap(
-                      initialCameraPosition: CameraPosition(
-                          target: LatLng(latitude, longitude), zoom: 8),
-                      myLocationEnabled: true,
-                      myLocationButtonEnabled: true,
-                      tiltGesturesEnabled: true,
-                      compassEnabled: true,
-                      scrollGesturesEnabled: true,
-                      zoomGesturesEnabled: true,
-                      onMapCreated: _onMapCreated,
-                      markers: Set<Marker>.of(markers.values),
-                      polylines: Set<Polyline>.of(polylines.values),
-                    ),
-                    HomeHeaderContainer(),
-                  ],
-                );
-              }),
+            if (state is LoadingHotelState) {
+              return Center(
+                child: CircularProgressIndicator(
+                  color: AppColors.appPrimaryColor,
+                ),
+              );
+            }
+            return Stack(
+              children: [
+                GoogleMap(
+                  initialCameraPosition: CameraPosition(
+                      target: LatLng(latitude, longitude), zoom: 8),
+                  myLocationEnabled: true,
+                  myLocationButtonEnabled: true,
+                  tiltGesturesEnabled: true,
+                  compassEnabled: true,
+                  scrollGesturesEnabled: true,
+                  zoomGesturesEnabled: true,
+                  onMapCreated: _onMapCreated,
+                  markers: Set<Marker>.of(markers.values),
+                  polylines: Set<Polyline>.of(polylines.values),
+                ),
+                HomeHeaderContainer(),
+              ],
+            );
+          }),
         ),
       ),
     );
@@ -128,10 +128,12 @@ class _GetRouteMapState extends State<GetRouteMap> {
 
   Future<BitmapDescriptor> _getCustomIcon(String assetPath) async {
     final ByteData data = await rootBundle.load(assetPath);
-    final ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(), targetWidth: 100);
+    final ui.Codec codec = await ui
+        .instantiateImageCodec(data.buffer.asUint8List(), targetWidth: 100);
     final ui.FrameInfo fi = await codec.getNextFrame();
 
-    final ByteData? byteData = await fi.image.toByteData(format: ui.ImageByteFormat.png);
+    final ByteData? byteData =
+        await fi.image.toByteData(format: ui.ImageByteFormat.png);
     final Uint8List uint8List = byteData!.buffer.asUint8List();
 
     return BitmapDescriptor.fromBytes(uint8List);
@@ -166,21 +168,21 @@ class _GetRouteMapState extends State<GetRouteMap> {
           snippet: markerId.value,
           title: markerId.value,
           onTap: () => {
-            print('this is on marker tap inside info window'),
-            if(payload!=null){
-              Navigator.pushNamed(context, AppRoutes.menuList,
-                  arguments: MenuListArgs(
-
-                      restaurantId: payload.restaurantId,
-                      name: payload.restaurantName,
-                      foodType: payload.restaurantMenuType,
-                      ratings: payload.ratings,
-                      landmark: payload.landmark,
-                      distance: payload.distance,
-                      duration: payload.duration,
-                      payload: payload))
-            }
-          }),
+                print('this is on marker tap inside info window'),
+                if (payload != null)
+                  {
+                    Navigator.pushNamed(context, AppRoutes.menuList,
+                        arguments: MenuListArgs(
+                            restaurantId: payload.restaurantId,
+                            name: payload.restaurantName,
+                            foodType: payload.restaurantMenuType,
+                            ratings: payload.ratings,
+                            landmark: payload.landmark,
+                            distance: payload.distance,
+                            duration: payload.duration,
+                            payload: payload))
+                  }
+              }),
     );
     markers[markerId] = marker;
   }
@@ -250,7 +252,8 @@ class _GetRouteMapState extends State<GetRouteMap> {
   // }
 
   _getPolylines(double lat, double lng, double destLat, double destLng) async {
-    print('Fetching routes from lat: $lat, lng: $lng to destLat: $destLat, destLng: $destLng');
+    print(
+        'Fetching routes from lat: $lat, lng: $lng to destLat: $destLat, destLng: $destLng');
 
     final String url =
         'https://maps.googleapis.com/maps/api/directions/json?origin=$lat,$lng&destination=$destLat,$destLng&alternatives=true&key=$googleApiKey';
@@ -270,7 +273,8 @@ class _GetRouteMapState extends State<GetRouteMap> {
 
         for (var route in data['routes']) {
           List<LatLng> polylineCoordinates = [];
-          var points = PolylinePoints().decodePolyline(route['overview_polyline']['points']);
+          var points = PolylinePoints()
+              .decodePolyline(route['overview_polyline']['points']);
 
           for (var point in points) {
             polylineCoordinates.add(LatLng(point.latitude, point.longitude));
@@ -290,7 +294,8 @@ class _GetRouteMapState extends State<GetRouteMap> {
         index = 0;
         for (var route in data['routes']) {
           List<LatLng> polylineCoordinates = [];
-          var points = PolylinePoints().decodePolyline(route['overview_polyline']['points']);
+          var points = PolylinePoints()
+              .decodePolyline(route['overview_polyline']['points']);
 
           for (var point in points) {
             polylineCoordinates.add(LatLng(point.latitude, point.longitude));
@@ -304,12 +309,12 @@ class _GetRouteMapState extends State<GetRouteMap> {
         setState(() {});
 
         _homeBloc.add(OnGetRestaurantByRoute(
-                      userId: userId,
-                      polylinePoints: data['routes'][0]['overview_polyline']['points']
-                          .toString()
-                          .replaceAll(r'\', r'\\'),
-                      originLat: lat,
-                      originLng: lng));
+            userId: userId,
+            polylinePoints: data['routes'][0]['overview_polyline']['points']
+                .toString()
+                .replaceAll(r'\', r'\\'),
+            originLat: lat,
+            originLng: lng));
       } else {
         print('Error: ${data['status']} - ${data['error_message']}');
       }
@@ -317,7 +322,6 @@ class _GetRouteMapState extends State<GetRouteMap> {
       print('Request failed with status: ${response.statusCode}');
     }
   }
-
 
   List<LatLng> _offsetCoordinates(List<LatLng> coordinates, double offset) {
     List<LatLng> offsetCoordinates = [];
@@ -339,7 +343,7 @@ class _GetRouteMapState extends State<GetRouteMap> {
   _addPolyLine(List<LatLng> polylineCoordinates, int index, bool hasNext) {
     PolylineId id = PolylineId("polyline_$index");
 
-    Color routeColor = hasNext? Colors.grey : Colors.blue;
+    Color routeColor = hasNext ? Colors.grey : Colors.blue;
 
     Polyline polyline = Polyline(
       polylineId: id,
@@ -357,11 +361,8 @@ class _GetRouteMapState extends State<GetRouteMap> {
     // Ensure the last polyline is always blue
     selectedPolylineId = id;
 
-    setState(() {
-    });
+    setState(() {});
   }
-
-
 
   // _addPolyLine(List<LatLng> polylineCoordinates, int index, bool isShortest,
   //     double destLat, double destLng) {
@@ -419,10 +420,10 @@ class _GetRouteMapState extends State<GetRouteMap> {
     setState(() {
       // Change all to grey first
       polylines.updateAll((id, polyline) => polyline.copyWith(
-        colorParam: Colors.grey,
-        widthParam: 5,
-        zIndexParam: 1,
-      ));
+            colorParam: Colors.grey,
+            widthParam: 5,
+            zIndexParam: 1,
+          ));
 
       // Move the tapped polyline to the last index by recreating the list
       if (polylines.containsKey(polylineId)) {
@@ -448,8 +449,6 @@ class _GetRouteMapState extends State<GetRouteMap> {
       selectedPolylineId = polylineId;
     });
   }
-
-
 
   // void _onPolylineTapped(PolylineId polylineId) {
   //   print('Polyline tapped: $polylineId');
@@ -477,135 +476,137 @@ class _GetRouteMapState extends State<GetRouteMap> {
   // }
 
   Widget HomeHeaderContainer() => Container(
-    height: MediaQuery.of(context).size.height * 0.16,
-    width: MediaQuery.of(context).size.width,
-    decoration: const BoxDecoration(
-      color: AppColors.appPrimaryColor,
-      borderRadius: BorderRadius.only(
-        bottomLeft: Radius.circular(30),
-        bottomRight: Radius.circular(30),
-      ),
-    ),
-    child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24.0),
-      child: Column(
-        children: [
-          const Gap(12),
-          RoundedContainer(
-              color: AppColors.white,
-              borderColor: AppColors.white,
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height * 0.05,
-              cornerRadius: 8,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Flexible(
-                    flex: 3,
-                    child: Text(
-                      '$currentLocation',
-                      style: AppFonts.title,
-                    ),
-                  ),
-                ],
-              )),
-          Gap(8),
-          PlaceSearchWidget()
-        ],
-      ),
-    ),
-  );
+        height: MediaQuery.of(context).size.height * 0.16,
+        width: MediaQuery.of(context).size.width,
+        decoration: const BoxDecoration(
+          color: AppColors.appPrimaryColor,
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(30),
+            bottomRight: Radius.circular(30),
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+          child: Column(
+            children: [
+              const Gap(12),
+              RoundedContainer(
+                  color: AppColors.white,
+                  borderColor: AppColors.white,
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height * 0.05,
+                  cornerRadius: 8,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Flexible(
+                        flex: 3,
+                        child: Text(
+                          '$currentLocation',
+                          style: AppFonts.title,
+                        ),
+                      ),
+                    ],
+                  )),
+              Gap(8),
+              PlaceSearchWidget()
+            ],
+          ),
+        ),
+      );
 
   Widget PlaceSearchWidget() => RoundedContainer(
-    color: AppColors.white,
-    borderColor: AppColors.white,
-    width: MediaQuery.of(context).size.width,
-    height: MediaQuery.of(context).size.height * 0.06,
-    cornerRadius: 8,
-    padding: 0,
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 8.0),
-          child: Icon(
-            Icons.search,
-            size: 18,
-            color: AppColors.textGrey,
-          ),
-        ),
-        Container(
-          width: MediaQuery.of(context).size.width * 0.69,
-          padding: EdgeInsets.zero,
-          child: SearchPlaceAutoCompletedTextField(
-              googleAPIKey: googleApiKey,
-              textStyle: AppFonts.title,
-              countries: ['in'],
-              isLatLngRequired: true,
-              inputDecoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderSide: BorderSide.none, // No border
-                  borderRadius: BorderRadius.circular(10.0),
+        color: AppColors.white,
+        borderColor: AppColors.white,
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height * 0.06,
+        cornerRadius: 8,
+        padding: 0,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: Icon(
+                Icons.search,
+                size: 18,
+                color: AppColors.textGrey,
+              ),
+            ),
+            Container(
+              width: MediaQuery.of(context).size.width * 0.69,
+              padding: EdgeInsets.zero,
+              child: SearchPlaceAutoCompletedTextField(
+                  googleAPIKey: googleApiKey,
+                  textStyle: AppFonts.title.copyWith(fontSize: 12),
+                  countries: ['in'],
+                  isLatLngRequired: true,
+                  inputDecoration: InputDecoration(
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 14, horizontal: 10),
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide.none, // No border
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                  ),
+                  controller: _placeSearchEditingController,
+                  itmOnTap: (Prediction prediction) {
+                    setState(() {
+                      _placeSearchEditingController.text =
+                          prediction.description!;
+
+                      // currentLocation = _placeSearchEditingController.text;
+                      _showPlaceSearchWidget = false;
+                    });
+
+                    _placeSearchEditingController.selection =
+                        TextSelection.fromPosition(TextPosition(
+                            offset: prediction.description?.length ?? 0));
+                  },
+                  getPlaceDetailWithLatLng: (Prediction prediction) {
+                    _placeSearchEditingController.text =
+                        prediction.description ?? "";
+
+                    _placeSearchEditingController.selection =
+                        TextSelection.fromPosition(TextPosition(
+                            offset: prediction.description?.length ?? 0));
+                    addDestinationMarker(double.parse(prediction.lat!),
+                        double.parse(prediction.lng!));
+                    _getPolylines(
+                        latitude,
+                        longitude,
+                        double.parse(prediction.lat!),
+                        double.parse(prediction.lng!));
+                  }),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: InkWell(
+                onTap: () {
+                  setState(() {
+                    _showPlaceSearchWidget = false;
+                    _placeSearchEditingController.clear();
+                  });
+                },
+                child: Icon(
+                  Icons.close,
+                  size: 18,
+                  color: AppColors.textGrey,
                 ),
               ),
-              controller: _placeSearchEditingController,
-              itmOnTap: (Prediction prediction) {
-                setState(() {
-                  _placeSearchEditingController.text =
-                  prediction.description!;
-
-                  // currentLocation = _placeSearchEditingController.text;
-                  _showPlaceSearchWidget = false;
-                });
-
-                _placeSearchEditingController.selection =
-                    TextSelection.fromPosition(TextPosition(
-                        offset: prediction.description?.length ?? 0));
-              },
-              getPlaceDetailWithLatLng: (Prediction prediction) {
-                _placeSearchEditingController.text =
-                    prediction.description ?? "";
-
-                _placeSearchEditingController.selection =
-                    TextSelection.fromPosition(TextPosition(
-                        offset: prediction.description?.length ?? 0));
-                addDestinationMarker(double.parse(prediction.lat!),
-                    double.parse(prediction.lng!));
-                _getPolylines(
-                    latitude,
-                    longitude,
-                    double.parse(prediction.lat!),
-                    double.parse(prediction.lng!));
-              }),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: InkWell(
-            onTap: () {
-              setState(() {
-                _showPlaceSearchWidget = false;
-                _placeSearchEditingController.clear();
-              });
-            },
-            child: Icon(
-              Icons.close,
-              size: 18,
-              color: AppColors.textGrey,
             ),
-          ),
+            // IconButton(
+            //   padding: EdgeInsets.zero,
+            //   icon: const
+            //   onPressed: () {
+            //
+            //   },
+            // )
+          ],
         ),
-        // IconButton(
-        //   padding: EdgeInsets.zero,
-        //   icon: const
-        //   onPressed: () {
-        //
-        //   },
-        // )
-      ],
-    ),
-  );
+      );
 
   getUserCurrentLocation() async {
     final prefs = await SharedPreferences.getInstance();
@@ -645,17 +646,17 @@ class _GetRouteMapState extends State<GetRouteMap> {
             infoWindow: InfoWindow(
                 title: restaurant.restaurantName!,
                 onTap: () => print('info window clicked')
-              // Navigator.pushNamed(context, AppRoutes.menuList,
-              //     arguments: MenuListArgs(
-              //         restaurantId: restaurant.restaurantId,
-              //         name: restaurant.restaurantName,
-              //         foodType: restaurant.restaurantMenuType,
-              //         ratings: restaurant.ratings,
-              //         landmark: restaurant.landmark,
-              //         distance: restaurant.distance,
-              //         duration: restaurant.duration,
-              //         payload: restaurant))
-            ),
+                // Navigator.pushNamed(context, AppRoutes.menuList,
+                //     arguments: MenuListArgs(
+                //         restaurantId: restaurant.restaurantId,
+                //         name: restaurant.restaurantName,
+                //         foodType: restaurant.restaurantMenuType,
+                //         ratings: restaurant.ratings,
+                //         landmark: restaurant.landmark,
+                //         distance: restaurant.distance,
+                //         duration: restaurant.duration,
+                //         payload: restaurant))
+                ),
           );
         }).toSet();
       });

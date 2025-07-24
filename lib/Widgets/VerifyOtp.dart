@@ -3,8 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gap/gap.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uggiso/Bloc/VerifyOtpBloc/VerifyOtpBloc.dart';
 import 'package:uggiso/Bloc/VerifyOtpBloc/VerifyOtpState.dart';
@@ -71,7 +71,7 @@ class _VerifyOtpState extends State<VerifyOtp> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: (){
+      onTap: () {
         FocusScope.of(context).unfocus();
       },
       child: BlocProvider(
@@ -92,62 +92,63 @@ class _VerifyOtpState extends State<VerifyOtp> {
                 Navigator.popAndPushNamed(context, AppRoutes.registerUser);
               } else if (state is ErrorState) {
                 // clearData();
-                Fluttertoast.showToast(
-                    msg: state.message.toString(),
-                    toastLength: Toast.LENGTH_SHORT,
-                    gravity: ToastGravity.BOTTOM,
-                    timeInSecForIosWeb: 1,
+                showToast(state.message.toString(),
+                    duration: const Duration(seconds: 1),
+                    position: ToastPosition.bottom,
                     backgroundColor: AppColors.textGrey,
-                    textColor: Colors.white,
-                    fontSize: 16.0);
+                    textStyle: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16.0,
+                    ));
               } else if (state is onResendOTPSuccessState) {
                 otpController_1.clear();
                 otpController_2.clear();
                 otpController_3.clear();
                 otpController_4.clear();
               } else if (state is userAlreadyRegistered) {
-                Fluttertoast.showToast(
-                    msg: state.data!.message.toString(),
-                    toastLength: Toast.LENGTH_SHORT,
-                    gravity: ToastGravity.BOTTOM,
-                    timeInSecForIosWeb: 1,
-                    backgroundColor: AppColors.textGrey,
-                    textColor: Colors.white,
-                    fontSize: 16.0);
-                saveUserDetails(state.data!.payload!.name!,state.data!.payload!.userId!);
+                showToast(
+                  state.data!.message.toString(),
+                  duration: const Duration(seconds: 1),
+                  position: ToastPosition.bottom,
+                  backgroundColor: AppColors.textGrey,
+                  textStyle: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 16.0,
+                  ),
+                );
+
+                saveUserDetails(
+                    state.data!.payload!.name!, state.data!.payload!.userId!);
                 _verifyOtpBloc.add(OnUserAlreadyRegistered(
-                    userId: state.data!.payload?.userId,deviceData: device_id,fcmToken: fcmToken
-                ));
+                    userId: state.data!.payload?.userId,
+                    deviceData: device_id,
+                    fcmToken: fcmToken));
                 // Navigator.pushReplacementNamed(context, AppRoutes.homeScreen);
 
                 // Navigator.popUntil(context, ModalRoute.withName('/home_screen'));
-
-              }
-              else if(state is deviceDataUpdated){
+              } else if (state is deviceDataUpdated) {
                 print('device data updated : ${state.props}');
                 // Navigator.popAndPushNamed(context, AppRoutes.homeScreen);
                 Navigator.pushNamedAndRemoveUntil(
                   context,
-                  AppRoutes.homeScreen, // The new route
-                      (Route<dynamic> route) => false, // Condition to remove all routes
+                  AppRoutes.home_landing_screen, // The new route
+                  (Route<dynamic> route) =>
+                      false, // Condition to remove all routes
                 );
-              }
-              else if(state is onUserRegisteredState){
+              } else if (state is onUserRegisteredState) {
                 _verifyOtpBloc.add(OnUserAlreadyRegistered(
-                    userId: state.id,deviceData: device_id,fcmToken: fcmToken
-                ));
-                if(state.id==''){
-
-                  saveUserDetails(state.name!,state.id!);
+                    userId: state.id,
+                    deviceData: device_id,
+                    fcmToken: fcmToken));
+                if (state.id == '') {
+                  saveUserDetails(state.name!, state.id!);
                   Navigator.popAndPushNamed(context, AppRoutes.registerUser);
-                }
-                else{
+                } else {
                   print('device data not updated');
-                  saveUserDetails(state.name!,state.id!);
-                  Navigator.popAndPushNamed(context, AppRoutes.home_landing_screen);
-
+                  saveUserDetails(state.name!, state.id!);
+                  Navigator.popAndPushNamed(
+                      context, AppRoutes.home_landing_screen);
                 }
-
               }
             },
           )),
@@ -172,126 +173,138 @@ class _VerifyOtpState extends State<VerifyOtp> {
         }
       });
 
-  Widget mainWidget() => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 36.0),
-              child: Center(
-                  child: Image.asset(
-                'assets/verify_otp.png',
-                height: MediaQuery.of(context).size.height * 0.2,
-                fit: BoxFit.fitWidth,
-              )),
-            ),
-            Center(
-                child: Text(Strings.enter_verification_code,
-                    style: AppFonts.header
-                        .copyWith(color: AppColors.appPrimaryColor))),
-            const SizedBox(height: 20.0),
-            Center(
-                child: Text(Strings.enter_4_digit_code,
-                    style:
-                        AppFonts.title.copyWith(color: AppColors.textColor))),
-            const SizedBox(height: 20.0),
-            RawKeyboardListener(
-              focusNode: FocusNode(),
-              onKey: (RawKeyEvent event) {
-                if (event is RawKeyDownEvent &&
-                    event.logicalKey == LogicalKeyboardKey.backspace) {
-                  // Handle backspace key press
-                  if (focusNode_4.hasFocus && otpController_4.text.isEmpty) {
-                    focusNode_4.unfocus();
-                    otpController_3.clear();
-                    FocusScope.of(context).requestFocus(focusNode_3);
-                  } else if (focusNode_3.hasFocus &&
-                      otpController_3.text.isEmpty) {
-                    focusNode_3.unfocus();
-                    otpController_2.clear();
-                    FocusScope.of(context).requestFocus(focusNode_2);
-                  } else if (focusNode_2.hasFocus &&
-                      otpController_2.text.isEmpty) {
-                    focusNode_2.unfocus();
-                    otpController_1.clear();
-                    FocusScope.of(context).requestFocus(focusNode_1);
-                  }
-                }
-              },
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  Widget mainWidget() => SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            minHeight: MediaQuery.of(context).size.height -
+                kToolbarHeight - // AppBar height (default is 56)
+                MediaQuery.of(context).padding.top, // Status bar height
+          ),
+          child: IntrinsicHeight(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
                 children: [
-                  buildOtpTextField(focusNode_1, otpController_1),
-                  buildOtpTextField(focusNode_2, otpController_2),
-                  buildOtpTextField(focusNode_3, otpController_3),
-                  buildOtpTextField(focusNode_4, otpController_4),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 36.0),
+                    child: Center(
+                        child: Image.asset(
+                      'assets/verify_otp.png',
+                      height: MediaQuery.of(context).size.height * 0.2,
+                      fit: BoxFit.fitWidth,
+                    )),
+                  ),
+                  Center(
+                      child: Text(Strings.enter_verification_code,
+                          style: AppFonts.header
+                              .copyWith(color: AppColors.appPrimaryColor))),
+                  const SizedBox(height: 20.0),
+                  Center(
+                      child: Text(Strings.enter_4_digit_code,
+                          style: AppFonts.title
+                              .copyWith(color: AppColors.textColor))),
+                  const SizedBox(height: 20.0),
+                  RawKeyboardListener(
+                    focusNode: FocusNode(),
+                    onKey: (RawKeyEvent event) {
+                      if (event is RawKeyDownEvent &&
+                          event.logicalKey == LogicalKeyboardKey.backspace) {
+                        // Handle backspace key press
+                        if (focusNode_4.hasFocus &&
+                            otpController_4.text.isEmpty) {
+                          focusNode_4.unfocus();
+                          otpController_3.clear();
+                          FocusScope.of(context).requestFocus(focusNode_3);
+                        } else if (focusNode_3.hasFocus &&
+                            otpController_3.text.isEmpty) {
+                          focusNode_3.unfocus();
+                          otpController_2.clear();
+                          FocusScope.of(context).requestFocus(focusNode_2);
+                        } else if (focusNode_2.hasFocus &&
+                            otpController_2.text.isEmpty) {
+                          focusNode_2.unfocus();
+                          otpController_1.clear();
+                          FocusScope.of(context).requestFocus(focusNode_1);
+                        }
+                      }
+                    },
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        buildOtpTextField(focusNode_1, otpController_1),
+                        buildOtpTextField(focusNode_2, otpController_2),
+                        buildOtpTextField(focusNode_3, otpController_3),
+                        buildOtpTextField(focusNode_4, otpController_4),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20.0),
+                  Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(Strings.resend_code,
+                          style: AppFonts.smallText
+                              .copyWith(color: AppColors.textColor))),
+                  Align(
+                      alignment: Alignment.centerRight,
+                      child: isResendButtonEnable
+                          ? InkWell(
+                              onTap: () {
+                                _verifyOtpBloc.add(OnResendOtpButtonClicked(
+                                    number: userContactNumber));
+                                setState(() {
+                                  isResendButtonEnable = false;
+                                  _secondsRemaining = 30;
+                                });
+                                startTimer();
+                              },
+                              child: RoundedContainer(
+                                width: 100,
+                                height: 40,
+                                cornerRadius: 30,
+                                color: AppColors.appSecondaryColor,
+                                child: Text(Strings.resend,
+                                    textAlign: TextAlign.center,
+                                    style: AppFonts.title
+                                        .copyWith(color: AppColors.textColor)),
+                              ),
+                            )
+                          : RoundedContainer(
+                              width: 80,
+                              height: 40,
+                              cornerRadius: 30,
+                              color: AppColors.appSecondaryColor,
+                              child: Text(_formatTimer(_secondsRemaining),
+                                  textAlign: TextAlign.center,
+                                  style: AppFonts.subHeader
+                                      .copyWith(color: AppColors.textColor)),
+                            )),
+                  Spacer(),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 24.0, horizontal: 8.0),
+                    child: RoundedElevatedButton(
+                        width: MediaQuery.of(context).size.width,
+                        height: 40.0,
+                        text: Strings.verify,
+                        onPressed: () {
+                          String otp = otpController_1.text +
+                              otpController_2.text +
+                              otpController_3.text +
+                              otpController_4.text;
+                          _verifyOtpBloc.add(OnButtonClicked(
+                              number: userContactNumber, otp: otp));
+                          // Navigator.popAndPushNamed(context, AppRoutes.registerUser);
+                        },
+                        cornerRadius: 6.0,
+                        buttonColor: AppColors.appPrimaryColor,
+                        textStyle:
+                            AppFonts.header.copyWith(color: AppColors.black)),
+                  ),
                 ],
               ),
             ),
-            const SizedBox(height: 20.0),
-            Align(
-                alignment: Alignment.centerLeft,
-                child: Text(Strings.resend_code,
-                    style: AppFonts.smallText
-                        .copyWith(color: AppColors.textColor))),
-            Align(
-                alignment: Alignment.centerRight,
-                child: isResendButtonEnable
-                    ? InkWell(
-                        onTap: () {
-                          _verifyOtpBloc.add(OnResendOtpButtonClicked(
-                              number: userContactNumber));
-                          setState(() {
-                            isResendButtonEnable = false;
-                            _secondsRemaining = 30;
-                          });
-                          startTimer();
-                        },
-                        child: RoundedContainer(
-                          width: 100,
-                          height: 40,
-                          cornerRadius: 30,
-                          color: AppColors.appSecondaryColor,
-                          child: Text(Strings.resend,
-                              textAlign: TextAlign.center,
-                              style: AppFonts.title
-                                  .copyWith(color: AppColors.textColor)),
-                        ),
-                      )
-                    : RoundedContainer(
-                        width: 80,
-                        height: 40,
-                        cornerRadius: 30,
-                        color: AppColors.appSecondaryColor,
-                        child: Text(_formatTimer(_secondsRemaining),
-                            textAlign: TextAlign.center,
-                            style: AppFonts.subHeader
-                                .copyWith(color: AppColors.textColor)),
-                      )),
-            Spacer(),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 24.0,horizontal: 8.0),
-              child: RoundedElevatedButton(
-                  width: MediaQuery.of(context).size.width,
-                  height: 40.0,
-                  text: Strings.verify,
-                  onPressed: () {
-                    String otp = otpController_1.text +
-                        otpController_2.text +
-                        otpController_3.text +
-                        otpController_4.text;
-                    _verifyOtpBloc.add(OnButtonClicked(
-                        number: userContactNumber, otp: otp));
-                    // Navigator.popAndPushNamed(context, AppRoutes.registerUser);
-
-                  },
-                  cornerRadius: 6.0,
-                  buttonColor: AppColors.appPrimaryColor,
-                  textStyle:
-                  AppFonts.header.copyWith(color: AppColors.black)),
-            ),
-          ],
+          ),
         ),
       );
 
@@ -315,6 +328,7 @@ class _VerifyOtpState extends State<VerifyOtp> {
 
   @override
   void dispose() {
+    _timer.cancel();
     clearData();
     super.dispose();
   }
@@ -344,12 +358,12 @@ class _VerifyOtpState extends State<VerifyOtp> {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       userContactNumber = prefs.getString('mobile_number') ?? '';
-      fcmToken = prefs.getString('fcm_token')??'';
+      fcmToken = prefs.getString('fcm_token') ?? '';
       device_id = prefs.getString('device_id') ?? '';
     });
   }
 
-  void saveUserDetails(String name,String userId ) async {
+  void saveUserDetails(String name, String userId) async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setString('user_name', name);
     prefs.setString('userId', userId);

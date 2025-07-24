@@ -60,10 +60,9 @@ dependencies:
   googleapis: ^13.2.0
   googleapis_auth: ^1.6.0
   flutter_background_service: ^5.0.6
-  flutter_background_service_android: ^6.2.3
   flutter_background_service_ios: ^5.0.1
   flutter_local_notifications: ^17.2.1+2
-  fluttertoast: ^8.2.6
+  # fluttertoast: ^8.2.6
   google_maps_polyline: ^1.0.3
   flutter_polyline_points: ^2.1.0
   webview_flutter: ^4.9.0
@@ -71,6 +70,9 @@ dependencies:
   flutter_native_splash: ^2.4.1
   uuid: ^4.5.1
   sms_autofill: ^2.4.1
+  flutter_background_service_android: ^6.3.0
+  oktoast: ^3.4.0
+  carousel_slider: ^5.1.1
 
 flutter_native_splash:
   color: "#FFFFB508"  # Change this to your desired splash background color

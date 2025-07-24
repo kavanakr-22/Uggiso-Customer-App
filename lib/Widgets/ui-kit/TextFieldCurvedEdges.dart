@@ -17,31 +17,29 @@ class TextFieldCurvedEdges extends StatelessWidget {
   final String? inputFormatter;
   final String? validatorType;
 
-  const TextFieldCurvedEdges({
-    Key? key,
-    required this.controller,
-    required this.backgroundColor,
-    required this.keyboardType,
-    required this.borderColor,
-    this.borderRadius = 20.0,
-    this.textAlign = TextAlign.start,
-    this.length = 100,
-    this.focusNode,
-    this.onSubmitted,
-    this.inputFormatter = '',
-    this.validatorType = '',
-    this.onChanged
-
-  }): super(key: key);
+  const TextFieldCurvedEdges(
+      {Key? key,
+      required this.controller,
+      required this.backgroundColor,
+      required this.keyboardType,
+      required this.borderColor,
+      this.borderRadius = 20.0,
+      this.textAlign = TextAlign.start,
+      this.length = 100,
+      this.focusNode,
+      this.onSubmitted,
+      this.inputFormatter = '',
+      this.validatorType = '',
+      this.onChanged})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(borderRadius),
-        border: Border.all(color:borderColor)
-      ),
+          color: backgroundColor,
+          borderRadius: BorderRadius.circular(borderRadius),
+          border: Border.all(color: borderColor)),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: TextFormField(
@@ -55,23 +53,22 @@ class TextFieldCurvedEdges extends StatelessWidget {
           maxLines: 1,
           focusNode: focusNode,
           onFieldSubmitted: onSubmitted,
-          inputFormatters: inputFormatter=='number'?<TextInputFormatter>[
-            FilteringTextInputFormatter.digitsOnly
-          ]:[],
-          validator: validatorType=='phone'?(value) {
-            if (value == null || value.isEmpty) {
-              return 'Please enter a mobile number';
-            }
-            // You can customize the regex pattern based on your requirements
-            if (!RegExp(r'^(0/91)?[6-9]\d{1}[0-9]\d{9}$').hasMatch(value)) {
-              return 'Please enter a valid 10 digit mobile number';
-            }
-            return null;
-          }:null,
-          decoration: const InputDecoration(
-            border: InputBorder.none,
-            counterText: ''
-          ),
+          inputFormatters: inputFormatter == 'number'
+              ? <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly]
+              : [],
+          validator: validatorType == 'phone'? (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a mobile number';
+                  }
+                  // You can customize the regex pattern based on your requirements
+                  if (!RegExp(r'^(0)?[6-9]\d{9}$').hasMatch(value)) {
+                    return 'Please enter a valid 10 digit mobile number';
+                  }
+                  return null;
+                }
+              : null,
+          decoration:
+              const InputDecoration(border: InputBorder.none, counterText: ''),
         ),
       ),
     );

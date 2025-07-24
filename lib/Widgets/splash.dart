@@ -6,10 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uggiso/Network/apiRepository.dart';
+import 'package:uggiso/Widgets/Bookmark.dart';
+import 'package:uggiso/Widgets/user_first_screen.dart';
 import 'package:uggiso/app_routes.dart';
 import 'package:uggiso/base/common/utils/LocationManager.dart';
 import 'package:uggiso/base/common/utils/colors.dart';
 import 'package:uggiso/base/common/utils/fonts.dart';
+import 'package:uggiso/base/common/utils/logger.dart';
 import 'package:uggiso/base/common/utils/strings.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
@@ -44,7 +47,7 @@ class _SplashScreenState extends State<SplashScreen> {
             Image.asset('assets/uggiso_splash.png', width: 200, height: 200));
   }
 
-  void checkUserLoggedStatus() async{
+  void checkUserLoggedStatus() async {
     // getAppVersion();
     getDeviceId();
   }
@@ -56,27 +59,21 @@ class _SplashScreenState extends State<SplashScreen> {
     print('this is device id : $deviceId');
     initFirebaseMessaging();
     setState(() {
-      _isUserLoggedIn = prefs.getBool('is_user_logged_in')?? false;
-
+      _isUserLoggedIn = prefs.getBool('is_user_logged_in') ?? false;
     });
     if (await isLocationEnabled()) {
       print('this is islocation enable true');
       print('this is user logged in value : $_isUserLoggedIn');
 
-      if(_isUserLoggedIn!){
+      if (_isUserLoggedIn!) {
         await getUserCurrentLocation(true);
-
-      }
-      else{
+      } else {
         await _showLocationFetchingDialog();
       }
-
-
     } else {
       print('this is islocation enable false');
       await _showLocationFetchingDialog();
     }
-
   }
 
   void initFirebaseMessaging() async {
@@ -91,7 +88,7 @@ class _SplashScreenState extends State<SplashScreen> {
     });
   }
 
-   _showLocationFetchingDialog() {
+  _showLocationFetchingDialog() {
     // WidgetsBinding.instance.addPostFrameCallback((_) {});
     showDialog(
         context: context,
@@ -103,8 +100,11 @@ class _SplashScreenState extends State<SplashScreen> {
                 Icon(Icons.location_on,
                     color: AppColors.appPrimaryColor, size: 40),
                 Gap(4),
-                Text(Strings.location_alert_title,
-                    style: AppFonts.subHeader,textAlign: TextAlign.center,),
+                Text(
+                  Strings.location_alert_title,
+                  style: AppFonts.subHeader,
+                  textAlign: TextAlign.center,
+                ),
               ],
             ),
             content: Text(
@@ -120,13 +120,13 @@ class _SplashScreenState extends State<SplashScreen> {
                   getUserCurrentLocation(false);
                   Navigator.of(ctx).pop();
                 },
-                child:Platform.isIOS?Container(): Text(
-                  'Deny',
-                  style:
-                      AppFonts.title.copyWith(color: Colors.red),
-                ),
+                child: Platform.isIOS
+                    ? Container()
+                    : Text(
+                        'Deny',
+                        style: AppFonts.title.copyWith(color: Colors.red),
+                      ),
               ),
-
               TextButton(
                 onPressed: () {
                   // Get.back(); // Close the dialog
@@ -134,15 +134,17 @@ class _SplashScreenState extends State<SplashScreen> {
                   getUserCurrentLocation(true);
                   Navigator.of(ctx).pop();
                 },
-                child: Platform.isIOS?Text(
-                  'Continue',
-                  style:
-                  AppFonts.title.copyWith(color: AppColors.alertColor),
-                ):Text(
-                  'Allow',
-                  style:
-                  AppFonts.title.copyWith(color: AppColors.alertColor),
-                ),
+                child: Platform.isIOS
+                    ? Text(
+                        'Continue',
+                        style: AppFonts.title
+                            .copyWith(color: AppColors.alertColor),
+                      )
+                    : Text(
+                        'Allow',
+                        style: AppFonts.title
+                            .copyWith(color: AppColors.alertColor),
+                      ),
               ),
             ],
           );
@@ -150,29 +152,27 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   getUserCurrentLocation(bool isGetLocation) async {
-
     final prefs = await SharedPreferences.getInstance();
 
-    if(isGetLocation){
+    if (isGetLocation) {
       LocationInfo _location = await LocationManager.getCurrentPosition();
-      print('this is user lat lng : ${_location.longitude} and ${_location.latitude}');
+      // TODO : Debug Logger need to implement in all print statements
+      debugLog(
+          'this is user lat lng : ${_location.longitude} and ${_location.latitude}');
       prefs.setDouble('user_longitude', _location.longitude);
       prefs.setDouble('user_latitude', _location.latitude);
-    }
-    else{
+    } else {
       prefs.setBool('userLocationEnabled', false);
     }
 
-    if(_isUserLoggedIn==null || _isUserLoggedIn ==false){
-
+    if (_isUserLoggedIn == null || _isUserLoggedIn == false) {
       Navigator.popAndPushNamed(context, AppRoutes.introLanding);
-
+    } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => UserFirstScreen()),
+      );
     }
-    else{
-      Navigator.popAndPushNamed(context, AppRoutes.home_landing_screen);
-
-    }
-
   }
 
   // getAppVersion() async {
@@ -194,26 +194,40 @@ class _SplashScreenState extends State<SplashScreen> {
   //   }
   // }
 
-  showUpdateDialog(String? url){
+  showUpdateDialog(String? url) {
     return showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Center(child: Text("Update Available",style: AppFonts.subHeader.copyWith(color: AppColors.appPrimaryColor,),)),
+          title: Center(
+              child: Text(
+            "Update Available",
+            style: AppFonts.subHeader.copyWith(
+              color: AppColors.appPrimaryColor,
+            ),
+          )),
           content: Text(
-              "Please update the app to the latest version to continue using all features.",textAlign: TextAlign.center,),
+            "Please update the app to the latest version to continue using all features.",
+            textAlign: TextAlign.center,
+          ),
           actions: <Widget>[
             TextButton(
-              child: Center(child: Text("Update",style: AppFonts.title.copyWith(fontWeight: FontWeight.w600,color: AppColors.appPrimaryColor),)),
-              onPressed: () async{
+              child: Center(
+                  child: Text(
+                "Update",
+                style: AppFonts.title.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.appPrimaryColor),
+              )),
+              onPressed: () async {
                 if (await canLaunch(url!)) {
-                await launch(url);
+                  await launch(url);
                 } else {
-                // Show an error message if the URL can't be launched
-                ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text("Unable to open the Play Store.")),
-                );
+                  // Show an error message if the URL can't be launched
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text("Unable to open the Play Store.")),
+                  );
                 }
               },
             ),

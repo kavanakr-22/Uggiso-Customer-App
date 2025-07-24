@@ -37,7 +37,7 @@ class _HomeLandingScreenState extends State<HomeLandingScreen> {
   static List<Widget> _widgetOptions = <Widget>[
     HomeTab(),
     OrdersTab(),
-    ProfileTab(),
+    // ProfileTab(),
     GetRouteMap()
   ];
 
@@ -84,13 +84,45 @@ class _HomeLandingScreenState extends State<HomeLandingScreen> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          index == 0?Icon(Icons.home_rounded,color: _selectedIndex == index ? AppColors.white : AppColors.bottomTabInactiveColor,size: 26,):
-          index == 2?Icon(Icons.person,color: _selectedIndex == index ? AppColors.white : AppColors.bottomTabInactiveColor,size: 26,):
-          index == 1?Icon(Icons.list_alt_rounded,color: _selectedIndex == index ? AppColors.white : AppColors.bottomTabInactiveColor,size: 26,):
-          index == 3?Icon(Icons.assistant_navigation,color: _selectedIndex == index ? AppColors.white : AppColors.bottomTabInactiveColor,):Image.asset(_imagePaths[index],height: 20,width: 20,
-            color: _selectedIndex == index ? AppColors.white : AppColors.bottomTabInactiveColor,
-
-          ),
+          index == 0
+              ? Icon(
+                  Icons.home_rounded,
+                  color: _selectedIndex == index
+                      ? AppColors.white
+                      : AppColors.bottomTabInactiveColor,
+                  size: 26,
+                )
+              : index == 2
+                  ? Icon(
+                      Icons.person,
+                      color: _selectedIndex == index
+                          ? AppColors.white
+                          : AppColors.bottomTabInactiveColor,
+                      size: 26,
+                    )
+                  : index == 1
+                      ? Icon(
+                          Icons.list_alt_rounded,
+                          color: _selectedIndex == index
+                              ? AppColors.white
+                              : AppColors.bottomTabInactiveColor,
+                          size: 26,
+                        )
+                      : index == 3
+                          ? Icon(
+                              Icons.assistant_navigation,
+                              color: _selectedIndex == index
+                                  ? AppColors.white
+                                  : AppColors.bottomTabInactiveColor,
+                            )
+                          : Image.asset(
+                              _imagePaths[index],
+                              height: 20,
+                              width: 20,
+                              color: _selectedIndex == index
+                                  ? AppColors.white
+                                  : AppColors.bottomTabInactiveColor,
+                            ),
           SizedBox(height: 4.0),
           Text(
             text[index],
@@ -131,7 +163,7 @@ class _HomeLandingScreenState extends State<HomeLandingScreen> {
               cornerRadius: 8,
               buttonColor: AppColors.grey,
               textStyle:
-              AppFonts.title.copyWith(color: AppColors.appPrimaryColor),
+                  AppFonts.title.copyWith(color: AppColors.appPrimaryColor),
             ),
             RoundedElevatedButton(
               width: MediaQuery.of(context).size.width * 0.3,
@@ -141,7 +173,7 @@ class _HomeLandingScreenState extends State<HomeLandingScreen> {
                 Navigator.pushNamedAndRemoveUntil(
                   context,
                   AppRoutes.signupScreen,
-                      (Route<dynamic> route) => false,
+                  (Route<dynamic> route) => false,
                 );
               },
               cornerRadius: 8,

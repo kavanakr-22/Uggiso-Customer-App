@@ -3,6 +3,8 @@ import 'package:uggiso/Model/GetNearByResaturantModel.dart';
 import 'package:uggiso/Model/GetRouteModel.dart';
 import 'package:uggiso/Model/RemoveFavRestaurantModel.dart';
 import 'package:uggiso/Model/otpModel.dart';
+import 'package:uggiso/Model/GetNearByResaturantModel.dart' as near;
+import 'package:uggiso/Model/GetRouteModel.dart' as route;
 
 abstract class HomeState extends Equatable {
   const HomeState();
@@ -38,4 +40,18 @@ class RestaurantsLocationFound extends HomeState {
 class ErrorState extends HomeState {
   final String message;
   ErrorState(this.message);
+}
+
+class FetchingMoreState extends HomeState {}
+
+class FetchedMoreState extends HomeState {
+  final List<near.Payload> updatedRestaurants;
+  final bool hasMore;
+
+  FetchedMoreState(this.updatedRestaurants, this.hasMore);
+}
+
+class PaginationErrorState extends HomeState {
+  final String message;
+  PaginationErrorState(this.message);
 }

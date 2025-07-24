@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gap/gap.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uggiso/Bloc/CreateOrderBloc/CreateOrderEvent.dart';
 import 'package:uggiso/Bloc/CreateOrderBloc/CreateOrderState.dart';
@@ -32,7 +32,8 @@ class CreateOrder extends StatefulWidget {
       required this.restaurantId,
       required this.restaurantName,
       required this.restLat,
-      required this.restLng,required this.gstPercent})
+      required this.restLng,
+      required this.gstPercent})
       : super(key: key);
 
   @override
@@ -120,11 +121,14 @@ class _CreateOrderState extends State<CreateOrder> {
                   paymentMode: state.data.payload!.paymentType!,
                   payerName: userName,
                   payerMobile: userNumber));
-              initializeService(widget.restLat??0.0, widget.restLng??0.0,
+              initializeService(widget.restLat ?? 0.0, widget.restLng ?? 0.0,
                   state.data.payload!.orderId!);
               Navigator.pushNamedAndRemoveUntil(
                   context,
-                  AppRoutes.orderSuccessScreen,arguments:OrderSuccessArgs(restLat:widget.restLat??0.0,restLng: widget.restLng??0.0) ,
+                  AppRoutes.orderSuccessScreen,
+                  arguments: OrderSuccessArgs(
+                      restLat: widget.restLat ?? 0.0,
+                      restLng: widget.restLng ?? 0.0),
                   (Route<dynamic> route) => false);
             }
             if (state is onCoinDetailsFetched) {
@@ -133,10 +137,8 @@ class _CreateOrderState extends State<CreateOrder> {
               });
 
               if ((state.data.payload?.balance! ?? 0.0) >= 10.0) {
-
                 uggiso_point_count = 10.0;
               } else {
-
                 uggiso_point_count = 0.0;
               }
               uggiso_point_balance = state.data.payload?.balance!.toDouble();
@@ -154,26 +156,26 @@ class _CreateOrderState extends State<CreateOrder> {
               };
               gotoPaymentScreen(parameters);
             }
-            if(state is InitiatePaymentFailed){
-              Fluttertoast.showToast(
-                  msg: state.message.toString(),
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.BOTTOM,
-                  timeInSecForIosWeb: 1,
-                  backgroundColor: Colors.red,
-                  textColor: Colors.white,
-                  fontSize: 16.0
+            if (state is InitiatePaymentFailed) {
+              showToast(
+                state.message.toString(),
+                duration: const Duration(seconds: 1),
+                position: ToastPosition.bottom,
+                backgroundColor: Colors.red,
+                textStyle: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 16.0,
+                ),
               );
             }
           },
-
           child: showLoader
               ? Center(
                   child: CircularProgressIndicator(
                   color: AppColors.appPrimaryColor,
                 ))
               : SingleChildScrollView(
-                child: Column(
+                  child: Column(
                     children: [
                       Container(
                         height: MediaQuery.of(context).size.height * 0.14,
@@ -208,7 +210,8 @@ class _CreateOrderState extends State<CreateOrder> {
                               // ),
                               // Gap(12),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   InkWell(
                                     onTap: () {
@@ -219,8 +222,9 @@ class _CreateOrderState extends State<CreateOrder> {
                                       loadOrderData();
                                     },
                                     child: RoundedContainer(
-                                        width: MediaQuery.of(context).size.width *
-                                            0.4,
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.4,
                                         height: 40,
                                         child: Center(
                                           child: Text(
@@ -244,8 +248,9 @@ class _CreateOrderState extends State<CreateOrder> {
                                       loadOrderData();
                                     },
                                     child: RoundedContainer(
-                                        width: MediaQuery.of(context).size.width *
-                                            0.4,
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.4,
                                         height: 40,
                                         child: Center(
                                           child: Text(
@@ -269,19 +274,20 @@ class _CreateOrderState extends State<CreateOrder> {
                                 children: [
                                   Text(Strings.select_time_slot,
                                       style: AppFonts.title),
-                                  Gap(24),
+                                  Gap(20),
                                   RoundedContainer(
-                                      width:
-                                          MediaQuery.of(context).size.width * 0.4,
-                                      height: MediaQuery.of(context).size.height *
-                                          0.05,
+                                      width: MediaQuery.of(context).size.width *
+                                          0.4,
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.05,
                                       color: AppColors.white,
                                       cornerRadius: 8,
                                       padding: 0,
                                       child: DropdownButtonFormField(
                                         decoration: const InputDecoration(
-                                          contentPadding:
-                                              EdgeInsets.symmetric(horizontal: 0),
+                                          contentPadding: EdgeInsets.symmetric(
+                                              horizontal: 0),
                                           border: InputBorder.none,
                                         ),
                                         padding: const EdgeInsets.symmetric(
@@ -295,8 +301,8 @@ class _CreateOrderState extends State<CreateOrder> {
                                           width: 12.0,
                                           height: 12.0,
                                         ),
-                                        items:
-                                            Strings.time_slot.map((String value) {
+                                        items: Strings.time_slot
+                                            .map((String value) {
                                           return DropdownMenuItem(
                                             value: value,
                                             child: Text(value),
@@ -339,8 +345,8 @@ class _CreateOrderState extends State<CreateOrder> {
                               physics: NeverScrollableScrollPhysics(),
                               itemBuilder: (BuildContext context, int count) {
                                 return Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 12.0),
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 12.0),
                                   child: Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
@@ -362,18 +368,20 @@ class _CreateOrderState extends State<CreateOrder> {
                                             ),
                                       Gap(4),
                                       Container(
-                                          width:
-                                              MediaQuery.of(context).size.width *
-                                                  0.4,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.4,
                                           child: Text(
                                             '${widget.orderlist[count]['menuName']}',
                                             style: AppFonts.title,
                                           )),
                                       Gap(12),
                                       Container(
-                                          width:
-                                              MediaQuery.of(context).size.width *
-                                                  0.1,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.1,
                                           child: Text(
                                             '${widget.orderlist[count]['quantity']}',
                                             style: AppFonts.title,
@@ -517,7 +525,8 @@ class _CreateOrderState extends State<CreateOrder> {
                           child: Column(
                             children: [
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
                                     Strings.item_total,
@@ -529,23 +538,27 @@ class _CreateOrderState extends State<CreateOrder> {
                                   )
                                 ],
                               ),
-                              _istakeAway?Gap(18):SizedBox(),
-                              _istakeAway?Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    Strings.parcel_charges,
-                                    style: AppFonts.title,
-                                  ),
-                                  Text(
-                                    '${parcelCharges.toStringAsFixed(2)}',
-                                    style: AppFonts.title,
-                                  )
-                                ],
-                              ):SizedBox(),
+                              _istakeAway ? Gap(18) : SizedBox(),
+                              _istakeAway
+                                  ? Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          Strings.parcel_charges,
+                                          style: AppFonts.title,
+                                        ),
+                                        Text(
+                                          '${parcelCharges.toStringAsFixed(2)}',
+                                          style: AppFonts.title,
+                                        )
+                                      ],
+                                    )
+                                  : SizedBox(),
                               Gap(18),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
                                     Strings.gst_charges,
@@ -557,8 +570,12 @@ class _CreateOrderState extends State<CreateOrder> {
                                   )
                                 ],
                               ),
-                              _isUggiso_points_selected && item_sub_total.toInt()>20? Gap(18) : Container(),
-                              _isUggiso_points_selected && item_sub_total.toInt()>20
+                              _isUggiso_points_selected &&
+                                      item_sub_total.toInt() > 20
+                                  ? Gap(18)
+                                  : Container(),
+                              _isUggiso_points_selected &&
+                                      item_sub_total.toInt() > 20
                                   ? Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
@@ -576,7 +593,8 @@ class _CreateOrderState extends State<CreateOrder> {
                                   : Container(),
                               Gap(18),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
                                     Strings.to_pay,
@@ -617,7 +635,8 @@ class _CreateOrderState extends State<CreateOrder> {
                               ),
                               Gap(4),
                               Container(
-                                  width: MediaQuery.of(context).size.width * 0.75,
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.70,
                                   child: Text(
                                     Strings.note_desc,
                                     style: AppFonts.smallText,
@@ -653,36 +672,36 @@ class _CreateOrderState extends State<CreateOrder> {
                       )
                     ],
                   ),
-              ),
+                ),
         )),
       ),
     );
   }
 
-  calculateTotalAmount(double price, int quantity,double parcelAmount) {
+  calculateTotalAmount(double price, int quantity, double parcelAmount) {
     setState(() {
       item_total = item_total + ((price) * quantity);
       print('this is item total amount : ${item_total}');
-      if(item_total>=20 && item_total<=100){
+      if (item_total >= 20 && item_total <= 100) {
         item_sub_total = item_total - (uggiso_point_count!);
-      }
-      else{
+      } else {
         item_sub_total = item_total;
       }
       gst_charges = item_sub_total *
           (double.parse((widget.gstPercent! / 100).toStringAsFixed(2)));
-      if(_istakeAway){
-        item_sub_total =
-            item_sub_total + (double.parse(gst_charges.toStringAsFixed(2)))+parcelAmount;
-      }
-      else if(_isDineIn){
+      if (_istakeAway) {
+        item_sub_total = item_sub_total +
+            (double.parse(gst_charges.toStringAsFixed(2))) +
+            parcelAmount;
+      } else if (_isDineIn) {
         item_sub_total =
             item_sub_total + (double.parse(gst_charges.toStringAsFixed(2)));
       }
     });
     print('this is item sub total :$item_sub_total');
   }
-  clearBillDetails(){
+
+  clearBillDetails() {
     setState(() {
       item_sub_total = 0.0;
       gst_charges = 0.0;
@@ -721,7 +740,6 @@ class _CreateOrderState extends State<CreateOrder> {
   }
 
   createOrder() async {
-
     setState(() {
       txnId = generateUUID();
     });
@@ -769,19 +787,23 @@ class _CreateOrderState extends State<CreateOrder> {
           transMode: 'BIKE',
           usedCoins: uggiso_point_count!.toInt(),
           paidAmount: item_sub_total,
-          lat:widget.restLat??0.0,lng:widget.restLng??0.0));
+          lat: widget.restLat ?? 0.0,
+          lng: widget.restLng ?? 0.0));
     } else if (payment_response['result'] == 'payment_failed') {
       _showBottomSheet(context);
     }
   }
 
-
-  String getTimeSlot(String slot){
-    switch(slot){
-      case 'Immediately': return 'IMMEDIATELY';
-      case '10-15min': return 'TENTOFIFTEEN';
-      case '5-10min': return 'FIVETOTEN';
-      default : return 'IMMEDIATELY';
+  String getTimeSlot(String slot) {
+    switch (slot) {
+      case 'Immediately':
+        return 'IMMEDIATELY';
+      case '10-15min':
+        return 'TENTOFIFTEEN';
+      case '5-10min':
+        return 'FIVETOTEN';
+      default:
+        return 'IMMEDIATELY';
     }
   }
 
@@ -848,13 +870,13 @@ class _CreateOrderState extends State<CreateOrder> {
     for (int i = 0; i < widget.orderlist.length; i++) {
       parcelCharges = parcelCharges + widget.orderlist[i]['parcelCharges'];
 
-      calculateTotalAmount(
-          widget.orderlist[i]['price'], widget.orderlist[i]['quantity'],parcelCharges);
+      calculateTotalAmount(widget.orderlist[i]['price'],
+          widget.orderlist[i]['quantity'], parcelCharges);
       menuList.add({
         "menuId": widget.orderlist[i]['menuId'],
         "quantity": widget.orderlist[i]['quantity'],
         "quantityAmount":
-        (widget.orderlist[i]['price'] * widget.orderlist[i]['quantity']),
+            (widget.orderlist[i]['price'] * widget.orderlist[i]['quantity']),
         "parcelAmount": widget.orderlist[i]['parcelCharges'],
         "menuName": widget.orderlist[i]['menuName'],
         "photo": widget.orderlist[i]['photo'],

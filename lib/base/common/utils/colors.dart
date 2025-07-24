@@ -1,8 +1,16 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 
-class AppColors{
-  static const Color appPrimaryColor = Color(0xFFFFB508);
+class AppColors {
+  static const Color appPrimaryColor = Color.fromARGB(255, 251, 190, 48);
+  static const LinearGradient appPrimaryGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomLeft,
+    colors: [
+      Color(0xFFFFB508),
+      Color(0xFFF6D365),
+    ],
+  );
   static const Color alertColor = Color(0xFFE88D0E);
   static const Color appSecondaryColor = Color(0xFFFFE4A4);
   static const Color white = Color(0xFFFFFFFF);

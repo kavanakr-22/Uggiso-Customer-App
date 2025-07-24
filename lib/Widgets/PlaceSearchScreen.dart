@@ -24,6 +24,7 @@ class _PlaceSearchScreenState extends State<PlaceSearchScreen> {
   late GoogleMapController _mapController;
   LatLng _center = LatLng(37.7749, -122.4194); // Default location
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -95,9 +95,10 @@ class ApiProvider {
 
   Future<MenuListModel> getMenuList(String id, String restId) async {
     try {
+      print('${_url}${Constants.getFavMenu}');
       Response response = await _dio.post('${_url}${Constants.getFavMenu}',
           data: {"userId": id, "restaurantId": restId});
-      print("${response.data}");
+      print("get menu list response is ${response.data}");
 
       return MenuListModel.fromJson(response.data);
     } catch (error, stacktrace) {
@@ -106,13 +107,18 @@ class ApiProvider {
     }
   }
 
-  Future<AddFavoriteMenuModel> addFavMenu(String userId, String menuId,String restaurantId) async {
+  Future<AddFavoriteMenuModel> addFavMenu(
+      String userId, String menuId, String restaurantId) async {
     print('user id : $userId');
     print('menu id : $menuId');
     print('restaurantId : $restaurantId');
     try {
       Response response = await _dio.post('${_url}${Constants.addFavMenu}',
-          data: {"userId": userId, "menuId": menuId,"restaurantId":restaurantId});
+          data: {
+            "userId": userId,
+            "menuId": menuId,
+            "restaurantId": restaurantId
+          });
       print("fav menu response : ${response.data}");
 
       return AddFavoriteMenuModel.fromJson(response.data);
@@ -172,23 +178,52 @@ class ApiProvider {
     }
   }
 
-  Future<GetNearByRestaurantModel> getNearByRestaurant(String userId,
-      double lat, double lag) async {
+  Future<GetNearByRestaurantModel> getNearByRestaurant(
+      String userId, double lat, double lag) async {
     print('calling api : $lat and $lag');
+    print('userId $userId');
     try {
-      Response response = await _dio
-          .post('${_url}${Constants.restaurantNearBy}', data: {
-        "userId": userId,
-        "lat": lat,
-        "lng": lag
-      });
-      print("${response.data}");
+      Response response = await _dio.post(
+          '${_url}${Constants.restaurantNearBy}',
+          data: {"userId": userId, "lat": lat, "lng": lag});
+      print("the near by rest reponse is : ${response.data}");
 
       return GetNearByRestaurantModel.fromJson(response.data);
     } catch (error, stacktrace) {
       print("Exception occured: $error stackTrace: $stacktrace");
       return GetNearByRestaurantModel.withError(
           "Data not found / Connection issue");
+    }
+  }
+
+  Future<GetNearByRestaurantModel> getNearByRestaurantByPagination(
+    String userId,
+    double lat,
+    double lag,
+    int page,
+    int size,
+  ) async {
+    print('calling api : $lat and $lag');
+    try {
+      Response response = await _dio.post(
+        '${_url}${Constants.nearRestaurantsListByPagination}',
+        data: {
+          "userId": userId,
+          "lat": lat,
+          "lng": lag,
+          "userStatus": "ACTIVEOPENED",
+          "page": page,
+          "size": size
+        },
+      );
+      print("${response.data}");
+
+      return GetNearByRestaurantModel.fromJson(response.data);
+    } catch (error, stacktrace) {
+      print("Exception occurred: $error stackTrace: $stacktrace");
+      return GetNearByRestaurantModel.withError(
+        "Data not found / Connection issue",
+      );
     }
   }
 
@@ -233,7 +268,9 @@ class ApiProvider {
       String timeSlot,
       String transMode,
       double paidAmount,
-      int usedCoins,double lat, double lng) async {
+      int usedCoins,
+      double lat,
+      double lng) async {
     print(
         'this is request data :{ restaurantId: $restaurantId, restaurantName: $restaurantName,"customerId": $customerId,"menus": $menuData'
         ',"orderType":$orderType,"paymentType": $paymentType,"orderStatus": $orderStatus,"totalAmount": $totalAmount'
@@ -254,7 +291,8 @@ class ApiProvider {
         "comments": comments,
         "timeSlot": timeSlot,
         "travelMode": transMode,
-            "lat":lat,"lng":lng
+        "lat": lat,
+        "lng": lng
       });
       print("${response.data}");
 
@@ -325,7 +363,8 @@ class ApiProvider {
 
   Future<GetNearByRestaurantModel> getRestaurantOnway(
       String userId, String polylinePoints, double lat, double lng) async {
-    print('get roues request : "userId": $userId,"roadPolyline": $polylinePoints,'
+    print(
+        'get roues request : "userId": $userId,"roadPolyline": $polylinePoints,'
         ' "originLat": $lat, "originLang": $lng, "mode": "DRIVE"');
     try {
       Response response =
@@ -341,7 +380,8 @@ class ApiProvider {
       return GetNearByRestaurantModel.fromJson(response.data);
     } catch (error, stacktrace) {
       print("Exception occured: $error stackTrace: $stacktrace");
-      return GetNearByRestaurantModel.withError("Data not found / Connection issue");
+      return GetNearByRestaurantModel.withError(
+          "Data not found / Connection issue");
     }
   }
 
@@ -555,8 +595,8 @@ class ApiProvider {
   Future<InitiatePaymentModel> initiatePayment(
       String name, String phone, String amount, String txnId) async {
     try {
-      Response response =
-          await _dio.post('${_url}${Constants.initiate_payment}', data: {
+      Response response = await _dio
+          .post('${_url}${Constants.initiate_payment}', data: {
         "name": name,
         "txnId": txnId,
         "phone": phone,
@@ -571,6 +611,7 @@ class ApiProvider {
           "Data not found / Connection issue");
     }
   }
+
   Future<AppVersionModel> getAppVersion() async {
     try {
       Response response = await _dio.get(
@@ -584,36 +625,28 @@ class ApiProvider {
     }
   }
 
-  Future<RemoveUserModel> removeUserData(
-      String userId) async {
+  Future<RemoveUserModel> removeUserData(String userId) async {
     try {
-      Response response =
-      await _dio.post('${_url}${Constants.remove_user_data}', data: {
-        "userId":userId
-      });
+      Response response = await _dio.post(
+          '${_url}${Constants.remove_user_data}',
+          data: {"userId": userId});
       print("${response.data}");
 
       return RemoveUserModel.fromJson(response.data);
     } catch (error, stacktrace) {
       print("Exception occured: $error stackTrace: $stacktrace");
-      return RemoveUserModel.withError(
-          "Data not found / Connection issue");
+      return RemoveUserModel.withError("Data not found / Connection issue");
     }
   }
 
-  Future<ResaturantSearchModel> searchRestaurant(String querry,double lat, double lag, String userId) async {
-
-    print('this is search params : userId :$userId, lat : $lat, lng : $lag, letters : $querry');
+  Future<ResaturantSearchModel> searchRestaurant(
+      String querry, double lat, double lag, String userId) async {
+    print(
+        'this is search params : userId :$userId, lat : $lat, lng : $lag, letters : $querry');
     try {
-
-      Response response =
-      await _dio.post('${_url}${Constants.restaurant_search}', data: {
-        "userId": userId,
-        "lat": lat,
-        "lng": lag,
-        "letters":querry
-
-      });
+      Response response = await _dio.post(
+          '${_url}${Constants.restaurant_search}',
+          data: {"userId": userId, "lat": lat, "lng": lag, "letters": querry});
       // Response response = await _dio.get('${_url}${Constants.restaurant_search}$querry');
       print("Status Code  : ${response.statusCode}");
       print("${response.data}");
@@ -621,7 +654,8 @@ class ApiProvider {
       return ResaturantSearchModel.fromJson(response.data);
     } catch (error, stacktrace) {
       print("Exception occured: $error stackTrace: $stacktrace");
-      return ResaturantSearchModel.withError("Data not found / Connection issue");
+      return ResaturantSearchModel.withError(
+          "Data not found / Connection issue");
     }
   }
 }

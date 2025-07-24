@@ -19,7 +19,7 @@ class RoundedContainer extends StatelessWidget {
       this.borderColor = AppColors.borderColor,
       this.color = Colors.transparent,
       this.borderWidth = 1.0,
-      this.padding = 8.0})
+      this.padding = 8.0, })
       : super(key: key);
 
   @override
