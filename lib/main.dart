@@ -11,6 +11,7 @@ import 'package:uggiso/Bloc/VerifyOtpBloc/VerifyOtpBloc.dart';
 import 'package:uggiso/app_routes.dart';
 import 'package:uggiso/base/common/utils/colors.dart';
 
+// Main 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
