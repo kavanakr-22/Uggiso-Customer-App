@@ -115,7 +115,7 @@ class _ReferralScreenState extends State<ReferralScreen> {
                     const SizedBox(height: 30.0),
                     TextFieldCurvedEdges(
                       controller: _numberController,
-                      backgroundColor: AppColors.textFieldBg,
+                      backgroundColor: AppColors.white,
                       keyboardType: TextInputType.number,
                       borderColor: AppColors.textFieldBorderColor,
                       borderRadius: 6,

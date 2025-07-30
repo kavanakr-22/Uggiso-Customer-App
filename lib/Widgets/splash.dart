@@ -6,7 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uggiso/Network/apiRepository.dart';
-import 'package:uggiso/Widgets/Bookmark.dart';
+// import 'package:uggiso/Widgets/Bookmark.dart';flutter pub get
+
 import 'package:uggiso/Widgets/user_first_screen.dart';
 import 'package:uggiso/app_routes.dart';
 import 'package:uggiso/base/common/utils/LocationManager.dart';

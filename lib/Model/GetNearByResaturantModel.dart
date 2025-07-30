@@ -107,6 +107,12 @@ class Payload {
         : null; // ✅ Parsing new field
   }
 
+  get price => null;
+
+  get rating => null;
+
+  get type => null;
+
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = {};
     data['restaurantId'] = this.restaurantId;

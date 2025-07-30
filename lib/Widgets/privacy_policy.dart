@@ -38,7 +38,12 @@ class _PrivacyPolicyState extends State<PrivacyPolicy> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: AppColors.appPrimaryColor,
+        // backgroundColor: AppColors.appPrimaryColor,
+         flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: AppColors.appPrimaryGradient,
+          ),
+        ),
         title: Text(Strings.privacy_policy,style: AppFonts.title,),
         leading: Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),

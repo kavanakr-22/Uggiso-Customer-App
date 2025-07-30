@@ -86,7 +86,12 @@ class _MenuListScreenState extends State<MenuListScreen> {
                 Navigator.pop(context);
               },
             )),
-        backgroundColor: AppColors.appPrimaryColor,
+        // backgroundColor: AppColors.appPrimaryColor,
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: AppColors.appPrimaryGradient,
+          ),
+        ),
       ),
       floatingActionButton: _showButton
           ? FloatingActionButton.extended(

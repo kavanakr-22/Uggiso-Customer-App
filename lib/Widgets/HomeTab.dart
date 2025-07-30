@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -33,6 +34,7 @@ class _HomeTabState extends State<HomeTab> {
   double latitude = 0.0;
   double longitude = 0.0;
   double selectedDistance = 5.0;
+  double selectedRatings = 0.0;
   String selectedMode = "BIKE";
   String userId = '';
   bool _isShowMaps = true;
@@ -122,38 +124,49 @@ class _HomeTabState extends State<HomeTab> {
         child: Scaffold(
           backgroundColor: AppColors.textFieldBg,
           appBar: PreferredSize(
-            preferredSize: Size.fromHeight(60),
+            preferredSize: const Size.fromHeight(50),
             child: AppBar(
               automaticallyImplyLeading: false,
-
-              backgroundColor: AppColors.appPrimaryColor,
               elevation: 0,
               centerTitle: false,
-              title: Padding(
-                padding: const EdgeInsets.only(top: 10.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    locationHeader()
-                    // Flexible(
-                    //     flex:2,child: locationHeader()),
-                  ],
+              flexibleSpace: Container(
+                decoration: const BoxDecoration(
+                  gradient: AppColors.appPrimaryGradient,
                 ),
               ),
-              // actions: [
-              //   IconButton(
-              //     onPressed: () {
-              //       // Add your action here, e.g., navigate to notifications or settings
-              //       Navigator.pushNamed(context, AppRoutes.myOrders);
-              //     },
-              //     icon: Icon(
-              //       Icons.receipt_long, // Replace with your preferred icon
-              //       color: AppColors.white,
-              //       size: 24, // Adjust size as needed
-              //     ),
-              //   ),
-              // ],
+              title: Row(
+                children: [
+                  /// iOS-style back arrow
+                  GestureDetector(
+                    onTap: () => Navigator.pop(context),
+                    child: const Icon(
+                      CupertinoIcons.back,
+                      color: Colors.black, // You can adjust this color
+                      size: 24,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+
+                  /// Search bar
+                  Expanded(
+                    child: Container(
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const TextField(
+                        decoration: InputDecoration(
+                          hintText: 'Search Restaurants...',
+                          prefixIcon: Icon(Icons.search),
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.symmetric(vertical: 10),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           // bottomNavigationBar: BottomNavigationBar(
@@ -177,40 +190,40 @@ class _HomeTabState extends State<HomeTab> {
           //   ],
           // ),
 
-          floatingActionButton: Padding(
-            padding:
-                const EdgeInsets.symmetric(vertical: 20.0, horizontal: 8.0),
-            child: FloatingActionButton(
-              backgroundColor: AppColors.appPrimaryColor,
-              onPressed: () {
-                setState(() {
-                  if (_isShowMaps) {
-                    _isShowMaps = false;
-                  } else {
-                    _isShowMaps = true;
-                  }
-                });
-              },
-              elevation: 8.0,
-              child: _isShowMaps
-                  ? const Icon(
-                      Icons.location_on,
-                      color: AppColors.white,
-                      size: 32,
-                    )
-                  : const Icon(
-                      Icons.list_alt_rounded,
-                      color: AppColors.white,
-                      size: 32,
-                    ),
-            ),
-          ),
+          // floatingActionButton: Padding(
+          //   padding:
+          //       const EdgeInsets.symmetric(vertical: 20.0, horizontal: 8.0),
+          //   child: FloatingActionButton(
+          //     backgroundColor: AppColors.appPrimaryColor,
+          //     onPressed: () {
+          //       setState(() {
+          //         if (_isShowMaps) {
+          //           _isShowMaps = false;
+          //         } else {
+          //           _isShowMaps = true;
+          //         }
+          //       });
+          //     },
+          //     elevation: 8.0,
+          //     child: _isShowMaps
+          //         ? const Icon(
+          //             Icons.location_on,
+          //             color: AppColors.white,
+          //             size: 32,
+          //           )
+          //         : const Icon(
+          //             Icons.list_alt_rounded,
+          //             color: AppColors.white,
+          //             size: 32,
+          //           ),
+          //   ),
+          // ),
           body: SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                searchWidget(),
+                // searchWidget(),
                 // BlocBuilder<HomeBloc, HomeState>(
                 //   builder: (BuildContext context, HomeState state) {
                 //     if (state is onLoadedHotelState) {
@@ -288,6 +301,7 @@ class _HomeTabState extends State<HomeTab> {
                                     longitude,
                                     selectedMode,
                                     selectedDistance,
+                                    selectedRatings,
                                     scrollController: _scrollController,
                                   )
                                 : GetHotelListinMap(
@@ -371,11 +385,12 @@ class _HomeTabState extends State<HomeTab> {
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height * 0.07,
         decoration: BoxDecoration(
-          color: AppColors.appPrimaryColor,
+          // color: AppColors.appPrimaryColor,
+          gradient: AppColors.appPrimaryGradient,
           borderRadius: const BorderRadius.only(
-            bottomLeft: Radius.circular(20),
-            bottomRight: Radius.circular(20),
-          ),
+              // bottomLeft: Radius.circular(20),
+              // bottomRight: Radius.circular(20),
+              ),
         ),
         child: InkWell(
             onTap: () => Navigator.pushNamed(context, AppRoutes.search_screen,

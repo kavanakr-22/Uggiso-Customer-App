@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -74,23 +75,36 @@ class _CreateOrderState extends State<CreateOrder> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.textFieldBorderColor,
+      backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 0.0,
         title: Text(
-          'Hotel Name',
+          widget.restaurantName ?? 'Hotel Name',
           style: AppFonts.appBarText,
         ),
-        leading: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: IconButton(
-              iconSize: 18,
-              icon: Image.asset('assets/ic_back_arrow.png'),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            )),
-        backgroundColor: AppColors.white,
+        leading: IconButton(
+          icon: const Icon(CupertinoIcons.back, size: 26, color: Colors.black),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: AppColors.appPrimaryColor),
+            boxShadow: [
+              BoxShadow(
+                color:
+                    Colors.black.withOpacity(0.05), // shadow color with opacity
+                blurRadius: 10, // soft blur radius
+                spreadRadius: 2, // how far the shadow spreads
+                offset: Offset(0, 4), // position of shadow (x, y)
+              ),
+            ],
+            gradient: AppColors.appPrimaryGradient, // <-- Your gradient here
+          ),
+        ),
+        backgroundColor:
+            Colors.transparent, // Important to allow gradient to show
       ),
       body: BlocProvider(
         create: (context) => _createOrderBloc,
@@ -177,43 +191,36 @@ class _CreateOrderState extends State<CreateOrder> {
               : SingleChildScrollView(
                   child: Column(
                     children: [
+                      Gap(14),
                       Container(
-                        height: MediaQuery.of(context).size.height * 0.14,
-                        decoration: const BoxDecoration(
-                          color: AppColors.white,
-                          borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(30),
-                            bottomRight: Radius.circular(30),
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 12),
+                        padding: const EdgeInsets.all(18),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [Colors.white, Colors.grey.shade50],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
                           ),
+                          borderRadius: BorderRadius.circular(24),
+                          // border: Border.all(color: AppColors.appPrimaryColor),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.2),
+                              blurRadius: 28,
+                              offset: Offset(0, 8),
+                            )
+                          ],
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16.0, vertical: 8.0),
-                          child: Column(
-                            children: [
-                              // Row(
-                              //   mainAxisAlignment: MainAxisAlignment.start,
-                              //   crossAxisAlignment: CrossAxisAlignment.center,
-                              //   children: [
-                              //     Image.asset(
-                              //       'assets/ic_home.png',
-                              //       width: 24,
-                              //       height: 24,
-                              //       color: AppColors.appPrimaryColor,
-                              //     ),
-                              //     SizedBox(
-                              //       width: 8,
-                              //     ),
-                              //     Text('Distance from Home',
-                              //         style: AppFonts.title)
-                              //   ],
-                              // ),
-                              // Gap(12),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  InkWell(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Toggle Buttons
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: GestureDetector(
                                     onTap: () {
                                       setState(() {
                                         _istakeAway = true;
@@ -221,25 +228,40 @@ class _CreateOrderState extends State<CreateOrder> {
                                       });
                                       loadOrderData();
                                     },
-                                    child: RoundedContainer(
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.4,
-                                        height: 40,
-                                        child: Center(
-                                          child: Text(
-                                            Strings.take_away,
-                                            style: AppFonts.title.copyWith(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w600),
+                                    child: AnimatedContainer(
+                                      duration: Duration(milliseconds: 250),
+                                      curve: Curves.easeInOut,
+                                      height: 48,
+                                      decoration: BoxDecoration(
+                                        color: _istakeAway
+                                            ? AppColors.appPrimaryColor
+                                            : Colors.grey.shade100,
+                                        borderRadius: BorderRadius.circular(14),
+                                        border: Border.all(
+                                          color: _istakeAway
+                                              ? AppColors.appPrimaryColor
+                                              : Colors.grey.shade300,
+                                          width: 1,
+                                        ),
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          Strings.take_away,
+                                          style: AppFonts.title.copyWith(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w600,
+                                            color: _istakeAway
+                                                ? Colors.white
+                                                : Colors.black87,
                                           ),
                                         ),
-                                        color: _istakeAway
-                                            ? AppColors.appSecondaryColor
-                                            : AppColors.white,
-                                        cornerRadius: 10),
+                                      ),
+                                    ),
                                   ),
-                                  InkWell(
+                                ),
+                                const SizedBox(width: 16),
+                                Expanded(
+                                  child: GestureDetector(
                                     onTap: () {
                                       setState(() {
                                         _istakeAway = false;
@@ -247,85 +269,109 @@ class _CreateOrderState extends State<CreateOrder> {
                                       });
                                       loadOrderData();
                                     },
-                                    child: RoundedContainer(
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.4,
-                                        height: 40,
-                                        child: Center(
-                                          child: Text(
-                                            Strings.dine_in,
-                                            style: AppFonts.title.copyWith(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w600),
+                                    child: AnimatedContainer(
+                                      duration: Duration(milliseconds: 250),
+                                      curve: Curves.easeInOut,
+                                      height: 48,
+                                      decoration: BoxDecoration(
+                                        color: _isDineIn
+                                            ? AppColors.appPrimaryColor
+                                            : Colors.grey.shade100,
+                                        borderRadius: BorderRadius.circular(14),
+                                        border: Border.all(
+                                          color: _isDineIn
+                                              ? AppColors.appPrimaryColor
+                                              : Colors.grey.shade300,
+                                          width: 1,
+                                        ),
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          Strings.dine_in,
+                                          style: AppFonts.title.copyWith(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w600,
+                                            color: _isDineIn
+                                                ? Colors.white
+                                                : Colors.black87,
                                           ),
                                         ),
-                                        color: _isDineIn
-                                            ? AppColors.appSecondaryColor
-                                            : AppColors.white,
-                                        cornerRadius: 10),
-                                  )
-                                ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                            const Gap(24),
+
+                            // Time Slot Selection
+                            Text(
+                              Strings.select_time_slot,
+                              style: AppFonts.title.copyWith(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 15.5,
+                                color: Colors.black87,
                               ),
-                              Gap(12),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Text(Strings.select_time_slot,
-                                      style: AppFonts.title),
-                                  Gap(20),
-                                  RoundedContainer(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.4,
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.05,
-                                      color: AppColors.white,
-                                      cornerRadius: 8,
-                                      padding: 0,
-                                      child: DropdownButtonFormField(
-                                        decoration: const InputDecoration(
-                                          contentPadding: EdgeInsets.symmetric(
-                                              horizontal: 0),
-                                          border: InputBorder.none,
-                                        ),
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 18),
-                                        value: selectedSlot,
-                                        menuMaxHeight:
-                                            MediaQuery.of(context).size.height *
-                                                0.4,
-                                        icon: Image.asset(
-                                          'assets/ic_dropdown_arrow.png',
-                                          width: 12.0,
-                                          height: 12.0,
-                                        ),
-                                        items: Strings.time_slot
-                                            .map((String value) {
-                                          return DropdownMenuItem(
-                                            value: value,
-                                            child: Text(value),
-                                          );
-                                        }).toList(),
-                                        onChanged: (String? newValue) {
-                                          setState(() {
-                                            selectedSlot = newValue!;
-                                          });
-                                        },
-                                      )),
-                                ],
+                            ),
+                            const Gap(12),
+                            Container(
+                              height: 52,
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 12),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(color: Colors.grey.shade300),
                               ),
-                            ],
-                          ),
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButtonFormField(
+                                  value: selectedSlot,
+                                  isExpanded: true,
+                                  menuMaxHeight:
+                                      MediaQuery.of(context).size.height * 0.4,
+                                  icon: Padding(
+                                    padding: const EdgeInsets.only(right: 8.0),
+                                    child: Image.asset(
+                                      'assets/ic_dropdown_arrow.png',
+                                      width: 14,
+                                      height: 14,
+                                    ),
+                                  ),
+                                  decoration: const InputDecoration(
+                                    border: InputBorder.none,
+                                    contentPadding:
+                                        EdgeInsets.symmetric(horizontal: 6),
+                                  ),
+                                  style: AppFonts.title.copyWith(
+                                    fontSize: 14.5,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.black87,
+                                  ),
+                                  items: Strings.time_slot.map((String value) {
+                                    return DropdownMenuItem(
+                                      value: value,
+                                      child: Text(value),
+                                    );
+                                  }).toList(),
+                                  onChanged: (String? newValue) {
+                                    setState(() {
+                                      selectedSlot = newValue!;
+                                    });
+                                  },
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                       Gap(18),
-                      Text(
-                        Strings.order_details,
-                        style: AppFonts.subHeader,
-                      ),
-                      Gap(18),
+
+                      // Text(
+                      //   Strings.order_details,
+                      //   style: AppFonts.subHeader,
+                      // ),
+                      // Gap(18),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: Container(
@@ -335,131 +381,207 @@ class _CreateOrderState extends State<CreateOrder> {
                             color: AppColors.white,
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
-                              color: AppColors.white,
+                              color: AppColors.appPrimaryColor,
                               width: 1,
                             ),
                           ),
-                          child: ListView.builder(
-                              itemCount: widget.orderlist.length,
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              itemBuilder: (BuildContext context, int count) {
-                                return Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 12.0),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      widget.orderlist[count]
-                                                      ['restaurantMenuType']
-                                                  .toString()
-                                                  .toLowerCase() ==
-                                              'veg'
-                                          ? Image.asset(
-                                              'assets/ic_veg.png',
-                                              width: 12,
-                                              height: 12,
-                                            )
-                                          : Image.asset(
-                                              'assets/ic_non_veg.png',
-                                              width: 12,
-                                              height: 12,
-                                            ),
-                                      Gap(4),
-                                      Container(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.4,
-                                          child: Text(
-                                            '${widget.orderlist[count]['menuName']}',
-                                            style: AppFonts.title,
-                                          )),
-                                      Gap(12),
-                                      Container(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.1,
-                                          child: Text(
-                                            '${widget.orderlist[count]['quantity']}',
-                                            style: AppFonts.title,
-                                          )),
-                                      /* RoundedContainer(
-                                      width: MediaQuery.of(context).size.width * 0.22,
-                                      height:
-                                          MediaQuery.of(context).size.height * 0.04,
-                                      cornerRadius: 12,
-                                      padding: 0,
-                                      color: AppColors.appPrimaryColor,
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                Strings.order_details,
+                                style: AppFonts.subHeader,
+                              ),
+                              Gap(18),
+                              ListView.builder(
+                                  itemCount: widget.orderlist.length,
+                                  shrinkWrap: true,
+                                  physics: NeverScrollableScrollPhysics(),
+                                  itemBuilder:
+                                      (BuildContext context, int count) {
+                                    return Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 12.0),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
-                                          Gap(6),
-                                          InkWell(
-                                            onTap: () {
-                                              setState(() {
-                                                // _orderCount = _orderCount + 1;
-                                              });
-                                            },
-                                            child: Icon(
-                                              Icons.remove,
-                                              color: AppColors.white,
-                                              size: 24,
-                                            ),
+                                          Row(
+                                            // mainAxisAlignment:
+                                            //     MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              widget.orderlist[count][
+                                                              'restaurantMenuType']
+                                                          .toString()
+                                                          .toLowerCase() ==
+                                                      'veg'
+                                                  ? Image.asset(
+                                                      'assets/ic_veg.png',
+                                                      width: 12,
+                                                      height: 12,
+                                                    )
+                                                  : Image.asset(
+                                                      'assets/ic_non_veg.png',
+                                                      width: 12,
+                                                      height: 12,
+                                                    ),
+                                              Gap(16),
+                                              Container(
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.4,
+                                                  child: Text(
+                                                    '${widget.orderlist[count]['menuName']}',
+                                                    style: AppFonts.title,
+                                                  )),
+                                              Gap(55),
+                                              // Container(
+                                              //     width: MediaQuery.of(context)
+                                              //             .size
+                                              //             .width *
+                                              //         0.1,
+                                              //     child: Text(
+                                              //       '${widget.orderlist[count]['quantity']}',
+                                              //       style: AppFonts.title,
+                                              //     )),
+                                              RoundedContainer(
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.22,
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .height *
+                                                      0.04,
+                                                  cornerRadius: 12,
+                                                  padding: 0,
+                                                  color: AppColors
+                                                      .appSecondaryColor,
+                                                  child: Row(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Gap(6),
+                                                      InkWell(
+                                                        onTap: () {
+                                                          setState(() {
+                                                            // _orderCount = _orderCount + 1;
+                                                          });
+                                                        },
+                                                        child: Icon(
+                                                            Icons.remove,
+                                                            color:
+                                                                AppColors.black,
+                                                            size: 26),
+                                                      ),
+                                                      Gap(5),
+                                                      Text(
+                                                        '${widget.orderlist[count]['quantity']}',
+                                                        style: AppFonts.title,
+                                                      ),
+                                                      Gap(6),
+                                                      InkWell(
+                                                        onTap: () {
+                                                          setState(() {
+                                                            // _orderCount = _orderCount - 1;
+                                                          });
+                                                        },
+                                                        child: Icon(
+                                                          Icons.add,
+                                                          color:
+                                                              AppColors.black,
+                                                          size: 24,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  )),
+                                              // InkWell(
+                                              //   onTap: () {
+                                              //     Navigator.pop(context);
+                                              //   },
+                                              //   child: Image.asset(
+                                              //     'assets/ic_edit.png',
+                                              //     width: 12,
+                                              //     height: 18,
+                                              //   ),
+                                              // ),
+                                              /* Gap(12),
+                                          Image.asset(
+                                            'assets/ic_delete.png',
+                                            width: 18,
+                                            height: 18,
+                                          ),*/
+                                              // Gap(24),
+                                              // Expanded(
+                                              //   child: Text(
+                                              //     '₹ ${(widget.orderlist[count]['quantity'] * widget.orderlist[count]['price'])}',
+                                              //     textAlign: TextAlign.end,
+                                              //     style: AppFonts.title,
+                                              //   ),
+                                              // ),
+                                              // Gap(18),
+                                            ],
                                           ),
-                                          Text(
-                                            '1',
-                                            style: AppFonts.title
-                                                .copyWith(color: AppColors.white),
+                                          Gap(5),
+                                          Row(
+                                            children: [
+                                              // CrossAxisAlignment.start
+                                              Text(
+                                                "Edit",
+                                                style: TextStyle(fontSize: 14),
+                                              ),
+                                              SizedBox(
+                                                width: 5,
+                                              ),
+                                              IconButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                icon: Icon(Icons.edit_outlined),
+                                                iconSize: 20,
+                                              ),
+                                              SizedBox(width: 170),
+                                              Text(
+                                                '₹ ${(widget.orderlist[count]['quantity'] * widget.orderlist[count]['price'])}',
+                                                textAlign: TextAlign.end,
+                                                style: AppFonts.title,
+                                              ),
+                                            ],
                                           ),
-                                          Gap(6),
-                                          InkWell(
-                                            onTap: () {
-                                              setState(() {
-                                                // _orderCount = _orderCount - 1;
-                                              });
-                                            },
-                                            child: Icon(
-                                              Icons.add,
-                                              color: AppColors.white,
-                                              size: 24,
-                                            ),
+                                          Gap(5),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              Icon(
+                                                Icons.add,
+                                                size: 20,
+                                                color: Colors.black,
+                                              ),
+                                              SizedBox(width: 8),
+                                              InkWell(
+                                                onTap: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: Text(
+                                                  "Add more Items",
+                                                  style: TextStyle(
+                                                    fontSize: 14,
+                                                    color: Colors.black,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ],
-                                      )),*/
-                                      InkWell(
-                                        onTap: () {
-                                          Navigator.pop(context);
-                                        },
-                                        child: Image.asset(
-                                          'assets/ic_edit.png',
-                                          width: 12,
-                                          height: 18,
-                                        ),
                                       ),
-                                      /* Gap(12),
-                                  Image.asset(
-                                    'assets/ic_delete.png',
-                                    width: 18,
-                                    height: 18,
-                                  ),*/
-                                      Gap(24),
-                                      Expanded(
-                                        child: Text(
-                                          '₹ ${(widget.orderlist[count]['quantity'] * widget.orderlist[count]['price'])}',
-                                          textAlign: TextAlign.end,
-                                          style: AppFonts.title,
-                                        ),
-                                      ),
-                                      Gap(18),
-                                    ],
-                                  ),
-                                );
-                              }),
+                                    );
+                                  }),
+                            ],
+                          ),
                         ),
                       ),
                       Gap(18),
@@ -503,11 +625,11 @@ class _CreateOrderState extends State<CreateOrder> {
                       //   ),
                       // ),
 
-                      Gap(18),
-                      Text(
-                        Strings.bill_details,
-                        style: AppFonts.subHeader,
-                      ),
+                      // Gap(18),
+                      // Text(
+                      //   Strings.bill_details,
+                      //   style: AppFonts.subHeader,
+                      // ),
                       Gap(18),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -523,7 +645,13 @@ class _CreateOrderState extends State<CreateOrder> {
                             ),
                           ),
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              Text(
+                                Strings.bill_details,
+                                style: AppFonts.subHeader,
+                              ),
+                              Gap(10),
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -615,37 +743,38 @@ class _CreateOrderState extends State<CreateOrder> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: Container(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-                          width: MediaQuery.of(context).size.width,
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(16),
+                          margin: const EdgeInsets.symmetric(vertical: 12),
                           decoration: BoxDecoration(
-                            color: AppColors.white,
+                            color: Colors.white,
                             borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: AppColors.white,
-                              width: 1,
-                            ),
                           ),
-                          child: Row(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                Strings.note,
-                                style: AppFonts.smallText
-                                    .copyWith(color: Colors.red),
+                                Strings.note
+                                    .toUpperCase(), // "NOTE" in all caps
+                                style: AppFonts.smallText.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.grey.shade700,
+                                  letterSpacing: 1.2,
+                                ),
                               ),
-                              Gap(4),
-                              Container(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.70,
-                                  child: Text(
-                                    Strings.note_desc,
-                                    style: AppFonts.smallText,
-                                  )),
+                              const SizedBox(height: 8),
+                              Text(
+                                Strings.note_desc,
+                                style: AppFonts.smallText.copyWith(
+                                  color: Colors.grey.shade700,
+                                  height: 1.4,
+                                ),
+                              ),
                             ],
                           ),
                         ),
                       ),
-                      Gap(36),
+                      Gap(25),
                       // Text(
                       //   Strings.payment_methods,
                       //   style: AppFonts.subHeader,
@@ -655,7 +784,7 @@ class _CreateOrderState extends State<CreateOrder> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 16.0, vertical: 12.0),
                         child: RoundedElevatedButton(
-                          width: MediaQuery.of(context).size.width * 0.8,
+                          width: MediaQuery.of(context).size.width * 0.6,
                           height: 40.0,
                           text: 'PROCEED PAYMENT',
                           textStyle: AppFonts.title,

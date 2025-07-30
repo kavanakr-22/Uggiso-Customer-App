@@ -13,7 +13,9 @@ import 'package:uggiso/Widgets/RewardsScreen.dart';
 import 'package:uggiso/Widgets/RouteMapScreen.dart';
 import 'package:uggiso/Widgets/SettingsScreen.dart';
 import 'package:uggiso/Widgets/VerifyOtp.dart';
+import 'package:uggiso/Widgets/bookmark.dart';
 import 'package:uggiso/Widgets/help_center.dart';
+import 'package:uggiso/Widgets/menu_details_screen.dart';
 import 'package:uggiso/Widgets/polylineScreeen.dart';
 import 'package:uggiso/Widgets/privacy_policy.dart';
 import 'package:uggiso/Widgets/trems_and_conditions.dart';
@@ -52,7 +54,9 @@ class AppRoutes {
 
   static const String aboutUs = '/about_us';
 
-  static const String menuList = '/menu_list';
+  // static const String menuList = '/menu_list';
+
+  static const String menuList = '/menu/restaurantMenuListByPagination';
 
   static const String saveCard = '/save_card';
 
@@ -65,6 +69,8 @@ class AppRoutes {
   static const String orderSuccessScreen = '/order_success_screen';
 
   static const String profileScreen = '/profile_screen';
+
+  static const String bookmarkscreen = '/bookmarkScreen';
 
   static const String referenceScreen = '/referenceScreen';
 
@@ -111,7 +117,7 @@ class AppRoutes {
       case menuList:
         final args = settings.arguments as MenuListArgs;
         return MaterialPageRoute(
-            builder: (_) => MenuListScreen(
+            builder: (_) => RestaurantMockScreen(
                   restaurantId: args.restaurantId,
                   restaurantName: args.name,
                   foodType: args.foodType,
@@ -141,14 +147,19 @@ class AppRoutes {
 
       case orderSuccessScreen:
         final _orderSuccessArgs = settings.arguments as OrderSuccessArgs;
-        return MaterialPageRoute(builder: (_) => OrderSuccessScreen(lat: _orderSuccessArgs.restLat!,
-          lng: _orderSuccessArgs.restLng!,));
-
+        return MaterialPageRoute(
+            builder: (_) => OrderSuccessScreen(
+                  lat: _orderSuccessArgs.restLat!,
+                  lng: _orderSuccessArgs.restLng!,
+                ));
       case rewards:
         return MaterialPageRoute(builder: (_) => const RewardsScreen());
 
       case profileScreen:
         return MaterialPageRoute(builder: (_) => const ProfileTab());
+
+      case bookmarkscreen:
+        return MaterialPageRoute(builder: (_) => const BookmarkScreen());
 
       case referenceScreen:
         return MaterialPageRoute(builder: (_) => const ReferralScreen());
@@ -173,11 +184,12 @@ class AppRoutes {
 
       case search_screen:
         final args = settings.arguments as RestaurantSearchArgs;
-        return MaterialPageRoute(builder: (_) => Restaurantsearchscreen(
-          lat: args.lat,
-          lag: args.lag,
-          userId: args.userId,
-        ));
+        return MaterialPageRoute(
+            builder: (_) => Restaurantsearchscreen(
+                  lat: args.lat,
+                  lag: args.lag,
+                  userId: args.userId,
+                ));
 
       default:
         // If there is no such named route in the switch statement, e.g. /randomRoute

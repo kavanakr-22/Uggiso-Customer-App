@@ -479,12 +479,13 @@ class _GetRouteMapState extends State<GetRouteMap> {
         height: MediaQuery.of(context).size.height * 0.16,
         width: MediaQuery.of(context).size.width,
         decoration: const BoxDecoration(
-          color: AppColors.appPrimaryColor,
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(30),
-            bottomRight: Radius.circular(30),
-          ),
-        ),
+            // color: AppColors.appPrimaryColor,
+            gradient: AppColors.appPrimaryGradient
+            // borderRadius: BorderRadius.only(
+            //     // bottomLeft: Radius.circular(0),
+            //     // bottomRight: Radius.circular(30),
+            //     ),
+            ),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Column(

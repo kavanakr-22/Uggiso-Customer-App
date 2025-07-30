@@ -12,8 +12,8 @@ class FavoriteTab extends StatefulWidget {
   State<FavoriteTab> createState() => _FavoriteTabState();
 }
 
-class _FavoriteTabState extends State<FavoriteTab> with SingleTickerProviderStateMixin{
-
+class _FavoriteTabState extends State<FavoriteTab>
+    with SingleTickerProviderStateMixin {
   TabController? _tabController;
 
   @override
@@ -33,55 +33,57 @@ class _FavoriteTabState extends State<FavoriteTab> with SingleTickerProviderStat
     return DefaultTabController(
       length: 3,
       child: Scaffold(
-
-          appBar: AppBar(
-            elevation: 0.0,
-            leading: Container(),
-            backgroundColor: AppColors.appPrimaryColor,
-            title: const Text(
-              Strings.favorite,
-              style: AppFonts.appBarText,
+        appBar: AppBar(
+          elevation: 0.0,
+          leading: Container(),
+          // backgroundColor: AppColors.appPrimaryColor,
+          flexibleSpace: Container(
+            decoration: const BoxDecoration(
+              gradient: AppColors.appPrimaryGradient,
             ),
-            centerTitle: true,
-            bottom: PreferredSize(
-              preferredSize: Size.fromHeight(70.0),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 42.0),
-                child: Container(
-                  decoration: BoxDecoration(
+          ),
+          title: const Text(
+            Strings.favorite,
+            style: AppFonts.appBarText,
+          ),
+          centerTitle: true,
+          bottom: PreferredSize(
+            preferredSize: Size.fromHeight(70.0),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 42.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20.0),
+                  color: AppColors.appPrimaryColor,
+                ),
+                child: TabBar(
+                  controller: _tabController,
+                  indicator: BoxDecoration(
                     borderRadius: BorderRadius.circular(20.0),
-                    color: AppColors.appPrimaryColor,
+                    color: AppColors.white,
                   ),
-                  child: TabBar(
-                    controller: _tabController,
-                    indicator: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20.0),
-                      color: AppColors.white,
-                    ),
-                    labelStyle: AppFonts.appBarText,
-                    labelColor: AppColors.textColor,
-                    tabs: [
-                      Container(
-                        width: MediaQuery.of(context).size.width*0.4,
-                          child: Tab(text: Strings.hotels,)),
-                      Container(
-                          width: MediaQuery.of(context).size.width*0.4,
-                          child: Tab(text: Strings.dishes)),
-                    ],
-                  ),
+                  labelStyle: AppFonts.appBarText,
+                  labelColor: AppColors.textColor,
+                  tabs: [
+                    Container(
+                        width: MediaQuery.of(context).size.width * 0.4,
+                        child: Tab(
+                          text: Strings.hotels,
+                        )),
+                    Container(
+                        width: MediaQuery.of(context).size.width * 0.4,
+                        child: Tab(text: Strings.dishes)),
+                  ],
                 ),
               ),
             ),
           ),
-          body: TabBarView(
-            controller: _tabController,
-            children: [
-              FavRestaurantTab(),
-              FavMenuTab()
-            ],
-          ),
+        ),
+        body: TabBarView(
+          controller: _tabController,
+          children: [FavRestaurantTab(), FavMenuTab()],
+        ),
       ),
     );
   }
-
 }

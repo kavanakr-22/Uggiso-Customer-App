@@ -1,16 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uggiso/Bloc/HomeBloc/HomeBloc.dart';
 import 'package:uggiso/Widgets/HomeTab.dart';
 import 'package:uggiso/Widgets/OrdersTab.dart';
 import 'package:uggiso/Widgets/ProfileTab.dart';
+import 'package:uggiso/Widgets/bookmark.dart';
+import 'package:uggiso/Widgets/menu_details_screen.dart';
 import 'package:uggiso/Widgets/ui-kit/HorizontalGrid.dart';
 import 'package:uggiso/Widgets/ui-kit/RoundedElevatedButton.dart';
 import 'package:uggiso/app_routes.dart';
 import 'package:uggiso/base/common/utils/colors.dart';
 import 'package:uggiso/base/common/utils/fonts.dart';
+import 'package:uggiso/base/common/utils/get_route_map.dart';
 import 'package:uggiso/base/common/utils/strings.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:uggiso/Model/GetNearByResaturantModel.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class UserFirstScreen extends StatefulWidget {
   const UserFirstScreen({Key? key}) : super(key: key);
@@ -21,6 +28,8 @@ class UserFirstScreen extends StatefulWidget {
 
 class _UserFirstScreenState extends State<UserFirstScreen> {
   int _selectedIndex = 0;
+  String currentLocation = '';
+  final String apiKey = 'AIzaSyB8UoTxemF5no_Va1aJn4x8s10VsFlLQHA';
 
   final List<String> _labels = [
     Strings.home,
@@ -28,16 +37,12 @@ class _UserFirstScreenState extends State<UserFirstScreen> {
     Strings.by_route,
   ];
 
-  final List<Widget> _tabs = [
-    HomeTab(),
-    OrdersTab(),
-    const Center(child: Text("Route Map")),
-  ];
+  final List<Widget> _tabs = <Widget>[HomeTab(), OrdersTab(), GetRouteMap()];
 
   final List<String> sliderImages = [
     'assets/slider1.jpg',
     'assets/slider2.jpg',
-    'assets/slider3.jpg',
+    // 'assets/slider3.jpg',
   ];
 
   final List<Payload> favoriteRestaurants = List.generate(
@@ -81,6 +86,43 @@ class _UserFirstScreenState extends State<UserFirstScreen> {
       favourite: i % 2 == 0,
     ),
   );
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserLocation();
+  }
+
+  Future<void> fetchUserLocation() async {
+    final prefs = await SharedPreferences.getInstance();
+    double latitude = prefs.getDouble('user_latitude') ?? 0.0;
+    double longitude = prefs.getDouble('user_longitude') ?? 0.0;
+
+    if (latitude != 0.0 && longitude != 0.0) {
+      await getAddressFromLatLng(latitude, longitude);
+    }
+  }
+
+  Future<void> getAddressFromLatLng(double lat, double lng) async {
+    final url = Uri.parse(
+        "https://maps.googleapis.com/maps/api/geocode/json?latlng=$lat,$lng&key=$apiKey");
+
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        if (data['results'] != null && data['results'].isNotEmpty) {
+          setState(() {
+            currentLocation = data['results'][0]['formatted_address'];
+          });
+        }
+      } else {
+        print("Failed to get address: ${response.body}");
+      }
+    } catch (e) {
+      print("Error fetching address: $e");
+    }
+  }
 
   void _onItemTapped(int index) async {
     final prefs = await SharedPreferences.getInstance();
@@ -176,175 +218,217 @@ class _UserFirstScreenState extends State<UserFirstScreen> {
     );
   }
 
+  final HomeBloc _homeBloc = HomeBloc();
+
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        final shouldExit = await showExitConfirmationDialog(context);
-        return shouldExit ?? false;
-      },
-      child: Scaffold(
-        backgroundColor: Colors.grey[100],
-        appBar: _selectedIndex == 0
-            ? AppBar(
-                elevation: 0,
-                automaticallyImplyLeading: false,
-                toolbarHeight: 125,
-                flexibleSpace: Container(
-                  decoration: const BoxDecoration(
-                    gradient: AppColors.appPrimaryGradient,
-                  ),
-                  child: MediaQuery.removePadding(
-                    context: context,
-                    removeTop: true,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ListTile(
-                          title: const Text(
-                            'Deliver to',
-                            style: TextStyle(color: Colors.white, fontSize: 12),
-                          ),
-                          subtitle: const Text(
-                            'Your Location',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                            ),
-                          ),
-                          trailing: GestureDetector(
+    return BlocProvider(
+      create: (context) => _homeBloc,
+      child: WillPopScope(
+        onWillPop: () async {
+          final shouldExit = await showExitConfirmationDialog(context);
+          return shouldExit ?? false;
+        },
+        child: Scaffold(
+          backgroundColor: Colors.grey[100],
+          appBar: _selectedIndex == 0
+              ? AppBar(
+                  elevation: 0,
+                  automaticallyImplyLeading: false,
+                  toolbarHeight: 125,
+                  flexibleSpace: Container(
+                    decoration: const BoxDecoration(
+                      gradient: AppColors.appPrimaryGradient,
+                    ),
+                    child: MediaQuery.removePadding(
+                      context: context,
+                      removeTop: true,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          GestureDetector(
                             onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => const ProfileTab()),
-                              );
+                              Navigator.pushNamed(
+                                  context, AppRoutes.google_place_search);
                             },
+                            child: ListTile(
+                              title: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: const [
+                                  Icon(
+                                    Icons.location_on,
+                                    color: Colors.black,
+                                    size: 20,
+                                  ),
+                                  SizedBox(width: 4),
+                                  Icon(
+                                    Icons
+                                        .keyboard_arrow_down, // iOS-style down arrow
+                                    color: Colors.black,
+                                    size: 20,
+                                  ),
+                                ],
+                              ),
+                              subtitle: Text(
+                                currentLocation.isNotEmpty
+                                    ? currentLocation
+                                    : 'Fetching location...',
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              trailing: GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (_) => const ProfileTab()),
+                                  );
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: const BoxDecoration(
+                                    color: Colors.white,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: const Icon(
+                                    Icons.person,
+                                    color: Colors.black,
+                                    size: 22,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
                             child: Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: const BoxDecoration(
+                              height: 40,
+                              decoration: BoxDecoration(
                                 color: Colors.white,
-                                shape: BoxShape.circle,
+                                borderRadius: BorderRadius.circular(10),
                               ),
-                              child: const Icon(
-                                Icons.person,
-                                color: Colors.black,
-                                size: 22,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 12),
-                          child: Container(
-                            height: 40,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: const TextField(
-                              decoration: InputDecoration(
-                                hintText: 'Search restaurants...',
-                                prefixIcon: Icon(Icons.search),
-                                border: InputBorder.none,
-                                contentPadding:
-                                    EdgeInsets.symmetric(vertical: 10),
+                              child: const TextField(
+                                decoration: InputDecoration(
+                                  hintText: 'Search restaurants...',
+                                  prefixIcon: Icon(Icons.search),
+                                  border: InputBorder.none,
+                                  contentPadding:
+                                      EdgeInsets.symmetric(vertical: 10),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              )
-            : null,
-        body: SafeArea(
-          child: _selectedIndex == 0
-              ? ListView(
-                  padding: const EdgeInsets.all(12),
-                  children: [
-                    // const SizedBox(height: 10),
-                    Center(
-                      child: Container(
-                        width: MediaQuery.of(context).size.width *
-                            0.95, // 90% of screen width
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(16),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
-                              blurRadius: 8,
-                              offset: Offset(0, 4),
+                )
+              : null,
+          body: SafeArea(
+            child: _selectedIndex == 0
+                ? ListView(
+                    padding: const EdgeInsets.all(12),
+                    children: [
+                      // const SizedBox(height: 10),
+                      Center(
+                        child: Container(
+                          width: MediaQuery.of(context).size.width *
+                              0.95, // 90% of screen width
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                blurRadius: 8,
+                                offset: Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(16),
+                            child: CarouselSlider(
+                              options: CarouselOptions(
+                                height: 200.0,
+                                autoPlay: true,
+                                viewportFraction: 1.0,
+                              ),
+                              items: sliderImages.map((imageUrl) {
+                                return Image.asset(
+                                  imageUrl,
+                                  fit: BoxFit.fill,
+                                  width: double.infinity,
+                                );
+                              }).toList(),
                             ),
-                          ],
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(16),
-                          child: CarouselSlider(
-                            options: CarouselOptions(
-                              height: 200.0,
-                              autoPlay: true,
-                              viewportFraction: 1.0,
-                            ),
-                            items: sliderImages.map((imageUrl) {
-                              return Image.asset(
-                                imageUrl,
-                                fit: BoxFit.fill,
-                                width: double.infinity,
-                              );
-                            }).toList(),
                           ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 25),
-                    HorizontalRestaurantSlider(
-                      title: 'Favorite Restaurants',
-                      restaurants: favoriteRestaurants,
-                      onTap: () {},
-                    ),
-                    SizedBox(height: 25),
-                    HorizontalRestaurantSlider(
-                      title: 'Top Rated Restaurants',
-                      restaurants: topRatedRestaurants,
-                      onTap: () {},
-                    ),
-                    SizedBox(height: 25),
-                    HorizontalRestaurantSlider(
-                      title: 'Nearby Restaurants',
-                      restaurants: nearbyRestaurants,
-                      onTap: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => HomeTab()));
-                      },
-                    ),
-                    const SizedBox(height: 80),
+                      const SizedBox(height: 25),
+                      HorizontalRestaurantSlider(
+                        title: 'Nearby Restaurants',
+                        restaurants: nearbyRestaurants,
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => HomeTab()));
+                        },
+                      ),
+                      SizedBox(height: 25),
+                      HorizontalRestaurantSlider(
+                        title: 'Top Rated Restaurants',
+                        restaurants: topRatedRestaurants,
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => RestaurantMockScreen(
+                                        restaurantName: 'Idly Paradise', restaurantId: '', foodType: '', ratings: null, landmark: '', distance: '', duration: '', payload: null,
+                                      )));
+                        },
+                      ),
+                      SizedBox(height: 25),
+                      HorizontalRestaurantSlider(
+                        title: 'Favorite Restaurants',
+                        restaurants: favoriteRestaurants,
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => BookmarkScreen()));
+                        },
+                      ),
+                      const SizedBox(height: 80),
+                    ],
+                  )
+                : _tabs[_selectedIndex],
+          ),
+          bottomNavigationBar: SafeArea(
+            top: false,
+            child: Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.bottomLeft,
+                  end: Alignment.topLeft,
+                  colors: [
+                    Color(0xFFFFB508), // Orange-Yellow
+                    Color(0xFFF6D365), // Light Yellow
                   ],
-                )
-              : _tabs[_selectedIndex],
-        ),
-        bottomNavigationBar: SafeArea(
-          top: false,
-          child: Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.bottomLeft,
-                end: Alignment.topLeft,
-                colors: [
-                  Color(0xFFFFB508), // Orange-Yellow
-                  Color(0xFFF6D365), // Light Yellow
-                ],
+                ),
               ),
-            ),
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: List.generate(
-                _labels.length,
-                (index) => _buildNavBarItem(index),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: List.generate(
+                  _labels.length,
+                  (index) => _buildNavBarItem(index),
+                ),
               ),
             ),
           ),

@@ -116,36 +116,44 @@ class Strings {
   static const view_all_transactions = 'View all transactions';
   static const use_with_coupons = 'Use with coupons';
   static const learn_more = 'LEARN MORE';
-  static const uggiso_future_orders = 'Yay! Your Uggiso points will be used for future orders';
+  static const uggiso_future_orders =
+      'Yay! Your Uggiso points will be used for future orders';
   static const share_your_referral = 'Share your referral with';
   static const get_rewards = 'Get Rewards!';
   static const rewards = 'Rewards';
   static const enter_referral_number = 'Enter your Referral Mobile Number';
   static const google_map_api_key = 'AIzaSyB8UoTxemF5no_Va1aJn4x8s10VsFlLQHA';
   static const my_referrals = 'My Referrals';
-  static const something_went_wrong = 'Something went wrong. Please try again later';
+  static const bookmarks = 'Your Collections';
+  static const something_went_wrong =
+      'Something went wrong. Please try again later';
   static const apply = 'Apply';
   static const privacy_policy = 'Privacy Policy';
   static const privacy_policy_url = 'https://uggiso.com/privacy-policy/';
-  static const terms_and_conditions_url = 'https://uggiso.com/terms-and-conditions/';
+  static const terms_and_conditions_url =
+      'https://uggiso.com/terms-and-conditions/';
   static const terms_and_conditions = 'Terms And Conditions';
   static const about_us_url = 'https://uggiso.com/about/';
-  static const privacy_policy_checkbox_error = 'Please accept our privacy policy and terms and conditions';
-  static const location_alert_title = 'Allow "Uggiso" to access your background location when order is placed even app closed';
-  static const location_permission_request = 'Uggiso will use location in the background to notify the restaurants about your arrival.';
+  static const privacy_policy_checkbox_error =
+      'Please accept our privacy policy and terms and conditions';
+  static const location_alert_title =
+      'Allow "Uggiso" to access your background location when order is placed even app closed';
+  static const location_permission_request =
+      'Uggiso will use location in the background to notify the restaurants about your arrival.';
   static const take_away = 'Take Away';
   static const dine_in = 'Dine In';
   static const transaction_failed = 'Transaction Failed';
-  static const transaction_failed_message = 'Your transaction has failed. Please try again or contact support if the issue persists.';
+  static const transaction_failed_message =
+      'Your transaction has failed. Please try again or contact support if the issue persists.';
 
   static const List<Map<String, dynamic>> profileItemList = [
     {'image': 'assets/ic_orders.png', 'title': your_orders},
     {'image': 'assets/ic_history.png', 'title': my_referrals},
+    {'image': 'assets/ic_bookmark.png', 'title': bookmarks},
     {'image': 'assets/ic_settings.png', 'title': terms_and_conditions},
     {'image': 'assets/ic_settings.png', 'title': privacy_policy},
     {'image': 'assets/ic_help_center.png', 'title': help_center},
     {'image': 'assets/ic_log-out.png', 'title': sign_out},
-
   ];
 
   static const List<Map<String, dynamic>> settingsItemList = [
@@ -182,10 +190,7 @@ class Strings {
   static const List<double> distance_type = [5.0, 10.0, 15.0, 20.0, 25.0];
   static const List<String> travel_mode = ["BIKE", "CAR", "WALK", "BUS"];
 
-  static const List<String> time_slot = [
-    '5-10min', '10-15min', 'Immediately'
-  ];
+  static const List<String> time_slot = ['5-10min', '10-15min', 'Immediately'];
 
   static const List<String> order_type = ['Take Away', 'Dine In'];
-
 }

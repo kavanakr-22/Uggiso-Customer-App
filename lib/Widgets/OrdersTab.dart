@@ -15,7 +15,7 @@ import '../base/common/utils/strings.dart';
 
 class OrdersTab extends StatefulWidget {
   final String from;
-  const OrdersTab({super.key, this.from=''});
+  const OrdersTab({super.key, this.from = ''});
 
   @override
   State<OrdersTab> createState() => _OrdersTabState();
@@ -35,22 +35,28 @@ class _OrdersTabState extends State<OrdersTab> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: AppColors.textFieldBg,
+        backgroundColor: AppColors.white,
         appBar: AppBar(
           elevation: 0,
-          leading: widget.from==''?Container():Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10.0),
-            child: IconButton(
-              iconSize: 18,
-              icon: Image.asset('assets/ic_back_arrow.png'),
-              color: AppColors.white,
-              onPressed: () {
-
-                Navigator.pop(context);
-              },
+          leading: widget.from == ''
+              ? Container()
+              : Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10.0),
+                  child: IconButton(
+                    iconSize: 18,
+                    icon: Image.asset('assets/ic_back_arrow.png'),
+                    color: AppColors.white,
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                ),
+          // backgroundColor: AppColors.appPrimaryColor,
+          flexibleSpace: Container(
+            decoration: const BoxDecoration(
+              gradient: AppColors.appPrimaryGradient,
             ),
           ),
-          backgroundColor: AppColors.appPrimaryColor,
           title: const Text(
             Strings.your_orders,
             style: AppFonts.appBarText,
@@ -146,13 +152,14 @@ class _OrdersTabState extends State<OrdersTab> {
                         children: [
                           Text(
                             'Order No : ${data.payload?[count].orderNumber}',
-                            style: AppFonts.title
-                                .copyWith(fontSize: 12),
+                            style: AppFonts.title.copyWith(fontSize: 12),
                           ),
                           Text(
                             'CODE : ${data.payload?[count].verifyCode}',
-                            style: AppFonts.smallText
-                                .copyWith(color: AppColors.appPrimaryColor,fontSize: 14,fontWeight: FontWeight.w600),
+                            style: AppFonts.smallText.copyWith(
+                                color: AppColors.appPrimaryColor,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600),
                           )
                         ],
                       ),
@@ -185,7 +192,7 @@ class _OrdersTabState extends State<OrdersTab> {
                                     style: AppFonts.title,
                                   ),
                                   Flexible(
-                                    flex:1,
+                                    flex: 1,
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
@@ -247,10 +254,10 @@ class _OrdersTabState extends State<OrdersTab> {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             Text(
-                              'Locate on Map',style: AppFonts.smallText.copyWith(fontSize: 14),
+                              'Locate on Map',
+                              style: AppFonts.smallText.copyWith(fontSize: 14),
                             ),
                             Gap(10),
-
                             IconButton(
                               padding: EdgeInsets.zero,
                               onPressed: () async {
@@ -271,20 +278,20 @@ class _OrdersTabState extends State<OrdersTab> {
                           ],
                         ),
                       ),
-                  //     RichText(
-                  //   text: TextSpan(
-                  //     children: [
-                  //       TextSpan(
-                  //         text: 'Locate on Map',
-                  //         style: AppFonts.smallText, // Color for the word "Comments"
-                  //       ),
-                  //       TextSpan(
-                  //         text: '${data.payload?[count].comments}',
-                  //         style: AppFonts.smallText, // Original style for the comments
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
+                      //     RichText(
+                      //   text: TextSpan(
+                      //     children: [
+                      //       TextSpan(
+                      //         text: 'Locate on Map',
+                      //         style: AppFonts.smallText, // Color for the word "Comments"
+                      //       ),
+                      //       TextSpan(
+                      //         text: '${data.payload?[count].comments}',
+                      //         style: AppFonts.smallText, // Original style for the comments
+                      //       ),
+                      //     ],
+                      //   ),
+                      // ),
                     ],
                   ));
             }),

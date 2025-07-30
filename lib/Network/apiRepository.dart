@@ -37,7 +37,6 @@ class ApiRepository {
   Future<VerifyOtpModel> verifyOtp(String? number,String otp) {
     return _provider.verifyOtp(number,otp);
   }
-
   Future<RegisterUserModel> registerUser(String name,String number,String userType,String deviceId,String token, String status) {
     return _provider.registerUser(name,number,userType,deviceId,token,status);
   }

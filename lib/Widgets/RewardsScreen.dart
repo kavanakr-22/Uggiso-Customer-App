@@ -35,26 +35,38 @@ class _RewardsScreenState extends State<RewardsScreen> {
     return BlocProvider(
         create: (context) => _rewardsBloc,
         child: Scaffold(
-          appBar: AppBar(
-            backgroundColor: AppColors.textFieldBorderColor,
-            centerTitle: true,
-            title: Text(
-              Strings.rewards,
-              style: AppFonts.appBarText,
-            ),
-            leading: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: IconButton(
-                  icon: Image.asset(
-                    'assets/ic_back_arrow.png',
-                    width: 18,
-                    height: 18,
+          appBar: PreferredSize(
+            preferredSize: const Size.fromHeight(kToolbarHeight),
+            child: Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomLeft,
+                  colors: [
+                    Color(0xFFFFB508),
+                    Color(0xFFF6D365),
+                  ],
+                ),
+              ),
+              child: AppBar(
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                centerTitle: true,
+                title: Text(
+                  Strings.rewards,
+                  style: AppFonts.appBarText,
+                ),
+                leading: IconButton(
+                  icon: const Icon(
+                    CupertinoIcons.back,
                     color: AppColors.rewardsText,
                   ),
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                )),
+                ),
+              ),
+            ),
           ),
           body:
               BlocBuilder<RewardsBloc, Rewardsstate>(builder: (context, state) {
@@ -76,10 +88,10 @@ class _RewardsScreenState extends State<RewardsScreen> {
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
                           colors: [
-                            AppColors.textFieldBorderColor,
-                            AppColors.white,
+                            Color(0xFFFFF9EC), // very soft yellow
+                            Colors.white, // clean bottom
                           ],
-                          stops: [0.3, 0.9], // Adjust stops as needed
+                          stops: [0.0, 1.0],
                         ),
                       ),
                       child: Padding(

@@ -15,7 +15,6 @@ class OnInitilised extends HomeEvent {
   const OnInitilised({required this.userId,required this.lat,required this.lag,required this.distance,required this.mode});
   @override
   List<Object> get props => [lat,lag];
-
 }
 class OnFetchMoreRestaurants extends HomeEvent {
   final String userId;

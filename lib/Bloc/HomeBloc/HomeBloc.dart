@@ -119,7 +119,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         print('this is network error');
       }
     });
-    
     on<OnFetchMoreRestaurants>((event, emit) async {
       try {
         emit(FetchingMoreState());

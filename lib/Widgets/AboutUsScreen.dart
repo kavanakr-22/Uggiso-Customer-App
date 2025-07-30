@@ -42,7 +42,12 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: AppColors.appPrimaryColor,
+        // backgroundColor: AppColors.appPrimaryColor,
+         flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: AppColors.appPrimaryGradient,
+          ),
+        ),
         title: Text(
           Strings.about_us,
           style: AppFonts.title,

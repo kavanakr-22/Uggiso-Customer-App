@@ -39,7 +39,12 @@ class _PlaceSearchScreenState extends State<PlaceSearchScreen> {
                 Navigator.pop(context);
               },
             )),
-        backgroundColor: AppColors.appPrimaryColor,
+        // backgroundColor: AppColors.appPrimaryColor,
+         flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: AppColors.appPrimaryGradient,
+          ),
+        ),
         elevation: 0,
         title: Text('Search NearBy Hotel',style: AppFonts.appBarText,),
         centerTitle: true,

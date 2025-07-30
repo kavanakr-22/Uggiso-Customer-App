@@ -490,6 +490,7 @@ class HotelListGrid extends StatelessWidget {
   final double? lng;
   final String? travelMode;
   final double? distance;
+  final double? ratings;
   final ScrollController? scrollController;
 
   const HotelListGrid(
@@ -498,7 +499,8 @@ class HotelListGrid extends StatelessWidget {
     this.lat,
     this.lng,
     this.travelMode,
-    this.distance, {
+    this.distance,
+    this.ratings, {
     this.scrollController,
     super.key,
   });
@@ -526,7 +528,6 @@ class HotelListGrid extends StatelessWidget {
   Widget _buildGridItem(BuildContext context, Payload item) {
     return RoundedContainer(
       width: MediaQuery.of(context).size.width * 0.5,
-      
       color: AppColors.white,
       borderColor: AppColors.white,
       cornerRadius: 8,
@@ -569,79 +570,71 @@ class HotelListGrid extends StatelessWidget {
                   ),
                 ),
                 // Favorite icon top-right
-                // Positioned(
-                //   top: 8,
-                //   right: 8,
-                //   child: item.favourite == true
-                //       ? IconButton(
-                //           padding: EdgeInsets.zero,
-                //           onPressed: () {
-                //             BlocProvider.of<HomeBloc>(context).add(
-                //               OnDeleteFavRestaurant(
-                //                   userId: userId,
-                //                   restaurantId: item.restaurantId),
-                //             );
-                //           },
-                //           icon: Image.asset(
-                //             'assets/ic_heart_fill.png',
-                //             width: 24,
-                //             height: 24,
-                //             color: AppColors.appPrimaryColor,
-                //           ),
-                //         )
-                //       : IconButton(
-                //           padding: EdgeInsets.zero,
-                //           onPressed: () {
-                //             BlocProvider.of<HomeBloc>(context).add(
-                //               OnAddFavRestaurant(
-                //                   userId: userId,
-                //                   restaurantId: item.restaurantId),
-                //             );
-                //           },
-                //           icon: Image.asset(
-                //             'assets/ic_heart.png',
-                //             width: 24,
-                //             height: 24,
-                //             color: AppColors.appPrimaryColor,
-                //           ),
-                //         ),
-                // ),
                 Positioned(
-                  top: 0,
-                  right: 0,
-                  child: IconButton(
-                    padding: EdgeInsets.zero,
-                    constraints:
-                        const BoxConstraints(), // Removes default constraints
-                    visualDensity:
-                        VisualDensity.compact, // Reduces internal spacing
-                    splashRadius: 10, // Optional: smaller splash circle
-                    onPressed: () {
-                      if (item.favourite == true) {
-                        BlocProvider.of<HomeBloc>(context).add(
-                          OnDeleteFavRestaurant(
-                            userId: userId,
-                            restaurantId: item.restaurantId,
-                          ),
-                        );
-                      } else {
-                        BlocProvider.of<HomeBloc>(context).add(
-                          OnAddFavRestaurant(
-                            userId: userId,
-                            restaurantId: item.restaurantId,
-                          ),
-                        );
-                      }
-                    },
-                    icon: Icon(
-                      item.favourite == true
-                          ? Icons.bookmark
-                          : Icons.bookmark_outline,
-                      color: item.favourite == true ? Colors.red : Colors.white,
-                      size: 24,
-                    ),
-                  ),
+                  top: 8,
+                  right: 8,
+                  child: item.favourite == true
+                      ? IconButton(
+                          padding: EdgeInsets.zero,
+                          onPressed: () {
+                            BlocProvider.of<HomeBloc>(context).add(
+                              OnDeleteFavRestaurant(
+                                  userId: userId,
+                                  restaurantId: item.restaurantId),
+                            );
+                          },
+                          icon: Icon(Icons.bookmark_border),
+                          color: Colors.white,
+                        )
+                      : IconButton(
+                          padding: EdgeInsets.zero,
+                          onPressed: () {
+                            BlocProvider.of<HomeBloc>(context).add(
+                              OnAddFavRestaurant(
+                                  userId: userId,
+                                  restaurantId: item.restaurantId),
+                            );
+                          },
+                          icon: Icon(Icons.bookmark),
+                          color: Colors.red,
+                        ),
                 ),
+                // Positioned(
+                //   top: 0,
+                //   right: 0,
+                //   child: IconButton(
+                //     padding: EdgeInsets.zero,
+                //     constraints:
+                //         const BoxConstraints(), // Removes default constraints
+                //     visualDensity:
+                //         VisualDensity.compact, // Reduces internal spacing
+                //     splashRadius: 10, // Optional: smaller splash circle
+                //     onPressed: () {
+                //       if (item.favourite == true) {
+                //         BlocProvider.of<HomeBloc>(context).add(
+                //           OnDeleteFavRestaurant(
+                //             userId: userId,
+                //             restaurantId: item.restaurantId,
+                //           ),
+                //         );
+                //       } else {
+                //         BlocProvider.of<HomeBloc>(context).add(
+                //           OnAddFavRestaurant(
+                //             userId: userId,
+                //             restaurantId: item.restaurantId,
+                //           ),
+                //         );
+                //       }
+                //     },
+                //     icon: Icon(
+                //       item.favourite == true
+                //           ? Icons.bookmark
+                //           : Icons.bookmark_outline,
+                //       color: item.favourite == true ? Colors.red : Colors.white,
+                //       size: 24,
+                //     ),
+                //   ),
+                // ),
               ],
             ),
 
@@ -684,11 +677,11 @@ class HotelListGrid extends StatelessWidget {
                                 .copyWith(fontWeight: FontWeight.w500),
                           ),
                           const Gap(2),
-                          Text(
-                            '${item.ratings ?? ''}',
-                            style: AppFonts.smallText
-                                .copyWith(color: AppColors.textColor),
-                          ),
+                          // Text(
+                          //   '${item.ratings ?? ''}',
+                          //   style: AppFonts.smallText
+                          //       .copyWith(color: AppColors.textColor),
+                          // ),
                         ],
                       ),
                     ],
@@ -697,6 +690,20 @@ class HotelListGrid extends StatelessWidget {
 
                   // Food type & ratings row
                   const Gap(4),
+                  if (item.rating != null && item.rating! > 0)
+                    Row(
+                      children: [
+                        Text(
+                          item.rating!.toStringAsFixed(1),
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(width: 2),
+                        const Icon(Icons.star, size: 14, color: Colors.orange),
+                      ],
+                    ),
 
                   // Distance & duration row
                   Row(

@@ -31,11 +31,27 @@ import 'package:http/http.dart' as http;
 class ApiProvider {
   final Dio _dio = Dio();
   final String _url = Constants.baseUrl;
+  final options = Options(
+    followRedirects: false,
+    contentType: "application/json",
+    validateStatus: (status) {
+      return status != null && status >= 200 && status < 500;
+    },
+    headers: {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+      "SECURE-API-KEY":
+          "336924d18ed3718f48dc62b5ae3032afe387d5dc86685e5d43ad04bf2cc41f60",
+    },
+  );
 
   Future<OtpModel> getOtp(String number) async {
     try {
-      Response response = await _dio
-          .post('${_url}${Constants.getOtp}', data: {"phoneNumber": number});
+      Response response = await _dio.post(
+        '${_url}${Constants.getOtp}',
+        data: {"phoneNumber": number},
+        options: options,
+      );
       print("${response.data}");
       return OtpModel.fromJson(response.data);
     } catch (error, stacktrace) {
@@ -47,8 +63,11 @@ class ApiProvider {
   Future<VerifyOtpModel> verifyOtp(String? number, String otp) async {
     print('this is rewuest : $number and $otp');
     try {
-      Response response = await _dio.post('${_url}${Constants.verifyOtp}',
-          data: {"phoneNumber": number, "otp": otp});
+      Response response = await _dio.post(
+        '${_url}${Constants.verifyOtp}',
+        data: {"phoneNumber": number, "otp": otp},
+        options: options,
+      );
       print("${response.data}");
 
       return VerifyOtpModel.fromJson(response.data);
@@ -61,15 +80,18 @@ class ApiProvider {
   Future<RegisterUserModel> registerUser(String name, String number,
       String userType, String deviceId, String token, String status) async {
     try {
-      Response response =
-          await _dio.post('${_url}${Constants.registerUser}', data: {
-        "name": name,
-        "phoneNumber": number,
-        "userType": userType,
-        "userStatus": status,
-        "deviceData": deviceId,
-        "fcmToken": token
-      });
+      Response response = await _dio.post(
+        '${_url}${Constants.registerUser}',
+        data: {
+          "name": name,
+          "phoneNumber": number,
+          "userType": userType,
+          "userStatus": status,
+          "deviceData": deviceId,
+          "fcmToken": token
+        },
+        options: options,
+      );
       print("${response.data}");
 
       return RegisterUserModel.fromJson(response.data);
@@ -96,8 +118,11 @@ class ApiProvider {
   Future<MenuListModel> getMenuList(String id, String restId) async {
     try {
       print('${_url}${Constants.getFavMenu}');
-      Response response = await _dio.post('${_url}${Constants.getFavMenu}',
-          data: {"userId": id, "restaurantId": restId});
+      Response response = await _dio.post(
+        '${_url}${Constants.getFavMenu}',
+        data: {"userId": id, "restaurantId": restId},
+        options: options,
+      );
       print("get menu list response is ${response.data}");
 
       return MenuListModel.fromJson(response.data);
@@ -113,12 +138,15 @@ class ApiProvider {
     print('menu id : $menuId');
     print('restaurantId : $restaurantId');
     try {
-      Response response = await _dio.post('${_url}${Constants.addFavMenu}',
-          data: {
-            "userId": userId,
-            "menuId": menuId,
-            "restaurantId": restaurantId
-          });
+      Response response = await _dio.post(
+        '${_url}${Constants.addFavMenu}',
+        data: {
+          "userId": userId,
+          "menuId": menuId,
+          "restaurantId": restaurantId
+        },
+        options: options,
+      );
       print("fav menu response : ${response.data}");
 
       return AddFavoriteMenuModel.fromJson(response.data);
@@ -148,8 +176,10 @@ class ApiProvider {
   Future<String> addFavRestaurant(String userId, String restId) async {
     try {
       Response response = await _dio.post(
-          '${_url}${Constants.addFavRestaurant}',
-          data: {"userId": userId, "restaurantId": restId});
+        '${_url}${Constants.addFavRestaurant}',
+        data: {"userId": userId, "restaurantId": restId},
+        options: options,
+      );
       print("${response.data}");
       if (response.statusCode == 200) {
         return 'Success';
@@ -184,8 +214,10 @@ class ApiProvider {
     print('userId $userId');
     try {
       Response response = await _dio.post(
-          '${_url}${Constants.restaurantNearBy}',
-          data: {"userId": userId, "lat": lat, "lng": lag});
+        '${_url}${Constants.restaurantNearBy}',
+        data: {"userId": userId, "lat": lat, "lng": lag},
+        options: options,
+      );
       print("the near by rest reponse is : ${response.data}");
 
       return GetNearByRestaurantModel.fromJson(response.data);
@@ -215,6 +247,7 @@ class ApiProvider {
           "page": page,
           "size": size
         },
+        options: options,
       );
       print("${response.data}");
 
@@ -244,8 +277,11 @@ class ApiProvider {
   Future<GetFavMenuModel> getFavMenuList(
       String userId, String restaurantID) async {
     try {
-      Response response = await _dio.post('${_url}${Constants.getFavMenu}',
-          data: {"userId": userId, "restaurantId": restaurantID});
+      Response response = await _dio.post(
+        '${_url}${Constants.getFavMenu}',
+        data: {"userId": userId, "restaurantId": restaurantID},
+        options: options,
+      );
       print("getFavMenuList : ${response.data}");
 
       return GetFavMenuModel.fromJson(response.data);
@@ -276,24 +312,27 @@ class ApiProvider {
         ',"orderType":$orderType,"paymentType": $paymentType,"orderStatus": $orderStatus,"totalAmount": $totalAmount'
         ',"comments": $comments,"timeSlot": $timeSlot,"transMode":$transMode, paid amount : $paidAmount');
     try {
-      Response response =
-          await _dio.post('${_url}${Constants.createOrder}', data: {
-        "restaurantId": restaurantId,
-        "restaurantName": restaurantName,
-        "customerId": customerId,
-        "menus": menuData,
-        "orderType": orderType,
-        "paymentType": paymentType,
-        "orderStatus": orderStatus,
-        "totalAmount": totalAmount,
-        "paidAmount": paidAmount,
-        "usedCoins": usedCoins,
-        "comments": comments,
-        "timeSlot": timeSlot,
-        "travelMode": transMode,
-        "lat": lat,
-        "lng": lng
-      });
+      Response response = await _dio.post(
+        '${_url}${Constants.createOrder}',
+        data: {
+          "restaurantId": restaurantId,
+          "restaurantName": restaurantName,
+          "customerId": customerId,
+          "menus": menuData,
+          "orderType": orderType,
+          "paymentType": paymentType,
+          "orderStatus": orderStatus,
+          "totalAmount": totalAmount,
+          "paidAmount": paidAmount,
+          "usedCoins": usedCoins,
+          "comments": comments,
+          "timeSlot": timeSlot,
+          "travelMode": transMode,
+          "lat": lat,
+          "lng": lng
+        },
+        options: options,
+      );
       print("${response.data}");
 
       return OrderCheckoutModel.fromJson(response.data);
@@ -345,13 +384,16 @@ class ApiProvider {
   Future<SaveIntroducerModel> saveIntroducers(String acceptorUuid,
       String introducerPhone, String acceptorDeviceId) async {
     try {
-      Response response =
-          await _dio.post('${_url}${Constants.saveIntroducers}', data: {
-        "acceptorId": acceptorUuid,
-        "acceptorDevice": acceptorDeviceId,
-        "introducerPhone": introducerPhone,
-        "referenceType": "CUSTOMER"
-      });
+      Response response = await _dio.post(
+        '${_url}${Constants.saveIntroducers}',
+        data: {
+          "acceptorId": acceptorUuid,
+          "acceptorDevice": acceptorDeviceId,
+          "introducerPhone": introducerPhone,
+          "referenceType": "CUSTOMER"
+        },
+        options: options,
+      );
       print("${response.data}");
 
       return SaveIntroducerModel.fromJson(response.data);
@@ -367,14 +409,17 @@ class ApiProvider {
         'get roues request : "userId": $userId,"roadPolyline": $polylinePoints,'
         ' "originLat": $lat, "originLang": $lng, "mode": "DRIVE"');
     try {
-      Response response =
-          await _dio.post('${_url}${Constants.restaurantOnway}', data: {
-        "userId": userId,
-        "roadPolyline": polylinePoints,
-        "originLat": lat,
-        "originLang": lng,
-        "mode": "DRIVE"
-      });
+      Response response = await _dio.post(
+        '${_url}${Constants.restaurantOnway}',
+        data: {
+          "userId": userId,
+          "roadPolyline": polylinePoints,
+          "originLat": lat,
+          "originLang": lng,
+          "mode": "DRIVE"
+        },
+        options: options,
+      );
       print("route response : ${response.data}");
 
       return GetNearByRestaurantModel.fromJson(response.data);
@@ -391,8 +436,10 @@ class ApiProvider {
     print('calling update order id : ${orderId} and status ${orderStatus}');
     try {
       Response response = await _dio.put(
-          '${_url}${Constants.update_order_status}',
-          data: {"orderId": orderId, "orderStatus": orderStatus});
+        '${_url}${Constants.update_order_status}',
+        data: {"orderId": orderId, "orderStatus": orderStatus},
+        options: options,
+      );
       print("${response.data}");
 
       return UpdateOrderModel.fromJson(response.data);
@@ -424,11 +471,14 @@ class ApiProvider {
   Future<RemoveFavRestaurantModel> removeFavRestaurant(
       String userId, String restaurantId) async {
     try {
-      Response response =
-          await _dio.delete('${_url}${Constants.remove_fav_restaurant}', data: {
-        "userId": userId,
-        "restaurantId": restaurantId,
-      });
+      Response response = await _dio.delete(
+        '${_url}${Constants.remove_fav_restaurant}',
+        data: {
+          "userId": userId,
+          "restaurantId": restaurantId,
+        },
+        options: options,
+      );
       print("${response.data}");
 
       return RemoveFavRestaurantModel.fromJson(response.data);
@@ -442,11 +492,14 @@ class ApiProvider {
   Future<RemoveFavRestaurantModel> removeFavMenu(
       String userId, String menuId) async {
     try {
-      Response response =
-          await _dio.delete('${_url}${Constants.remove_fav_restaurant}', data: {
-        "userId": userId,
-        "menuId": menuId,
-      });
+      Response response = await _dio.delete(
+        '${_url}${Constants.remove_fav_restaurant}',
+        data: {
+          "userId": userId,
+          "menuId": menuId,
+        },
+        options: options,
+      );
       print("${response.data}");
 
       return RemoveFavRestaurantModel.fromJson(response.data);
@@ -473,24 +526,27 @@ class ApiProvider {
       String payerName,
       String payerMobile) async {
     try {
-      Response response =
-          await _dio.post('${_url}${Constants.paymentDetails}', data: {
-        "orderId": orderId,
-        "receiverId": receiverId,
-        "senderId": senderId,
-        "status": status,
-        "statusCode": "200",
-        "transactionId": transactionId,
-        "orderNumber": orderNumber,
-        "paymentId": paymentId,
-        "amount": amount,
-        "usedCoins": usedCoins,
-        "data": data,
-        "paidAmount": paidAmount,
-        "paymentMode": paymentMode,
-        "payerName": payerName,
-        "payerMobile": payerMobile
-      });
+      Response response = await _dio.post(
+        '${_url}${Constants.paymentDetails}',
+        data: {
+          "orderId": orderId,
+          "receiverId": receiverId,
+          "senderId": senderId,
+          "status": status,
+          "statusCode": "200",
+          "transactionId": transactionId,
+          "orderNumber": orderNumber,
+          "paymentId": paymentId,
+          "amount": amount,
+          "usedCoins": usedCoins,
+          "data": data,
+          "paidAmount": paidAmount,
+          "paymentMode": paymentMode,
+          "payerName": payerName,
+          "payerMobile": payerMobile
+        },
+        options: options,
+      );
       print("${response.data}");
 
       return PaymentDetailsModel.fromJson(response.data);
@@ -507,13 +563,16 @@ class ApiProvider {
     print("this is fcmToken  ${fcmToken}");
 
     try {
-      Response response =
-          await _dio.put('${_url}${Constants.updateDevice}', data: {
-        "userId": userId,
-        "deviceData": deviceData,
-        "fcmToken": fcmToken,
-        "deviceUserType": "CUSTOMER"
-      });
+      Response response = await _dio.put(
+        '${_url}${Constants.updateDevice}',
+        data: {
+          "userId": userId,
+          "deviceData": deviceData,
+          "fcmToken": fcmToken,
+          "deviceUserType": "CUSTOMER"
+        },
+        options: options,
+      );
       print("this is response in api provider ${response.data}");
       return VerifyOtpModel.fromJson(response.data);
     } catch (error, stacktrace) {
@@ -595,13 +654,16 @@ class ApiProvider {
   Future<InitiatePaymentModel> initiatePayment(
       String name, String phone, String amount, String txnId) async {
     try {
-      Response response = await _dio
-          .post('${_url}${Constants.initiate_payment}', data: {
-        "name": name,
-        "txnId": txnId,
-        "phone": phone,
-        "amount": double.parse(amount)
-      });
+      Response response = await _dio.post(
+        '${_url}${Constants.initiate_payment}',
+        data: {
+          "name": name,
+          "txnId": txnId,
+          "phone": phone,
+          "amount": double.parse(amount)
+        },
+        options: options,
+      );
       print("${response.data}");
 
       return InitiatePaymentModel.fromJson(response.data);
@@ -628,8 +690,10 @@ class ApiProvider {
   Future<RemoveUserModel> removeUserData(String userId) async {
     try {
       Response response = await _dio.post(
-          '${_url}${Constants.remove_user_data}',
-          data: {"userId": userId});
+        '${_url}${Constants.remove_user_data}',
+        data: {"userId": userId},
+        options: options,
+      );
       print("${response.data}");
 
       return RemoveUserModel.fromJson(response.data);
@@ -645,8 +709,10 @@ class ApiProvider {
         'this is search params : userId :$userId, lat : $lat, lng : $lag, letters : $querry');
     try {
       Response response = await _dio.post(
-          '${_url}${Constants.restaurant_search}',
-          data: {"userId": userId, "lat": lat, "lng": lag, "letters": querry});
+        '${_url}${Constants.restaurant_search}',
+        data: {"userId": userId, "lat": lat, "lng": lag, "letters": querry},
+        options: options,
+      );
       // Response response = await _dio.get('${_url}${Constants.restaurant_search}$querry');
       print("Status Code  : ${response.statusCode}");
       print("${response.data}");
